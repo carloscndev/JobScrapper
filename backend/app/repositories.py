@@ -24,8 +24,9 @@ class ProfileRepository:
 class SourceRepository:
     def __init__(self, session: Session) -> None: self.session = session
     def enabled(self) -> Sequence[Source]: return self.session.scalars(select(Source).where(Source.enabled.is_(True)).order_by(Source.name)).all()
+    def get(self, name: str) -> Source | None: return self.session.scalar(select(Source).where(Source.name == name))
     def get_or_create(self, name: str, **values: object) -> Source:
-        source = self.session.scalar(select(Source).where(Source.name == name))
+        source = self.get(name)
         if source is None:
             source = Source(name=name, **values); self.session.add(source); self.session.flush()
         return source

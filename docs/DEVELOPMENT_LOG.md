@@ -250,3 +250,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: runtime SQLAlchemy tests require dependency installation
 - Commit subject: feat(profile): add job preferences and versioning
 - Commit hash: 645cade3bc6d4c162b2b2ebde4fc93a132359a52
+
+### SOURCES-001 — Attempt 1
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: common source adapter contract, validated source configuration, normalized fetch/job result types, enablement service, and compliance limits; PASS with dependency skips
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/sources.py`, `backend/app/repositories.py`, `backend/README.md`, `tests/backend/test_sources.py`
+- Commands: 38 backend tests with 12 skips; 35 harness tests; JSON; compileall; shell syntax; skills; harness validation; `git diff --check`
+- Tester: PASS — contracts, URL/limits/secrets, canonical jobs, fetch statuses, adapter and enablement covered
+- Reviewer: APPROVED — implementation and scope verified after adding traceability
+- Rework: none
+- Changelog: source adapter contract added
+- Risks: SQLAlchemy runtime checks require dependency installation; real connectors are deferred to SOURCES-002
+- Commit subject: feat(sources): define job source adapters
+- Commit hash: pending

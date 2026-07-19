@@ -189,3 +189,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: live preference persistence tests require SQLAlchemy installation
 - Commit subject: feat(profile): add job preferences and versioning
 - Commit hash: 645cade3bc6d4c162b2b2ebde4fc93a132359a52
+
+### SOURCES-001 — Attempt 1
+
+- Added source adapter/configuration contracts, normalized job/fetch results, safe URL and rate-limit validation, and enablement service.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: source contracts/service, backend docs, and source tests
+- Commands: 38 backend tests with 12 skips; 35 harness tests; JSON/Python/Shell/skills/harness/diff checks
+- Tester: PASS — source contract and safety checks pass
+- Reviewer: APPROVED — scope and compliance constraints verified
+- Risks: real connectors are deferred to SOURCES-002; SQLAlchemy remains optional in this environment
+- Commit subject: feat(sources): define job source adapters
+- Commit hash: pending

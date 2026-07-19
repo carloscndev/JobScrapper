@@ -81,3 +81,16 @@ preferences, authorization, compensation, or profile versions. Preferences
 and reevaluation metadata are managed by `ProfileService.update_preferences`.
 Install `pypdf` and `python-docx` from the backend project
 dependencies before processing files.
+# Backend
+
+The backend domain layer is independent of FastAPI. Source integrations must
+implement `app.sources.SourceAdapter` and return `NormalizedJob` values through
+`SourceFetchResult`; HTTP endpoints and scheduling are integration concerns.
+
+Source adapters are compliance-bound: they may use only permitted APIs, feeds,
+or career pages; must honor the source's terms of use, `robots.txt`, timeout,
+rate-limit, and retry settings; and must not bypass authentication, CAPTCHA,
+access controls, or bot protections. Credentials are referenced through local
+configuration and must never be included in source records, job metadata, or
+logs. A source failure is represented in the fetch result so other sources can
+continue processing.
