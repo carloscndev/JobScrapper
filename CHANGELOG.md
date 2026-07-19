@@ -200,4 +200,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — scope and compliance constraints verified
 - Risks: real connectors are deferred to SOURCES-002; SQLAlchemy remains optional in this environment
 - Commit subject: feat(sources): define job source adapters
-- Commit hash: pending
+- Commit hash: 2268fa9cdfe6745830ea4ba8c04804a8c86cd583

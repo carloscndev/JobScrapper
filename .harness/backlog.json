@@ -339,7 +339,7 @@
     {
       "id": "SOURCES-001",
       "title": "Define source adapter contract and source configuration",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "DATA-002"
       ],
@@ -353,12 +353,13 @@
       "acceptance": [
         "Adapters share a normalized interface",
         "Sources can be enabled, disabled, and configured"
-      ]
+      ],
+      "commit_hash": "2268fa9"
     },
     {
       "id": "SOURCES-002",
       "title": "Implement the first API/feed and two permitted career-page adapters",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "SOURCES-001"
       ],

@@ -264,4 +264,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: source adapter contract added
 - Risks: SQLAlchemy runtime checks require dependency installation; real connectors are deferred to SOURCES-002
 - Commit subject: feat(sources): define job source adapters
-- Commit hash: pending
+- Commit hash: 2268fa9cdfe6745830ea4ba8c04804a8c86cd583
