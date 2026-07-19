@@ -69,3 +69,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: implementation tasks remain responsible for their own dependencies and allowed paths
 - Commit subject: chore(repo): scaffold application directories
 - Commit hash: ebbb15de8e07eea5582a2ace24f1fc6ed8e5ff6c
+
+### HARNESS-001 — Attempt 1
+
+- Tightened coordinator, coder, tester, and reviewer contracts for state transitions, failure loops, skill authorization, evidence, and commit ownership.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `AGENTS.md` and `.agents/*.md`
+- Commands: 28 tests, JSON/harness/Python/Shell checks, semantic protocol checks, and diff checks
+- Tester: PASS — protocol and ownership rules verified
+- Reviewer: APPROVED — contracts complete and within scope
+- Risks: coordinator preserves single active task and no agent bypasses commit gates
+- Commit subject: chore(harness): define multi-agent workflow
+- Commit hash: pending

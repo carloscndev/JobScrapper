@@ -100,3 +100,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: implementation tasks must add code only within their declared paths
 - Commit subject: chore(repo): scaffold application directories
 - Commit hash: ebbb15de8e07eea5582a2ace24f1fc6ed8e5ff6c
+
+### HARNESS-001 — Attempt 1
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: coordinator/coder/tester/reviewer ownership, state flow, rework loop, skill authorization, evidence and commit restrictions documented; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `AGENTS.md`, `.agents/coder.md`, `.agents/tester.md`, `.agents/reviewer.md`
+- Commands: 28 unit tests; JSON validation; harness validation; py_compile; shell syntax; semantic role-flow check; `git diff --check`
+- Tester: PASS — operational flow, ownership, allowlists, mutation rules, and all gates verified
+- Reviewer: APPROVED — contracts complete; only required traceability was added
+- Rework: added structured development and changelog entries
+- Changelog: agent protocol contracts tightened
+- Risks: coordinator must preserve single active task and staging ownership
+- Commit subject: chore(harness): define multi-agent workflow
+- Commit hash: pending
