@@ -117,7 +117,7 @@
     {
       "id": "HARNESS-001",
       "title": "Define coordinator and three-agent workflow",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "SKILLS-002"
       ],
@@ -131,12 +131,13 @@
       "acceptance": [
         "Every role has explicit ownership",
         "Failure loop is documented"
-      ]
+      ],
+      "commit_hash": "7668cfa"
     },
     {
       "id": "HARNESS-002",
       "title": "Implement task state machine",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "HARNESS-001"
       ],

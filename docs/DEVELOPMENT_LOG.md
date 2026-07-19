@@ -114,4 +114,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: agent protocol contracts tightened
 - Risks: coordinator must preserve single active task and staging ownership
 - Commit subject: chore(harness): define multi-agent workflow
-- Commit hash: pending
+- Commit hash: 7668cfaa3dc382feeb3182a55fe7d6f382ccef29

@@ -80,4 +80,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — contracts complete and within scope
 - Risks: coordinator preserves single active task and no agent bypasses commit gates
 - Commit subject: chore(harness): define multi-agent workflow
-- Commit hash: pending
+- Commit hash: 7668cfaa3dc382feeb3182a55fe7d6f382ccef29
