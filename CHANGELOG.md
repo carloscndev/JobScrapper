@@ -105,3 +105,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: pytest is unavailable; unittest remains the configured runner
 - Commit subject: test(harness): cover task lifecycle gates
 - Commit hash: 942028fe7a5bc319a119fca60fa62ed66a782c21
+
+### DOCS-001 — Attempt 1
+
+- Expanded SDD and README with functional/NFR requirements, runtime flow, architecture, data model, API contracts, Notion mapping, security, UX, operations, and the 46-task phase index.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `docs/SDD.md`, `README.md`
+- Commands: 35 tests, JSON/harness/Python/Shell/diff checks
+- Tester: PASS — documentation and task index verified
+- Reviewer: APPROVED — dependency order corrected and content in scope
+- Risks: backlog JSON is authoritative for exact sequencing
+- Commit subject: docs(sdd): add product requirements and backlog
+- Commit hash: pending

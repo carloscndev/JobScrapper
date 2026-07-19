@@ -4,6 +4,13 @@ Local, explainable job discovery for Mexico and the United States, with local-mo
 
 The repository currently contains the delivery harness and SDD. Product implementation starts only after the harness passes coder, tester, reviewer, and coordinator gates.
 
+## Current delivery state
+
+The canonical backlog contains 46 ordered tasks. The harness permits exactly one
+active task and requires the complete `coder -> tester -> reviewer -> coordinator ->
+commit` lifecycle before its dependent tasks unlock. Start with the task reported by
+`status`; do not edit `.harness/current-task.json` manually.
+
 ## Repository layout
 
 - `backend/`: FastAPI service, domain logic, persistence, and workers.
@@ -44,3 +51,9 @@ Use `scripts/check-skills.sh` for read-only verification. `scripts/install-skill
 - `docs/SDD.md`: product story, requirements, and delivery sequence.
 - `docs/DEVELOPMENT_LOG.md`: coordinator-owned incremental task history.
 - `AGENTS.md`: mandatory multi-agent protocol.
+
+The SDD defines the user story, functional and non-functional requirements, runtime
+flow, API/data contracts, security boundaries, Notion mapping, and the readable
+backlog phase index. Operational procedures for cron, backup/restore, and recovery
+are delivered by the corresponding `OPS-*` tasks and must be reflected here before
+the `RELEASE-001` gate.
