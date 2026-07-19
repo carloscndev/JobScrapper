@@ -40,3 +40,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: `notion-api` remains high risk and requires coordinator acknowledgement before use
 - Commit subject: chore(repo): initialize project repository
 - Commit hash: 3eb86cab7dd0f988e91981870dd0f37830a462c7
+
+### BACKLOG-001 — Attempt 1
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: expanded executable backlog to 46 tasks, dependencies, allowed paths, acceptance criteria, and SDD reference; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `.harness/backlog.json`, `docs/SDD.md`, `docs/DEVELOPMENT_LOG.md`, `CHANGELOG.md`
+- Commands: `python3 -m json.tool .harness/backlog.json`; `python3 scripts/harness.py validate`; topological dependency check; `python3 -m unittest -v tests/harness/test_harness.py`; `python3 -m py_compile scripts/harness.py`; `bash -n scripts/*.sh`; `git diff --check`
+- Tester: PASS — 46 unique tasks, complete required fields, no unknown dependencies or cycles, and 25 harness tests pass
+- Reviewer: APPROVED — coverage and dependency structure accepted after correcting the total-task wording
+- Rework: none
+- Changelog: expanded application delivery backlog to 46 total tasks
+- Risks: task sequencing must be followed through the existing harness
+- Commit subject: docs(backlog): expand application delivery tasks
+- Commit hash: pending

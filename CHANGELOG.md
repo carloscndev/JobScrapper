@@ -21,3 +21,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: gate evidence must be staged by the coordinator; scope enforcement includes deletions and both sides of renames
 - Commit subject: chore(repo): initialize project repository
 - Commit hash: 3eb86cab7dd0f988e91981870dd0f37830a462c7
+
+### BACKLOG-001 — Attempt 1
+
+- Expanded the backlog to 46 total executable dependency-tracked tasks spanning repository structure, data, profile, sources, scoring, Notion, API, frontend, operations, security, tests, and release readiness.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `.harness/backlog.json`, `docs/SDD.md`, `docs/DEVELOPMENT_LOG.md`, `CHANGELOG.md`
+- Commands: JSON validation, harness validation, topological dependency check, 25 unit tests, py_compile, shell syntax, and diff checks
+- Tester: PASS — 46 unique tasks, complete required fields, no unknown dependencies or cycles
+- Reviewer: APPROVED — backlog coverage and SDD structure accepted after correcting task count
+- Risks: task sequencing must be followed through the existing harness
+- Commit subject: docs(backlog): expand application delivery tasks
+- Commit hash: pending

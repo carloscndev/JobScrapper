@@ -30,7 +30,7 @@
       "title": "Add skill manifest, scripts, and documentation",
       "status": "pending",
       "depends_on": [
-        "BOOTSTRAP-001"
+        "BACKLOG-001"
       ],
       "commit": "chore(skills): add managed skill installation",
       "allowed_paths": [
@@ -46,6 +46,49 @@
         "Manifest pins checksums",
         "Install and check scripts are idempotent",
         "Risks are documented"
+      ]
+    },
+    {
+      "id": "BACKLOG-001",
+      "title": "Expand the delivery backlog into executable backend, frontend, operations, and test tasks",
+      "status": "approved",
+      "depends_on": [
+        "BOOTSTRAP-001"
+      ],
+      "commit": "docs(backlog): expand application delivery tasks",
+      "allowed_paths": [
+        ".harness/backlog.json",
+        "docs/SDD.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Every requirement from the product backlog has an executable task",
+        "Tasks define dependencies, allowed paths, acceptance criteria, and Conventional Commit subjects",
+        "The SDD references the canonical backlog"
+      ]
+    },
+    {
+      "id": "STRUCTURE-001",
+      "title": "Create the backend, frontend, docs, scripts, and tests monorepo structure",
+      "status": "blocked",
+      "depends_on": [
+        "BACKLOG-001"
+      ],
+      "commit": "chore(repo): scaffold application directories",
+      "allowed_paths": [
+        "backend/**",
+        "frontend/**",
+        "docs/**",
+        "scripts/**",
+        "tests/**",
+        "README.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "The backend, frontend, docs, scripts, and tests directories exist with tracked bootstrap files",
+        "The directory layout and ownership are documented for future tasks"
       ]
     },
     {
@@ -184,7 +227,743 @@
       ],
       "acceptance": [
         "Dashboard starts locally",
-        "Base view is tested"
+        "Base view is tested",
+        "The frontend uses a typed API client and has responsive desktop/tablet layout with explicit loading and error states"
+      ]
+    },
+    {
+      "id": "DATA-001",
+      "title": "Integrate SQLAlchemy, SQLite, and Alembic migrations",
+      "status": "blocked",
+      "depends_on": [
+        "BACKEND-001"
+      ],
+      "commit": "feat(data): add database foundation",
+      "allowed_paths": [
+        "backend/**",
+        "alembic/**",
+        "tests/backend/**",
+        "pyproject.toml",
+        "README.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Database URL is configurable",
+        "Migrations run locally",
+        "SQLite backup and restore are documented",
+        "SQLite is the local operational source of truth and its connection lifecycle is configurable"
+      ]
+    },
+    {
+      "id": "DATA-002",
+      "title": "Create job, profile, source, evaluation, execution, and sync models",
+      "status": "blocked",
+      "depends_on": [
+        "DATA-001"
+      ],
+      "commit": "feat(data): add core domain models",
+      "allowed_paths": [
+        "backend/**",
+        "alembic/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "All core entities are persisted",
+        "Indexes cover canonical URL, fingerprint, region, score, date, and status",
+        "Repositories and domain services are usable without importing or depending on FastAPI"
+      ]
+    },
+    {
+      "id": "PROFILE-001",
+      "title": "Implement CV upload, validation, extraction, and editable profile",
+      "status": "blocked",
+      "depends_on": [
+        "DATA-002"
+      ],
+      "commit": "feat(profile): add CV ingestion and profile extraction",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "PDF and DOCX uploads are validated",
+        "Unreadable or unsafe files are rejected",
+        "Extracted profile data is editable"
+      ]
+    },
+    {
+      "id": "PROFILE-002",
+      "title": "Add professional preferences, constraints, and profile versioning",
+      "status": "blocked",
+      "depends_on": [
+        "PROFILE-001"
+      ],
+      "commit": "feat(profile): add job preferences and versioning",
+      "allowed_paths": [
+        "backend/**",
+        "frontend/**",
+        "tests/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Skills, experience, seniority, languages, salary, locations, modality, work authorization, and relocation are configurable",
+        "Profile changes create a version and trigger reevaluation metadata"
+      ]
+    },
+    {
+      "id": "SOURCES-001",
+      "title": "Define source adapter contract and source configuration",
+      "status": "blocked",
+      "depends_on": [
+        "DATA-002"
+      ],
+      "commit": "feat(sources): define job source adapters",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Adapters share a normalized interface",
+        "Sources can be enabled, disabled, and configured"
+      ]
+    },
+    {
+      "id": "SOURCES-002",
+      "title": "Implement the first API/feed and two permitted career-page adapters",
+      "status": "blocked",
+      "depends_on": [
+        "SOURCES-001"
+      ],
+      "commit": "feat(sources): add initial job connectors",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "At least one API or feed and two career pages produce normalized jobs",
+        "Terms of use and robots.txt are respected"
+      ]
+    },
+    {
+      "id": "SOURCES-003",
+      "title": "Add source rate limits, retries, sanitization, and failure isolation",
+      "status": "blocked",
+      "depends_on": [
+        "SOURCES-002"
+      ],
+      "commit": "feat(sources): harden ingestion controls",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Timeouts, rate limits, retries, and identifiable user-agent are enforced",
+        "CAPTCHA/authentication/block evasion is absent",
+        "One source failure does not stop other sources",
+        "Scraped HTML is sanitized and external description/application URLs are validated before persistence or model processing"
+      ]
+    },
+    {
+      "id": "JOBS-001",
+      "title": "Normalize job fields, modality, salary, and geographic region",
+      "status": "blocked",
+      "depends_on": [
+        "SOURCES-002"
+      ],
+      "commit": "feat(jobs): normalize job records and regions",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Company, role, description, requirements, location, work mode, salary, currency, source, dates, description URL, and application URL are normalized when available",
+        "Jobs classify CDMX, Guadalajara, rest of Mexico, USA, or other",
+        "Remote, hybrid, onsite, and unknown modality are represented"
+      ]
+    },
+    {
+      "id": "JOBS-002",
+      "title": "Implement canonical URLs, fingerprints, deduplication, snapshots, and inactive history",
+      "status": "blocked",
+      "depends_on": [
+        "JOBS-001"
+      ],
+      "commit": "feat(jobs): deduplicate and version job changes",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Repeated jobs do not duplicate",
+        "Source provenance and best fields are retained",
+        "Description/link changes are detected and closed jobs remain historical"
+      ]
+    },
+    {
+      "id": "MATCH-001",
+      "title": "Implement deterministic compatibility scoring and explainable weights",
+      "status": "blocked",
+      "depends_on": [
+        "PROFILE-002",
+        "JOBS-001"
+      ],
+      "commit": "feat(match): add explainable compatibility scoring",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Score is 0-100 and reproducible",
+        "Required and desirable requirements are separated",
+        "Exclusions and score breakdown are persisted",
+        "Weights for skills, experience, seniority, language, location, modality, salary, and work authorization are configurable without code changes"
+      ]
+    },
+    {
+      "id": "MATCH-002",
+      "title": "Integrate Ollama for local summaries, gaps, and recommendations",
+      "status": "blocked",
+      "depends_on": [
+        "MATCH-001"
+      ],
+      "commit": "feat(match): add local Ollama analysis",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "README.md",
+        ".env.example",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Model selection is configurable for limited CPU/RAM",
+        "Structured output is validated",
+        "No profile secrets are sent outside the local model"
+      ]
+    },
+    {
+      "id": "MATCH-003",
+      "title": "Add Ollama timeout, retry, sequential processing, and deterministic fallback",
+      "status": "blocked",
+      "depends_on": [
+        "MATCH-002"
+      ],
+      "commit": "feat(match): add resilient local analysis fallback",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Ollama failures preserve deterministic score",
+        "Analysis is sequential and bounded",
+        "Profile, rule, model, or description changes trigger reevaluation"
+      ]
+    },
+    {
+      "id": "NOTION-001",
+      "title": "Configure Notion credentials, schema, and regional views",
+      "status": "blocked",
+      "depends_on": [
+        "JOBS-002"
+      ],
+      "commit": "feat(notion): define vacancy database integration",
+      "allowed_paths": [
+        "backend/**",
+        ".env.example",
+        "docs/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Secrets remain local",
+        "Schema maps all normalized job fields",
+        "Regional views cover CDMX, Guadalajara, Mexico, USA, and other"
+      ]
+    },
+    {
+      "id": "NOTION-002",
+      "title": "Implement idempotent Notion upsert, retries, and sync status",
+      "status": "blocked",
+      "depends_on": [
+        "NOTION-001",
+        "MATCH-003"
+      ],
+      "commit": "feat(notion): sync evaluated jobs idempotently",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Stable external identifiers prevent duplicates",
+        "Score, explanation, recommendations, links, and status are synchronized",
+        "Rate limits and partial failures are recorded"
+      ]
+    },
+    {
+      "id": "NOTION-003",
+      "title": "Add Notion reconciliation and repair workflow",
+      "status": "blocked",
+      "depends_on": [
+        "NOTION-002"
+      ],
+      "commit": "feat(notion): add synchronization reconciliation",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Differences between SQLite and Notion are detected",
+        "Repair is retryable and auditable"
+      ]
+    },
+    {
+      "id": "API-001",
+      "title": "Expose profile and preference API endpoints",
+      "status": "blocked",
+      "depends_on": [
+        "PROFILE-002",
+        "BACKEND-001"
+      ],
+      "commit": "feat(api): expose profile management endpoints",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Profile upload, read, update, and preference endpoints are documented",
+        "Validation errors use a consistent contract"
+      ]
+    },
+    {
+      "id": "API-002",
+      "title": "Expose paginated jobs, filters, details, and score history",
+      "status": "blocked",
+      "depends_on": [
+        "JOBS-002",
+        "MATCH-001"
+      ],
+      "commit": "feat(api): expose vacancy search endpoints",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "List supports pagination, filtering, and ordering",
+        "Detail exposes score breakdown, history, links, and recommendations"
+      ]
+    },
+    {
+      "id": "API-003",
+      "title": "Expose source, execution, health, metrics, and manual refresh endpoints",
+      "status": "blocked",
+      "depends_on": [
+        "SOURCES-003",
+        "NOTION-002"
+      ],
+      "commit": "feat(api): expose operations and health endpoints",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Sources and executions are observable",
+        "Manual refresh prevents concurrent runs",
+        "API, database, Ollama, and Notion health are reported",
+        "OpenAPI documents contracts and errors"
+      ]
+    },
+    {
+      "id": "FRONTEND-002",
+      "title": "Build profile and CV configuration screens",
+      "status": "blocked",
+      "depends_on": [
+        "FRONTEND-001",
+        "API-001"
+      ],
+      "commit": "feat(web): add profile configuration screens",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "CV extraction can be reviewed and corrected",
+        "Preferences, constraints, weights, version, and reevaluation warning are visible"
+      ]
+    },
+    {
+      "id": "FRONTEND-003",
+      "title": "Build paginated vacancy list, filters, sorting, and status indicators",
+      "status": "blocked",
+      "depends_on": [
+        "FRONTEND-001",
+        "API-002"
+      ],
+      "commit": "feat(web): add vacancy search dashboard",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Region, modality, score, company, source, date, and status filters work",
+        "New, changed, inactive, and pending jobs are distinguishable"
+      ]
+    },
+    {
+      "id": "FRONTEND-004",
+      "title": "Build vacancy detail, compatibility explanation, and safe external links",
+      "status": "blocked",
+      "depends_on": [
+        "FRONTEND-003",
+        "MATCH-003"
+      ],
+      "commit": "feat(web): add vacancy detail and recommendations",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Description, salary, location, modality, links, score, gaps, and recommendations are shown",
+        "External links open safely"
+      ]
+    },
+    {
+      "id": "FRONTEND-005",
+      "title": "Build operations, source, execution, health, and empty-state screens",
+      "status": "blocked",
+      "depends_on": [
+        "FRONTEND-001",
+        "API-003"
+      ],
+      "commit": "feat(web): add operations dashboard",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Sources can be enabled or disabled",
+        "Runs, errors, health, last update, manual refresh, and high-match indicators are visible",
+        "Keyboard and semantic accessibility requirements are met across the dashboard, including forms, lists, details, and operations views",
+        "Responsive behavior, loading states, error states, and empty states are documented and tested"
+      ]
+    },
+    {
+      "id": "OPS-001",
+      "title": "Create Docker images, Compose volumes, and local startup documentation",
+      "status": "blocked",
+      "depends_on": [
+        "BACKEND-001",
+        "FRONTEND-001"
+      ],
+      "commit": "build(ops): add local container orchestration",
+      "allowed_paths": [
+        "Dockerfile*",
+        "docker-compose.yml",
+        "backend/**",
+        "frontend/**",
+        "README.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Backend and frontend run with Docker Compose",
+        "Persistent volumes are configured",
+        "Ollama can be local or external"
+      ]
+    },
+    {
+      "id": "OPS-002",
+      "title": "Create the single-command ingestion and evaluation pipeline",
+      "status": "blocked",
+      "depends_on": [
+        "SOURCES-003",
+        "MATCH-003",
+        "NOTION-002"
+      ],
+      "commit": "feat(ops): add end-to-end job pipeline command",
+      "allowed_paths": [
+        "backend/**",
+        "scripts/**",
+        "tests/backend/**",
+        "README.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "One command ingests, normalizes, scores, analyzes, and syncs jobs",
+        "Partial failures are reported without losing successful work"
+      ]
+    },
+    {
+      "id": "OPS-003",
+      "title": "Configure daily cron scheduling and process locking",
+      "status": "blocked",
+      "depends_on": [
+        "OPS-002"
+      ],
+      "commit": "feat(ops): add daily scheduler and run locking",
+      "allowed_paths": [
+        "scripts/**",
+        "backend/**",
+        "tests/backend/**",
+        "README.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Daily execution is documented",
+        "Concurrent runs are prevented",
+        "Manual and scheduled runs share the same lock"
+      ]
+    },
+    {
+      "id": "OPS-004",
+      "title": "Add structured logs, rotation, secret redaction, and resource limits",
+      "status": "blocked",
+      "depends_on": [
+        "OPS-002"
+      ],
+      "commit": "feat(ops): add observable resource-bounded execution",
+      "allowed_paths": [
+        "backend/**",
+        "scripts/**",
+        "docker-compose.yml",
+        "tests/backend/**",
+        "README.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Logs rotate and redact secrets",
+        "CPU, memory, and concurrency limits are configurable",
+        "Execution metrics are persisted"
+      ]
+    },
+    {
+      "id": "OPS-005",
+      "title": "Document restart, backup, restore, update, and failure recovery",
+      "status": "blocked",
+      "depends_on": [
+        "OPS-003",
+        "OPS-004"
+      ],
+      "commit": "docs(ops): document recovery and maintenance",
+      "allowed_paths": [
+        "README.md",
+        "docs/**",
+        "scripts/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Restart after reboot is documented",
+        "Backup, restore, update, and recovery procedures are tested or documented"
+      ]
+    },
+    {
+      "id": "TEST-001",
+      "title": "Add parsing, normalization, region, modality, and deduplication fixtures",
+      "status": "blocked",
+      "depends_on": [
+        "JOBS-002"
+      ],
+      "commit": "test(jobs): cover parsing normalization and deduplication",
+      "allowed_paths": [
+        "tests/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Representative and ambiguous fixtures are covered",
+        "Duplicate and changed jobs behave deterministically"
+      ]
+    },
+    {
+      "id": "TEST-002",
+      "title": "Add score, bounds, reproducibility, and Ollama fallback tests",
+      "status": "blocked",
+      "depends_on": [
+        "MATCH-003"
+      ],
+      "commit": "test(match): cover scoring and local model fallback",
+      "allowed_paths": [
+        "tests/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Scores and exclusions are reproducible",
+        "Model timeout and unavailable-model fallback are covered"
+      ]
+    },
+    {
+      "id": "TEST-003",
+      "title": "Add source isolation, Notion idempotency, rate-limit, and reconciliation tests",
+      "status": "blocked",
+      "depends_on": [
+        "NOTION-003",
+        "SOURCES-003"
+      ],
+      "commit": "test(integration): cover source and Notion synchronization",
+      "allowed_paths": [
+        "tests/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "One failed source does not stop the run",
+        "Notion sync is idempotent and retry-safe",
+        "Reconciliation repairs differences"
+      ]
+    },
+    {
+      "id": "TEST-004",
+      "title": "Add API contract and React component tests",
+      "status": "blocked",
+      "depends_on": [
+        "API-003",
+        "FRONTEND-005"
+      ],
+      "commit": "test(app): cover API contracts and UI components",
+      "allowed_paths": [
+        "tests/**",
+        "frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "API success and error contracts are covered",
+        "Profile, list, detail, and operations components are covered"
+      ]
+    },
+    {
+      "id": "TEST-005",
+      "title": "Add end-to-end ingestion-to-dashboard Playwright test",
+      "status": "blocked",
+      "depends_on": [
+        "FRONTEND-004",
+        "OPS-002"
+      ],
+      "commit": "test(e2e): cover ingestion to dashboard flow",
+      "allowed_paths": [
+        "tests/**",
+        "frontend/**",
+        "scripts/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "A fixture job flows from ingestion through score to dashboard detail",
+        "Server lifecycle is automated and browser logs are captured"
+      ]
+    },
+    {
+      "id": "TEST-006",
+      "title": "Verify HTML, URL, file-upload, secret, and sensitive-data security",
+      "status": "blocked",
+      "depends_on": [
+        "API-003",
+        "FRONTEND-005"
+      ],
+      "commit": "test(security): cover input and secret handling",
+      "allowed_paths": [
+        "tests/**",
+        "backend/**",
+        "frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Unsafe HTML and URLs are sanitized or rejected",
+        "Unsafe files are rejected",
+        "Logs, API, frontend, and model calls do not expose secrets"
+      ]
+    },
+    {
+      "id": "TEST-007",
+      "title": "Run seven-day scheduler stability and recovery validation",
+      "status": "blocked",
+      "depends_on": [
+        "OPS-005",
+        "TEST-003",
+        "TEST-005",
+        "TEST-006"
+      ],
+      "commit": "test(ops): validate scheduler stability and recovery",
+      "allowed_paths": [
+        "tests/**",
+        "scripts/**",
+        "docs/**",
+        "README.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Seven daily runs complete without intervention",
+        "Locking, retries, resource bounds, and recovery behavior are recorded"
+      ]
+    },
+    {
+      "id": "RELEASE-001",
+      "title": "Finalize documentation, release checklist, and version 0.1.0",
+      "status": "blocked",
+      "depends_on": [
+        "TEST-007"
+      ],
+      "commit": "docs(release): finalize version 0.1.0 readiness",
+      "allowed_paths": [
+        "README.md",
+        "docs/**",
+        "CHANGELOG.md",
+        ".env.example",
+        "tests/**"
+      ],
+      "acceptance": [
+        "Installation and operation docs are complete",
+        "Final SDD and acceptance checklist are complete",
+        "CHANGELOG records version 0.1.0"
       ]
     }
   ]
