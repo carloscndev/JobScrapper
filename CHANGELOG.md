@@ -117,3 +117,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: backlog JSON is authoritative for exact sequencing
 - Commit subject: docs(sdd): add product requirements and backlog
 - Commit hash: f023dfd3602a9124c23f6c174171920727fe6d9e
+
+### BACKEND-001 — Attempt 3
+
+- Added FastAPI factory, environment-backed settings, `/health`, package metadata, and stdlib backend tests.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/**`, `tests/backend/test_health.py`, `README.md`
+- Commands: backend tests `5 pass, 1 skip`, 35 harness tests, Python/Shell/JSON/harness/diff checks
+- Tester: PASS — runtime health test is explicitly skipped until FastAPI is installed
+- Reviewer: APPROVED — production and test scope are correct
+- Risks: dependency installation is required for runtime route coverage
+- Commit subject: feat(api): bootstrap FastAPI service
+- Commit hash: pending

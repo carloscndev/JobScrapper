@@ -52,6 +52,20 @@ Use `scripts/check-skills.sh` for read-only verification. `scripts/install-skill
 - `docs/DEVELOPMENT_LOG.md`: coordinator-owned incremental task history.
 - `AGENTS.md`: mandatory multi-agent protocol.
 
+## Start the backend
+
+The initial FastAPI service can be installed and run locally with the commands
+below (see `backend/README.md` for environment options):
+
+```sh
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e backend
+cd backend && python -m app
+```
+
+Check liveness at `http://127.0.0.1:8000/health`.
+
 The SDD defines the user story, functional and non-functional requirements, runtime
 flow, API/data contracts, security boundaries, Notion mapping, and the readable
 backlog phase index. Operational procedures for cron, backup/restore, and recovery

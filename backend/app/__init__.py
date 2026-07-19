@@ -1,0 +1,5 @@
+"""JobScrapper HTTP service package."""
+
+from .factory import create_app
+
+__all__ = ["create_app"]

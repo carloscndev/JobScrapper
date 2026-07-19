@@ -160,3 +160,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: `.harness/backlog.json` remains authoritative for exact dependencies
 - Commit subject: docs(sdd): add product requirements and backlog
 - Commit hash: f023dfd3602a9124c23f6c174171920727fe6d9e
+
+### BACKEND-001 — Attempt 3
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: FastAPI service bootstrap, environment settings, factory, `/health`, startup metadata, and health tests; PASS with explicit runtime dependency skip
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/**`, `tests/backend/test_health.py`, `README.md`
+- Commands: backend unittest `5 pass, 1 skip`; harness 35 tests; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — settings and static backend checks pass; `/health` is explicitly skipped because FastAPI is not installed
+- Reviewer: APPROVED — configuration fix, stdlib test runner, scope, and dependency limitation verified
+- Rework: attempt 1 fixed dataclass-slots default bug; attempt 2 converted pytest test to stdlib unittest and documented FastAPI skip
+- Changelog: FastAPI bootstrap and health endpoint added
+- Risks: install backend dependencies before exercising `/health` runtime test
+- Commit subject: feat(api): bootstrap FastAPI service
+- Commit hash: pending
