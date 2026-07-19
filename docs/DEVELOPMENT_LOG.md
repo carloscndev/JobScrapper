@@ -39,4 +39,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: Unreleased bootstrap entries added
 - Risks: `notion-api` remains high risk and requires coordinator acknowledgement before use
 - Commit subject: chore(repo): initialize project repository
-- Commit hash: pending
+- Commit hash: 3eb86cab7dd0f988e91981870dd0f37830a462c7

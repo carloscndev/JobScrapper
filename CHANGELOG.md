@@ -20,4 +20,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — all four review cycles resolved
 - Risks: gate evidence must be staged by the coordinator; scope enforcement includes deletions and both sides of renames
 - Commit subject: chore(repo): initialize project repository
-- Commit hash: pending
+- Commit hash: 3eb86cab7dd0f988e91981870dd0f37830a462c7

@@ -4,7 +4,7 @@
     {
       "id": "BOOTSTRAP-001",
       "title": "Initialize Git, main branch, and minimal files",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [],
       "commit": "chore(repo): initialize project repository",
       "allowed_paths": [
@@ -22,12 +22,13 @@
       "acceptance": [
         "Repository uses main",
         "Minimal project files exist"
-      ]
+      ],
+      "commit_hash": "3eb86ca"
     },
     {
       "id": "SKILLS-001",
       "title": "Add skill manifest, scripts, and documentation",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "BOOTSTRAP-001"
       ],

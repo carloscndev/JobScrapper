@@ -1,26 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "BOOTSTRAP-001",
-  "state": "approved",
-  "attempt": 1,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "Implemented bootstrap, managed skills, agent roles, lifecycle CLI, SDD, and production rework fixes",
-      "attempt": 1
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "25 unittest cases pass; skills, syntax, JSON, permissions, and diff checks pass",
-      "attempt": 1
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "APPROVED after four review cycles; all staged-content, scope, commit, and skill findings closed",
-      "attempt": 1
-    }
-  },
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
   "rejections": [],
-  "commit": null
+  "commit": "3eb86cab7dd0f988e91981870dd0f37830a462c7"
 }
