@@ -190,3 +190,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: install npm dependencies before runtime/build verification
 - Commit subject: feat(web): bootstrap React dashboard
 - Commit hash: be8cda8c41671d7fe8587984abc2092383b1f954
+
+### DATA-001 — Attempt 1
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: SQLAlchemy/SQLite/Alembic foundation, configurable database URL, session lifecycle, migration checkpoint, and backup/restore docs; PASS with explicit dependency skips
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/database.py`, `backend/app/config.py`, `backend/pyproject.toml`, `alembic.ini`, `alembic/**`, `tests/backend/test_database.py`, `backend/README.md`
+- Commands: 50 total tests with 3 explicit skips; JSON; py_compile; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — five database tests, three dependency skips, and all repository gates pass
+- Reviewer: APPROVED — engine/session lifecycle, Alembic checkpoint, docs, and scope verified
+- Rework: none
+- Changelog: database foundation added
+- Risks: install SQLAlchemy/Alembic before exercising live session/migration tests
+- Commit subject: feat(data): add database foundation
+- Commit hash: pending

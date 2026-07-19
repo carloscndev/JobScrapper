@@ -14,6 +14,8 @@ class Settings:
     environment: str = "development"
     host: str = "127.0.0.1"
     port: int = 8000
+    database_url: str = "sqlite:///./data/jobscrapper.db"
+    database_echo: bool = False
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -32,4 +34,17 @@ class Settings:
             environment=os.getenv("JOBSCRAPPER_ENV", defaults.environment),
             host=os.getenv("JOBSCRAPPER_HOST", defaults.host),
             port=port,
+            database_url=os.getenv("DATABASE_URL", defaults.database_url),
+            database_echo=_parse_bool(os.getenv("JOBSCRAPPER_DB_ECHO", str(defaults.database_echo))),
         )
+
+
+def _parse_bool(value: str) -> bool:
+    """Parse an explicit boolean environment value."""
+
+    normalized = value.strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    raise ValueError("JOBSCRAPPER_DB_ECHO must be a boolean")

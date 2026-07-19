@@ -141,3 +141,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: npm registry DNS prevented installing TypeScript/Vite for build execution
 - Commit subject: feat(web): bootstrap React dashboard
 - Commit hash: be8cda8c41671d7fe8587984abc2092383b1f954
+
+### DATA-001 — Attempt 1
+
+- Added configurable SQLAlchemy/SQLite engine and sessions, Alembic configuration/checkpoint, and backup/restore documentation.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: backend database configuration, Alembic files, backend database tests, and docs
+- Commands: 50 tests total with 3 dependency skips; JSON/Python/Shell/harness/diff checks
+- Tester: PASS — database config/static tests pass with explicit SQLAlchemy skips
+- Reviewer: APPROVED — scope and lifecycle behavior verified
+- Risks: SQLAlchemy/Alembic runtime tests require dependency installation
+- Commit subject: feat(data): add database foundation
+- Commit hash: pending
