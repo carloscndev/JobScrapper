@@ -271,7 +271,7 @@
     {
       "id": "DATA-002",
       "title": "Create job, profile, source, evaluation, execution, and sync models",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "DATA-001"
       ],
@@ -287,12 +287,13 @@
         "All core entities are persisted",
         "Indexes cover canonical URL, fingerprint, region, score, date, and status",
         "Repositories and domain services are usable without importing or depending on FastAPI"
-      ]
+      ],
+      "commit_hash": "a5661fd"
     },
     {
       "id": "PROFILE-001",
       "title": "Implement CV upload, validation, extraction, and editable profile",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "DATA-002"
       ],
@@ -334,7 +335,7 @@
     {
       "id": "SOURCES-001",
       "title": "Define source adapter contract and source configuration",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "DATA-002"
       ],

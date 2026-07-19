@@ -164,4 +164,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — explicit migration operations and scope verified
 - Risks: live SQLAlchemy/Alembic execution requires dependency installation
 - Commit subject: feat(data): add core domain models
-- Commit hash: pending
+- Commit hash: a5661fdb63aa0f286fa7b01626e744269fc607df

@@ -219,4 +219,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: domain models and repositories added
 - Risks: install SQLAlchemy/Alembic before live migration tests
 - Commit subject: feat(data): add core domain models
-- Commit hash: pending
+- Commit hash: a5661fdb63aa0f286fa7b01626e744269fc607df
