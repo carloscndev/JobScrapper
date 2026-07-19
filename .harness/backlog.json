@@ -137,7 +137,7 @@
     {
       "id": "HARNESS-002",
       "title": "Implement task state machine",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "HARNESS-001"
       ],
@@ -156,12 +156,13 @@
         "CLI enforces ordered gates",
         "Only one task is active",
         "Completion requires a commit hash"
-      ]
+      ],
+      "commit_hash": "22af84d"
     },
     {
       "id": "HARNESS-003",
       "title": "Add harness unit tests",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "HARNESS-002"
       ],

@@ -92,4 +92,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation is within scope
 - Risks: completion requires the current HEAD and configured Conventional Commit subject
 - Commit subject: feat(harness): add task lifecycle management
-- Commit hash: pending
+- Commit hash: 22af84d7bb3f19736bc44875b49eb89a62afe647

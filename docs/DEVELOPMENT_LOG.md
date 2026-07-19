@@ -129,4 +129,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: state machine guards strengthened
 - Risks: coordinator must provide a real HEAD commit with the configured subject
 - Commit subject: feat(harness): add task lifecycle management
-- Commit hash: pending
+- Commit hash: 22af84d7bb3f19736bc44875b49eb89a62afe647
