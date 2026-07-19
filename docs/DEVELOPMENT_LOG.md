@@ -174,4 +174,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: FastAPI bootstrap and health endpoint added
 - Risks: install backend dependencies before exercising `/health` runtime test
 - Commit subject: feat(api): bootstrap FastAPI service
-- Commit hash: pending
+- Commit hash: 920d796d30baf3516423840fb89c5efea63301dc

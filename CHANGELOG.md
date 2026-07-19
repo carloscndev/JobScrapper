@@ -128,4 +128,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — production and test scope are correct
 - Risks: dependency installation is required for runtime route coverage
 - Commit subject: feat(api): bootstrap FastAPI service
-- Commit hash: pending
+- Commit hash: 920d796d30baf3516423840fb89c5efea63301dc

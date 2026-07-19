@@ -201,7 +201,7 @@
     {
       "id": "BACKEND-001",
       "title": "Bootstrap FastAPI service",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "DOCS-001"
       ],
@@ -217,12 +217,13 @@
       "acceptance": [
         "Service starts locally",
         "Health endpoint is tested"
-      ]
+      ],
+      "commit_hash": "920d796"
     },
     {
       "id": "FRONTEND-001",
       "title": "Bootstrap React dashboard",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "BACKEND-001"
       ],
@@ -243,7 +244,7 @@
     {
       "id": "DATA-001",
       "title": "Integrate SQLAlchemy, SQLite, and Alembic migrations",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "BACKEND-001"
       ],
