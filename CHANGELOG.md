@@ -56,4 +56,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — installation and documentation verified
 - Risks: `notion-api` remains marked high risk
 - Commit subject: chore(skills): install project agent capabilities
-- Commit hash: pending
+- Commit hash: eb086cbded5916763340a2871367a565b7b9d67c

@@ -96,7 +96,7 @@
     {
       "id": "SKILLS-002",
       "title": "Install and verify approved skills",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "SKILLS-001"
       ],
@@ -110,12 +110,13 @@
       "acceptance": [
         "Every approved skill is installed",
         "Checksums match the manifest"
-      ]
+      ],
+      "commit_hash": "eb086cb"
     },
     {
       "id": "HARNESS-001",
       "title": "Define coordinator and three-agent workflow",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "SKILLS-002"
       ],
