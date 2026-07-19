@@ -416,6 +416,25 @@ class HarnessTestCase(unittest.TestCase):
         self.assertEqual(before_backlog, self.backlog_path.read_bytes())
         self.assertEqual(before_current, self.current_path.read_bytes())
 
+    def test_status_reports_active_stage_and_evidence_without_mutating_state(self) -> None:
+        self.start()
+        self.record("coder", evidence="implementation complete")
+        before_backlog = self.backlog_path.read_bytes()
+        before_current = self.current_path.read_bytes()
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            harness.command_status(self.args())
+        self.assertIn("ONE: state=coding attempt=1 evidence=coder", output.getvalue())
+        self.assertEqual(before_backlog, self.backlog_path.read_bytes())
+        self.assertEqual(before_current, self.current_path.read_bytes())
+
+    def test_invalid_transition_cannot_skip_tester_gate(self) -> None:
+        self.start()
+        self.record("coder")
+        with self.assertRaisesRegex(harness.HarnessError, "Reviewer handoff requires testing"):
+            harness.command_handoff(self.args(role="reviewer"))
+        self.assertEqual("coding", self.current()["state"])
+
 
 class SkillVerificationTests(unittest.TestCase):
     def setUp(self) -> None:

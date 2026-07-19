@@ -93,3 +93,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: completion requires the current HEAD and configured Conventional Commit subject
 - Commit subject: feat(harness): add task lifecycle management
 - Commit hash: 22af84d7bb3f19736bc44875b49eb89a62afe647
+
+### HARNESS-003 — Attempt 1
+
+- Added tests for read-only active status and invalid transitions that attempt to skip the tester gate.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `tests/harness/test_harness.py`
+- Commands: 35 unit tests and Python/Shell/JSON/harness/diff checks
+- Tester: PASS — all lifecycle coverage passes
+- Reviewer: APPROVED — tests are scoped and meaningful
+- Risks: pytest is unavailable; unittest remains the configured runner
+- Commit subject: test(harness): cover task lifecycle gates
+- Commit hash: pending

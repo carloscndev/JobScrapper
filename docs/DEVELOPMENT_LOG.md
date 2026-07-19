@@ -130,3 +130,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: coordinator must provide a real HEAD commit with the configured subject
 - Commit subject: feat(harness): add task lifecycle management
 - Commit hash: 22af84d7bb3f19736bc44875b49eb89a62afe647
+
+### HARNESS-003 — Attempt 1
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: unit coverage for valid/invalid transitions, gates, dependency unlocks, and read-only status; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `tests/harness/test_harness.py`
+- Commands: `python3 tests/harness/test_harness.py -v`; py_compile; shell syntax; JSON; harness validation; `git diff --check`
+- Tester: PASS — 35 tests including active status byte preservation and tester-gate enforcement
+- Reviewer: APPROVED — test scope and assertions accepted after adding traceability
+- Rework: added structured development and changelog entries
+- Changelog: lifecycle gate coverage expanded
+- Risks: unittest is the configured test runner; pytest is not required
+- Commit subject: test(harness): cover task lifecycle gates
+- Commit hash: pending
