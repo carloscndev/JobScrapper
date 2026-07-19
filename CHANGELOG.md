@@ -153,3 +153,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: SQLAlchemy/Alembic runtime tests require dependency installation
 - Commit subject: feat(data): add database foundation
 - Commit hash: 8779e82ac5e8ba4e44ef493d4721da66aa6f2555
+
+### DATA-002 — Attempt 2
+
+- Added profile, preference, source, job, snapshot, evaluation, execution, and Notion sync models with repositories/services independent of FastAPI.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: domain models, repositories, services, Alembic metadata/migration, and model tests
+- Commands: 56 tests with 4 dependency skips; JSON/Python/Shell/skills/harness/diff checks
+- Tester: PASS — migration safety and domain contracts covered
+- Reviewer: APPROVED — explicit migration operations and scope verified
+- Risks: live SQLAlchemy/Alembic execution requires dependency installation
+- Commit subject: feat(data): add core domain models
+- Commit hash: pending

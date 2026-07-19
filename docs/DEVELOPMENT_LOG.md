@@ -205,3 +205,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: install SQLAlchemy/Alembic before exercising live session/migration tests
 - Commit subject: feat(data): add database foundation
 - Commit hash: 8779e82ac5e8ba4e44ef493d4721da66aa6f2555
+
+### DATA-002 — Attempt 2
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: nine domain entities, constraints/indexes, repositories/services decoupled from FastAPI, and fixed Alembic domain migration; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/models.py`, `backend/app/repositories.py`, `backend/app/services.py`, `alembic/env.py`, `alembic/versions/0002_domain_models.py`, `tests/backend/test_models.py`
+- Commands: 56 tests with 4 dependency skips; JSON; py_compile; shell syntax; skills; harness validation; `git diff --check`
+- Tester: PASS — domain contracts and explicit migration regression pass
+- Reviewer: APPROVED — fixed migration operations, model constraints/indexes, decoupling, and scope verified
+- Rework: attempt 1 used metadata create/drop all; attempt 2 uses explicit fixed revision operations
+- Changelog: domain models and repositories added
+- Risks: install SQLAlchemy/Alembic before live migration tests
+- Commit subject: feat(data): add core domain models
+- Commit hash: pending
