@@ -80,6 +80,7 @@
       "commit": "chore(repo): scaffold application directories",
       "allowed_paths": [
         "backend/**",
+        "alembic/**",
         "frontend/**",
         "docs/**",
         "scripts/**",
@@ -316,13 +317,14 @@
     {
       "id": "PROFILE-002",
       "title": "Add professional preferences, constraints, and profile versioning",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "PROFILE-001"
       ],
       "commit": "feat(profile): add job preferences and versioning",
       "allowed_paths": [
         "backend/**",
+        "alembic/**",
         "frontend/**",
         "tests/**",
         "docs/DEVELOPMENT_LOG.md",
@@ -331,7 +333,8 @@
       "acceptance": [
         "Skills, experience, seniority, languages, salary, locations, modality, work authorization, and relocation are configurable",
         "Profile changes create a version and trigger reevaluation metadata"
-      ]
+      ],
+      "commit_hash": "645cade"
     },
     {
       "id": "SOURCES-001",
@@ -563,7 +566,7 @@
     {
       "id": "API-001",
       "title": "Expose profile and preference API endpoints",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "PROFILE-002",
         "BACKEND-001"

@@ -188,4 +188,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation is within scope
 - Risks: live preference persistence tests require SQLAlchemy installation
 - Commit subject: feat(profile): add job preferences and versioning
-- Commit hash: pending
+- Commit hash: 645cade3bc6d4c162b2b2ebde4fc93a132359a52
