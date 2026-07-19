@@ -4,6 +4,18 @@ Local, explainable job discovery for Mexico and the United States, with local-mo
 
 The repository currently contains the delivery harness and SDD. Product implementation starts only after the harness passes coder, tester, reviewer, and coordinator gates.
 
+## Repository layout
+
+- `backend/`: FastAPI service, domain logic, persistence, and workers.
+- `frontend/`: React/TypeScript dashboard.
+- `docs/`: SDD, skills policy, and coordinator-owned development history.
+- `scripts/`: harness and operational utilities.
+- `tests/`: harness, unit, integration, and end-to-end tests.
+
+Each subsystem README records its ownership boundaries. New tasks should keep
+production code in `backend/` or `frontend/`, tests in `tests/`, and orchestration
+in `scripts/`.
+
 ## Harness quick start
 
 ```sh

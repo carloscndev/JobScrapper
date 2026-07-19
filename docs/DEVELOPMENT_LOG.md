@@ -85,3 +85,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: `notion-api` remains high risk and requires coordinator acknowledgement before use
 - Commit subject: chore(skills): install project agent capabilities
 - Commit hash: eb086cbded5916763340a2871367a565b7b9d67c
+
+### STRUCTURE-001 — Attempt 1
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: backend, frontend, docs, scripts, and tests structure documented without premature implementation decisions; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/README.md`, `frontend/README.md`, `scripts/README.md`, `tests/README.md`, `README.md`
+- Commands: 28 unit tests; skill checks; py_compile; shell syntax; JSON validation; harness validation; artifact scan; `git diff --check`
+- Tester: PASS — structure, ownership, READMEs, and no generated artifacts verified
+- Reviewer: APPROVED — scope and structure accepted after adding required traceability
+- Rework: added missing structured development and changelog entries
+- Changelog: repository layout documented
+- Risks: implementation tasks must add code only within their declared paths
+- Commit subject: chore(repo): scaffold application directories
+- Commit hash: pending

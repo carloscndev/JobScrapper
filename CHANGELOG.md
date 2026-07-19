@@ -57,3 +57,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: `notion-api` remains marked high risk
 - Commit subject: chore(skills): install project agent capabilities
 - Commit hash: eb086cbded5916763340a2871367a565b7b9d67c
+
+### STRUCTURE-001 — Attempt 1
+
+- Added documented backend, frontend, scripts, and tests directories without premature framework code.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: repository READMEs and root layout documentation
+- Commands: 28 tests, skills, Python/Shell, JSON, harness, artifact, and diff checks
+- Tester: PASS — structure and artifact checks pass
+- Reviewer: APPROVED — scope and ownership verified
+- Risks: implementation tasks remain responsible for their own dependencies and allowed paths
+- Commit subject: chore(repo): scaffold application directories
+- Commit hash: pending
