@@ -45,3 +45,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: `notion-api` remains marked high risk
 - Commit subject: chore(skills): add managed skill installation
 - Commit hash: 1ad41f9f252283a94844d91c708b51a2097eaffc
+
+### SKILLS-002 — Attempt 1
+
+- Verified all four installed skills against the manifest's pinned SHA-256 values; no reinstall was needed.
+- Skills: coordinator `skill-installer`; coder none; tester none; reviewer none
+- Files: `docs/SKILLS.md`
+- Commands: skill checker, independent checksum comparison, 28 tests, JSON/Python/harness/diff checks
+- Tester: PASS — all verification gates passed
+- Reviewer: APPROVED — installation and documentation verified
+- Risks: `notion-api` remains marked high risk
+- Commit subject: chore(skills): install project agent capabilities
+- Commit hash: pending

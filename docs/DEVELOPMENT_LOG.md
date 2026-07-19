@@ -70,3 +70,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: `notion-api` remains high risk and requires coordinator acknowledgement before use
 - Commit subject: chore(skills): add managed skill installation
 - Commit hash: 1ad41f9f252283a94844d91c708b51a2097eaffc
+
+### SKILLS-002 — Attempt 1
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: four approved skills installed and SHA-256 checksums match the pinned manifest; PASS
+- Skills: coordinator `skill-installer`; coder none; tester none; reviewer none
+- Files: `docs/SKILLS.md`
+- Commands: `scripts/check-skills.sh`; independent SHA-256 comparison; JSON validation; `python3 -m unittest discover -s tests/harness -p 'test_*.py'`; `python3 -m py_compile scripts/harness.py`; `python3 scripts/harness.py validate`; `git diff --check`
+- Tester: PASS — four skills, 28 tests, authorization checks, JSON, Python, harness, and diff checks pass
+- Reviewer: APPROVED — installed paths, checksums, documentation, and no-reinstall decision verified
+- Rework: added missing structured coordinator traceability section
+- Changelog: skill installation verification recorded
+- Risks: `notion-api` remains high risk and requires coordinator acknowledgement before use
+- Commit subject: chore(skills): install project agent capabilities
+- Commit hash: pending
