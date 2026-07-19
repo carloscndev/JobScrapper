@@ -69,4 +69,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: skill governance hardened
 - Risks: `notion-api` remains high risk and requires coordinator acknowledgement before use
 - Commit subject: chore(skills): add managed skill installation
-- Commit hash: pending
+- Commit hash: 1ad41f9f252283a94844d91c708b51a2097eaffc

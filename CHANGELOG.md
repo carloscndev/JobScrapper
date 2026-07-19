@@ -44,4 +44,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — no out-of-scope changes
 - Risks: `notion-api` remains marked high risk
 - Commit subject: chore(skills): add managed skill installation
-- Commit hash: pending
+- Commit hash: 1ad41f9f252283a94844d91c708b51a2097eaffc

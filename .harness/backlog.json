@@ -28,7 +28,7 @@
     {
       "id": "SKILLS-001",
       "title": "Add skill manifest, scripts, and documentation",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "BACKLOG-001"
       ],
@@ -46,7 +46,8 @@
         "Manifest pins checksums",
         "Install and check scripts are idempotent",
         "Risks are documented"
-      ]
+      ],
+      "commit_hash": "1ad41f9"
     },
     {
       "id": "BACKLOG-001",
@@ -95,7 +96,7 @@
     {
       "id": "SKILLS-002",
       "title": "Install and verify approved skills",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "SKILLS-001"
       ],
