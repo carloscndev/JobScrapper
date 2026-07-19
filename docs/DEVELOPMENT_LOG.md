@@ -235,3 +235,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: pypdf/python-docx runtime coverage requires dependency installation
 - Commit subject: feat(profile): add CV ingestion and profile extraction
 - Commit hash: f2af923f2c7bbd79470f965186d5b0017fe48089
+
+### PROFILE-002 — Attempt 1
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: preferences, constraints, authorization/relocation fields, versioning, superseding, and reevaluation metadata; PASS with dependency skips
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/models.py`, `backend/app/repositories.py`, `backend/app/services.py`, `alembic/versions/0003_profile_preferences.py`, `tests/backend/test_preferences.py`, `backend/README.md`
+- Commands: 72 tests with 7 skips; JSON; py_compile; shell syntax; skills; harness validation; `git diff --check`
+- Tester: PASS — fields, version increment, superseding, reevaluation guard, and migration covered
+- Reviewer: APPROVED — implementation and scope verified after adding traceability
+- Rework: none
+- Changelog: profile preferences and versioning added
+- Risks: runtime SQLAlchemy tests require dependency installation
+- Commit subject: feat(profile): add job preferences and versioning
+- Commit hash: pending

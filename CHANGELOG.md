@@ -177,3 +177,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: optional document parser dependencies require installation for full runtime coverage
 - Commit subject: feat(profile): add CV ingestion and profile extraction
 - Commit hash: f2af923f2c7bbd79470f965186d5b0017fe48089
+
+### PROFILE-002 — Attempt 1
+
+- Added configurable professional preferences, constraints, versioned superseding, and reevaluation metadata.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: profile models/repositories/services, migration 0003, backend docs, and preference tests
+- Commands: 72 tests with 7 skips; JSON/Python/Shell/skills/harness/diff checks
+- Tester: PASS — preference and reevaluation contracts pass
+- Reviewer: APPROVED — implementation is within scope
+- Risks: live preference persistence tests require SQLAlchemy installation
+- Commit subject: feat(profile): add job preferences and versioning
+- Commit hash: pending

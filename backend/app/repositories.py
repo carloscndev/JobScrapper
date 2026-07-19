@@ -12,6 +12,14 @@ class ProfileRepository:
         self.session.add(profile); self.session.flush(); return profile
     def current_preferences(self, profile_id: int) -> ProfilePreference | None:
         return self.session.scalar(select(ProfilePreference).where(ProfilePreference.profile_id == profile_id, ProfilePreference.is_current.is_(True)))
+    def add_preferences(self, preferences: ProfilePreference) -> ProfilePreference:
+        """Persist a preference revision; callers manage superseding revisions."""
+        self.session.add(preferences); self.session.flush(); return preferences
+    def supersede_preferences(self, profile_id: int) -> None:
+        current = self.current_preferences(profile_id)
+        if current is not None:
+            current.is_current = False
+            self.session.flush()
 
 class SourceRepository:
     def __init__(self, session: Session) -> None: self.session = session

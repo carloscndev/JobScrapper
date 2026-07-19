@@ -77,6 +77,7 @@ size are rejected) before parsing. Encrypted PDFs and files with empty or
 unreadable extracted text are rejected. The result contains original text and
 editable `name`, `skills`, `experience`, `education`, `languages`, and
 `summary` fields. Extraction is heuristic and does not infer seniority,
-preferences, authorization, compensation, or profile versions; those belong
-to PROFILE-002. Install `pypdf` and `python-docx` from the backend project
+preferences, authorization, compensation, or profile versions. Preferences
+and reevaluation metadata are managed by `ProfileService.update_preferences`.
+Install `pypdf` and `python-docx` from the backend project
 dependencies before processing files.
