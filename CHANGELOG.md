@@ -81,3 +81,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: coordinator preserves single active task and no agent bypasses commit gates
 - Commit subject: chore(harness): define multi-agent workflow
 - Commit hash: 7668cfaa3dc382feeb3182a55fe7d6f382ccef29
+
+### HARNESS-002 — Attempt 1
+
+- Strengthened task lifecycle validation for states, dependencies, rejection reasons, active-task consistency, and real commit identity.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `scripts/harness.py`, `README.md`, and harness tests
+- Commands: 33 tests, JSON/harness/Python/Shell checks, and diff checks
+- Tester: PASS — lifecycle edge cases and exact commit subject/hash covered
+- Reviewer: APPROVED — implementation is within scope
+- Risks: completion requires the current HEAD and configured Conventional Commit subject
+- Commit subject: feat(harness): add task lifecycle management
+- Commit hash: pending

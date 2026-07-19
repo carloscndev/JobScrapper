@@ -351,6 +351,53 @@ class HarnessTestCase(unittest.TestCase):
         self.assertTrue(any("invalid Conventional Commit" in error for error in errors))
         self.assertTrue(any("unknown dependency MISSING" in error for error in errors))
 
+    def test_validate_rejects_self_dependency_and_dependency_cycles(self) -> None:
+        backlog = deepcopy(BACKLOG)
+        backlog["tasks"][0]["depends_on"] = ["ONE"]
+        backlog["tasks"][1]["depends_on"] = ["ONE"]
+        errors = harness.validate_data(CONFIG, backlog, CURRENT)
+        self.assertTrue(any("cannot depend on itself" in error for error in errors))
+
+        backlog = deepcopy(BACKLOG)
+        backlog["tasks"][0]["depends_on"] = ["TWO"]
+        backlog["tasks"][1]["depends_on"] = ["ONE"]
+        errors = harness.validate_data(CONFIG, backlog, CURRENT)
+        self.assertTrue(any("Dependency cycle detected" in error for error in errors))
+
+    def test_validate_rejects_inactive_current_inconsistent_with_backlog(self) -> None:
+        backlog = deepcopy(BACKLOG)
+        backlog["tasks"][0]["status"] = "coding"
+        current = deepcopy(CURRENT)
+        errors = harness.validate_data(CONFIG, backlog, current)
+        self.assertTrue(any("active task but current-task is inactive" in error for error in errors))
+
+        backlog = deepcopy(BACKLOG)
+        current = deepcopy(CURRENT)
+        current["task_id"] = "ONE"
+        errors = harness.validate_data(CONFIG, backlog, current)
+        self.assertTrue(any("Inactive current-task must not identify a task" in error for error in errors))
+
+    def test_record_rejects_blank_evidence(self) -> None:
+        self.start()
+        with self.assertRaisesRegex(harness.HarnessError, "Evidence must not be empty"):
+            harness.command_record(self.args(role="coder", result="pass", evidence="   "))
+
+    def test_reject_rejects_blank_reason(self) -> None:
+        self.reach_review()
+        with self.assertRaisesRegex(harness.HarnessError, "Rejection reason must not be empty"):
+            harness.command_reject(self.args(reason="\t  "))
+
+    def test_complete_requires_exact_head_hash_and_subject(self) -> None:
+        self.approve()
+        self.stage_task_change()
+        self.git("commit", "-qm", "fix(harness): wrong subject")
+        head = self.git("rev-parse", "HEAD").stdout.strip()
+        with self.assertRaisesRegex(harness.HarnessError, "Commit subject does not match"):
+            harness.command_complete(self.args(commit=head))
+        previous = self.git("rev-parse", "HEAD^").stdout.strip()
+        with self.assertRaisesRegex(harness.HarnessError, "Commit must be the current HEAD"):
+            harness.command_complete(self.args(commit=previous))
+
     def test_conventional_commit_pattern_accepts_configured_examples(self) -> None:
         for message in (
             "feat(api): add health endpoint",

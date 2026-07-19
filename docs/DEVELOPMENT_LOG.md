@@ -115,3 +115,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: coordinator must preserve single active task and staging ownership
 - Commit subject: chore(harness): define multi-agent workflow
 - Commit hash: 7668cfaa3dc382feeb3182a55fe7d6f382ccef29
+
+### HARNESS-002 — Attempt 1
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: ordered lifecycle, single active task, dependency validation, real commit hash and exact subject enforcement; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `scripts/harness.py`, `README.md`, `tests/harness/test_harness.py`
+- Commands: 33 unit tests; JSON validation; harness validation; py_compile; shell syntax; `git diff --check`
+- Tester: PASS — cycles, self-dependencies, inactive state, blank rejection, HEAD hash and subject covered
+- Reviewer: APPROVED — state machine and guards accepted after adding traceability
+- Rework: added structured development and changelog entries
+- Changelog: state machine guards strengthened
+- Risks: coordinator must provide a real HEAD commit with the configured subject
+- Commit subject: feat(harness): add task lifecycle management
+- Commit hash: pending

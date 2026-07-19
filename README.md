@@ -21,7 +21,7 @@ in `scripts/`.
 ```sh
 python3 scripts/harness.py validate
 python3 scripts/harness.py status
-python3 scripts/harness.py start BOOTSTRAP-001
+python3 scripts/harness.py start TASK-ID
 python3 scripts/harness.py record coder --result pass --evidence "files and verification"
 python3 scripts/harness.py handoff tester
 python3 scripts/harness.py record tester --result pass --evidence "test command output"
@@ -32,6 +32,8 @@ python3 scripts/harness.py commit-ready
 ```
 
 `commit-ready` runs configured skill, unit-test, syntax, JSON, staging, secret-scan, per-task path-scope, and documentation gates. It checks deletions plus both sides of renames. Both traceability documents are read from Git's staged index—not the working tree—and must contain a complete section for the active task and attempt, so unstaged or stale approvals cannot satisfy a new cycle. After the coordinator creates the printed commit, record its hash with `python3 scripts/harness.py complete --commit HASH`; it must resolve to the current Git `HEAD`.
+
+The state machine validates the complete ordered lifecycle (`coding` → `testing` → `review` → `approved` → `committed`), rejects dependency cycles and unknown dependencies, permits only one active task, and verifies that the recorded commit is the current `HEAD` with the task's configured Conventional Commit subject.
 
 ## Skills
 

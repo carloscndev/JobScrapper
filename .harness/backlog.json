@@ -137,7 +137,7 @@
     {
       "id": "HARNESS-002",
       "title": "Implement task state machine",
-      "status": "pending",
+      "status": "approved",
       "depends_on": [
         "HARNESS-001"
       ],
@@ -147,6 +147,7 @@
         ".harness/backlog.json",
         ".harness/current-task.json",
         "scripts/harness.py",
+        "tests/harness/**",
         "docs/DEVELOPMENT_LOG.md",
         "CHANGELOG.md",
         "README.md"

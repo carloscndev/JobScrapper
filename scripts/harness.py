@@ -18,6 +18,7 @@ CONFIG_PATH = HARNESS / "config.json"
 BACKLOG_PATH = HARNESS / "backlog.json"
 CURRENT_PATH = HARNESS / "current-task.json"
 ACTIVE_STATES = {"coding", "testing", "review", "rework", "approved"}
+REQUIRED_STATES = {"pending", "coding", "testing", "review", "rework", "approved", "committed", "blocked"}
 HASH_RE = re.compile(r"^[0-9a-fA-F]{7,40}$")
 COMMIT_RE = re.compile(r"^(?P<type>[a-z]+)(?:\([a-z0-9._/-]+\))?!?: .+[^.]$")
 
@@ -80,6 +81,9 @@ def tasks_by_id(backlog: dict[str, Any]) -> dict[str, dict[str, Any]]:
 def validate_data(config: dict[str, Any], backlog: dict[str, Any], current: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     allowed = set(config.get("allowed_states", []))
+    missing_states = REQUIRED_STATES - allowed
+    if missing_states:
+        errors.append("config.allowed_states is missing: " + ", ".join(sorted(missing_states)))
     roles = set(config.get("roles", []))
     if not {"coder", "tester", "reviewer"}.issubset(roles):
         errors.append("config.roles must include coder, tester, and reviewer")
@@ -108,6 +112,26 @@ def validate_data(config: dict[str, Any], backlog: dict[str, Any], current: dict
             for dependency in dependencies:
                 if dependency not in indexed:
                     errors.append(f"{task['id']}: unknown dependency {dependency}")
+                elif dependency == task["id"]:
+                    errors.append(f"{task['id']}: task cannot depend on itself")
+    # Dependencies must form a DAG; otherwise no valid sequence can ever
+    # unblock the cyclic tasks.
+    visiting: set[str] = set()
+    visited: set[str] = set()
+    def visit(task_id: str) -> None:
+        if task_id in visiting:
+            errors.append(f"Dependency cycle detected at {task_id}")
+            return
+        if task_id in visited:
+            return
+        visiting.add(task_id)
+        for dependency in indexed[task_id].get("depends_on", []):
+            if dependency in indexed:
+                visit(dependency)
+        visiting.remove(task_id)
+        visited.add(task_id)
+    for task_id in indexed:
+        visit(task_id)
     if len(active) > 1:
         errors.append(f"Multiple active backlog tasks: {', '.join(active)}")
     is_active = current.get("active") is True
@@ -125,6 +149,11 @@ def validate_data(config: dict[str, Any], backlog: dict[str, Any], current: dict
             errors.append("Active task attempt must be a positive integer")
     elif active:
         errors.append("Backlog has an active task but current-task is inactive")
+    else:
+        if current.get("task_id") is not None or current.get("state") is not None:
+            errors.append("Inactive current-task must not identify a task or state")
+        if current.get("attempt") != 0:
+            errors.append("Inactive current-task attempt must be zero")
     return errors
 
 
@@ -239,10 +268,13 @@ def command_reject(args: argparse.Namespace) -> None:
     config, backlog, current = load()
     require_valid(config, backlog, current)
     task = active_task(backlog, current)
+    reason = args.reason.strip()
+    if not reason:
+        raise HarnessError("Rejection reason must not be empty")
     if current["state"] not in {"testing", "review"}:
         raise HarnessError("Only tester or reviewer stages can reject")
     role = "tester" if current["state"] == "testing" else "reviewer"
-    current.setdefault("rejections", []).append({"by": role, "reason": args.reason, "attempt": current["attempt"]})
+    current.setdefault("rejections", []).append({"by": role, "reason": reason, "attempt": current["attempt"]})
     current["attempt"] += 1
     current["evidence"] = {}
     set_state(task, current, "rework")
@@ -395,6 +427,9 @@ def command_complete(args: argparse.Namespace) -> None:
         raise HarnessError("Commit must exist in this Git repository and HEAD must resolve")
     if resolved.stdout.strip().lower() != head.stdout.strip().lower():
         raise HarnessError("Commit must be the current HEAD")
+    subject = run(["git", "show", "-s", "--format=%s", "HEAD"])
+    if subject.returncode or subject.stdout.strip() != task.get("commit"):
+        raise HarnessError("Commit subject does not match the task Conventional Commit")
     task["status"] = "committed"
     task["commit_hash"] = args.commit.lower()
     indexed = tasks_by_id(backlog)
