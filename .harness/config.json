@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "allowed_states": ["pending", "coding", "testing", "review", "rework", "approved", "committed", "blocked"],
+  "roles": ["coder", "tester", "reviewer"],
+  "commit_types": ["feat", "fix", "test", "docs", "refactor", "chore", "build", "ci", "perf"],
+  "gate_commands": [
+    ["scripts/check-skills.sh"],
+    ["python3", "-m", "unittest", "discover", "-s", "tests/harness", "-p", "test_*.py"],
+    ["python3", "-m", "py_compile", "scripts/harness.py"]
+  ],
+  "json_gate_files": [
+    ".harness/config.json",
+    ".harness/backlog.json",
+    ".harness/current-task.json",
+    ".harness/skills.json"
+  ],
+  "development_log": "docs/DEVELOPMENT_LOG.md",
+  "changelog": "CHANGELOG.md"
+}

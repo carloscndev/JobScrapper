@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "tasks": [
+    {
+      "id": "BOOTSTRAP-001",
+      "title": "Initialize Git, main branch, and minimal files",
+      "status": "approved",
+      "depends_on": [],
+      "commit": "chore(repo): initialize project repository",
+      "allowed_paths": [
+        ".agents/**",
+        ".env.example",
+        ".gitignore",
+        ".harness/**",
+        "AGENTS.md",
+        "CHANGELOG.md",
+        "README.md",
+        "docs/**",
+        "scripts/**",
+        "tests/harness/**"
+      ],
+      "acceptance": [
+        "Repository uses main",
+        "Minimal project files exist"
+      ]
+    },
+    {
+      "id": "SKILLS-001",
+      "title": "Add skill manifest, scripts, and documentation",
+      "status": "blocked",
+      "depends_on": [
+        "BOOTSTRAP-001"
+      ],
+      "commit": "chore(skills): add managed skill installation",
+      "allowed_paths": [
+        ".harness/skills.json",
+        "scripts/install-skills.sh",
+        "scripts/check-skills.sh",
+        "docs/SKILLS.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md",
+        "tests/harness/**"
+      ],
+      "acceptance": [
+        "Manifest pins checksums",
+        "Install and check scripts are idempotent",
+        "Risks are documented"
+      ]
+    },
+    {
+      "id": "SKILLS-002",
+      "title": "Install and verify approved skills",
+      "status": "blocked",
+      "depends_on": [
+        "SKILLS-001"
+      ],
+      "commit": "chore(skills): install project agent capabilities",
+      "allowed_paths": [
+        ".harness/skills.json",
+        "docs/SKILLS.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Every approved skill is installed",
+        "Checksums match the manifest"
+      ]
+    },
+    {
+      "id": "HARNESS-001",
+      "title": "Define coordinator and three-agent workflow",
+      "status": "blocked",
+      "depends_on": [
+        "SKILLS-002"
+      ],
+      "commit": "chore(harness): define multi-agent workflow",
+      "allowed_paths": [
+        "AGENTS.md",
+        ".agents/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Every role has explicit ownership",
+        "Failure loop is documented"
+      ]
+    },
+    {
+      "id": "HARNESS-002",
+      "title": "Implement task state machine",
+      "status": "blocked",
+      "depends_on": [
+        "HARNESS-001"
+      ],
+      "commit": "feat(harness): add task lifecycle management",
+      "allowed_paths": [
+        ".harness/config.json",
+        ".harness/backlog.json",
+        ".harness/current-task.json",
+        "scripts/harness.py",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md",
+        "README.md"
+      ],
+      "acceptance": [
+        "CLI enforces ordered gates",
+        "Only one task is active",
+        "Completion requires a commit hash"
+      ]
+    },
+    {
+      "id": "HARNESS-003",
+      "title": "Add harness unit tests",
+      "status": "blocked",
+      "depends_on": [
+        "HARNESS-002"
+      ],
+      "commit": "test(harness): cover task lifecycle gates",
+      "allowed_paths": [
+        "tests/harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Valid and invalid transitions are covered",
+        "Read-only status is verified"
+      ]
+    },
+    {
+      "id": "DOCS-001",
+      "title": "Add SDD requirements and product backlog",
+      "status": "blocked",
+      "depends_on": [
+        "HARNESS-003"
+      ],
+      "commit": "docs(sdd): add product requirements and backlog",
+      "allowed_paths": [
+        "docs/SDD.md",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md",
+        "README.md"
+      ],
+      "acceptance": [
+        "User story and acceptance criteria are documented",
+        "Delivery backlog is documented"
+      ]
+    },
+    {
+      "id": "BACKEND-001",
+      "title": "Bootstrap FastAPI service",
+      "status": "blocked",
+      "depends_on": [
+        "DOCS-001"
+      ],
+      "commit": "feat(api): bootstrap FastAPI service",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md",
+        "README.md",
+        ".env.example"
+      ],
+      "acceptance": [
+        "Service starts locally",
+        "Health endpoint is tested"
+      ]
+    },
+    {
+      "id": "FRONTEND-001",
+      "title": "Bootstrap React dashboard",
+      "status": "blocked",
+      "depends_on": [
+        "BACKEND-001"
+      ],
+      "commit": "feat(web): bootstrap React dashboard",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md",
+        "README.md"
+      ],
+      "acceptance": [
+        "Dashboard starts locally",
+        "Base view is tested"
+      ]
+    }
+  ]
+}

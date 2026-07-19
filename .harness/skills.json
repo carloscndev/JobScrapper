@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "install_root": "${HOME}/.agents/skills",
+  "reviewed_on": "2026-07-17",
+  "skills": [
+    {
+      "name": "vercel-react-best-practices",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "revision": "f8a72b9603728bb92a217a879b7e62e43ad76c81",
+      "skill_file_sha256": "71ed7794962fa6e803ee83030517b5b93a9f70fbfeb431ec4535c5480a8d8355",
+      "roles": ["coder", "reviewer"],
+      "risk": "normal",
+      "installed": true
+    },
+    {
+      "name": "web-design-guidelines",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "revision": "f8a72b9603728bb92a217a879b7e62e43ad76c81",
+      "skill_file_sha256": "f4647ca866a3accf763777f83e7682954f0187cd6bea7eea0399796652414e8f",
+      "roles": ["reviewer"],
+      "risk": "normal",
+      "installed": true
+    },
+    {
+      "name": "webapp-testing",
+      "source": "https://github.com/anthropics/skills",
+      "revision": "fa0fa64bdc967915dc8399e803be67759e1e62b8",
+      "skill_file_sha256": "51b7349e77ec63b7744a6f63647e7566a0b4d2e301121cc10e8c2113af6556a2",
+      "roles": ["tester"],
+      "risk": "normal",
+      "installed": true
+    },
+    {
+      "name": "notion-api",
+      "source": "https://github.com/intellectronica/agent-skills",
+      "revision": "9b0e00ad1b941165e2506545bbfddafa34cf2cb8",
+      "skill_file_sha256": "cad2c5f98f0665059abcfe29cbb9609da49f836cb5f22fd85939056e2b2a4d8f",
+      "roles": ["coder", "reviewer"],
+      "risk": "high",
+      "risk_detail": "Snyk assessment reported high risk; use requires explicit coordinator acknowledgement and review of SKILL.md before each Notion task.",
+      "installed": true
+    }
+  ]
+}
