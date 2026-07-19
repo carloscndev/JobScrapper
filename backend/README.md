@@ -67,3 +67,16 @@ alembic upgrade head
 
 For non-file SQLite URLs or a future server database, use that database's native
 backup tooling instead. Never commit database files or credentials.
+
+## CV ingestion
+
+`app.cv_profile.parse_cv` accepts only PDF and DOCX streams, with a default
+10 MiB limit. It validates extension, MIME type, PDF signature, and the DOCX
+ZIP container (encrypted members, traversal paths, and excessive uncompressed
+size are rejected) before parsing. Encrypted PDFs and files with empty or
+unreadable extracted text are rejected. The result contains original text and
+editable `name`, `skills`, `experience`, `education`, `languages`, and
+`summary` fields. Extraction is heuristic and does not infer seniority,
+preferences, authorization, compensation, or profile versions; those belong
+to PROFILE-002. Install `pypdf` and `python-docx` from the backend project
+dependencies before processing files.

@@ -165,3 +165,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: live SQLAlchemy/Alembic execution requires dependency installation
 - Commit subject: feat(data): add core domain models
 - Commit hash: a5661fdb63aa0f286fa7b01626e744269fc607df
+
+### PROFILE-001 — Attempt 1
+
+- Added secure PDF/DOCX validation and extraction into an editable profile service.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: CV validator/extractor, profile service, backend dependencies/docs, and CV tests
+- Commands: 66 tests with 5 skips; JSON/Python/Shell/skills/harness/diff checks
+- Tester: PASS — malicious/invalid file fixtures and structured profile behavior covered
+- Reviewer: APPROVED — security and scope verified
+- Risks: optional document parser dependencies require installation for full runtime coverage
+- Commit subject: feat(profile): add CV ingestion and profile extraction
+- Commit hash: pending

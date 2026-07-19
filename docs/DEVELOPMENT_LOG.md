@@ -220,3 +220,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: install SQLAlchemy/Alembic before live migration tests
 - Commit subject: feat(data): add core domain models
 - Commit hash: a5661fdb63aa0f286fa7b01626e744269fc607df
+
+### PROFILE-001 — Attempt 1
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: secure PDF/DOCX validation/extraction, unreadable/encrypted rejection, editable profile mapping, and service integration; PASS with explicit optional-dependency skips
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/cv_profile.py`, `backend/app/services.py`, `backend/pyproject.toml`, `backend/README.md`, `tests/backend/test_cv_profile.py`
+- Commands: 66 tests with 5 skips; JSON; py_compile; shell syntax; skills; harness validation; `git diff --check`
+- Tester: PASS — 10 CV tests cover safety, extraction, profile structure, and service
+- Reviewer: APPROVED — security controls and scope verified
+- Rework: none
+- Changelog: secure CV ingestion added
+- Risks: pypdf/python-docx runtime coverage requires dependency installation
+- Commit subject: feat(profile): add CV ingestion and profile extraction
+- Commit hash: pending
