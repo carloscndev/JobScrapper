@@ -51,7 +51,7 @@
     {
       "id": "BACKLOG-001",
       "title": "Expand the delivery backlog into executable backend, frontend, operations, and test tasks",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "BOOTSTRAP-001"
       ],
@@ -66,12 +66,13 @@
         "Every requirement from the product backlog has an executable task",
         "Tasks define dependencies, allowed paths, acceptance criteria, and Conventional Commit subjects",
         "The SDD references the canonical backlog"
-      ]
+      ],
+      "commit_hash": "221154c"
     },
     {
       "id": "STRUCTURE-001",
       "title": "Create the backend, frontend, docs, scripts, and tests monorepo structure",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "BACKLOG-001"
       ],
