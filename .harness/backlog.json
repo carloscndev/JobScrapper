@@ -245,13 +245,14 @@
     {
       "id": "DATA-001",
       "title": "Integrate SQLAlchemy, SQLite, and Alembic migrations",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "BACKEND-001"
       ],
       "commit": "feat(data): add database foundation",
       "allowed_paths": [
         "backend/**",
+        "alembic.ini",
         "alembic/**",
         "tests/backend/**",
         "pyproject.toml",
@@ -264,12 +265,13 @@
         "Migrations run locally",
         "SQLite backup and restore are documented",
         "SQLite is the local operational source of truth and its connection lifecycle is configurable"
-      ]
+      ],
+      "commit_hash": "8779e82"
     },
     {
       "id": "DATA-002",
       "title": "Create job, profile, source, evaluation, execution, and sync models",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "DATA-001"
       ],

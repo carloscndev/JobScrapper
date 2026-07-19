@@ -152,4 +152,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — scope and lifecycle behavior verified
 - Risks: SQLAlchemy/Alembic runtime tests require dependency installation
 - Commit subject: feat(data): add database foundation
-- Commit hash: pending
+- Commit hash: 8779e82ac5e8ba4e44ef493d4721da66aa6f2555
