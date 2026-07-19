@@ -73,7 +73,7 @@
     {
       "id": "STRUCTURE-001",
       "title": "Create the backend, frontend, docs, scripts, and tests monorepo structure",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "BACKLOG-001"
       ],
@@ -91,7 +91,8 @@
       "acceptance": [
         "The backend, frontend, docs, scripts, and tests directories exist with tracked bootstrap files",
         "The directory layout and ownership are documented for future tasks"
-      ]
+      ],
+      "commit_hash": "ebbb15d"
     },
     {
       "id": "SKILLS-002",

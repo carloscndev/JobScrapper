@@ -68,4 +68,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — scope and ownership verified
 - Risks: implementation tasks remain responsible for their own dependencies and allowed paths
 - Commit subject: chore(repo): scaffold application directories
-- Commit hash: pending
+- Commit hash: ebbb15de8e07eea5582a2ace24f1fc6ed8e5ff6c
