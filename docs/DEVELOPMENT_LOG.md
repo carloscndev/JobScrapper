@@ -159,4 +159,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: SDD and README expanded
 - Risks: `.harness/backlog.json` remains authoritative for exact dependencies
 - Commit subject: docs(sdd): add product requirements and backlog
-- Commit hash: pending
+- Commit hash: f023dfd3602a9124c23f6c174171920727fe6d9e

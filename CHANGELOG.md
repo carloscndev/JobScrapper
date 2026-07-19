@@ -116,4 +116,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — dependency order corrected and content in scope
 - Risks: backlog JSON is authoritative for exact sequencing
 - Commit subject: docs(sdd): add product requirements and backlog
-- Commit hash: pending
+- Commit hash: f023dfd3602a9124c23f6c174171920727fe6d9e

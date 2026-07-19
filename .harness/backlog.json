@@ -181,7 +181,7 @@
     {
       "id": "DOCS-001",
       "title": "Add SDD requirements and product backlog",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "HARNESS-003"
       ],
@@ -195,12 +195,13 @@
       "acceptance": [
         "User story and acceptance criteria are documented",
         "Delivery backlog is documented"
-      ]
+      ],
+      "commit_hash": "f023dfd"
     },
     {
       "id": "BACKEND-001",
       "title": "Bootstrap FastAPI service",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "DOCS-001"
       ],
