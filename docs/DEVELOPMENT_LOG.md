@@ -175,3 +175,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: install backend dependencies before exercising `/health` runtime test
 - Commit subject: feat(api): bootstrap FastAPI service
 - Commit hash: 920d796d30baf3516423840fb89c5efea63301dc
+
+### FRONTEND-001 — Attempt 2
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: React/TypeScript/Vite scaffold, typed API client, accessible responsive base view, loading/error/health states; PASS
+- Skills: coordinator none; coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices`, `web-design-guidelines`
+- Files: `frontend/**`, `tests/frontend/test_frontend_bootstrap.py`, `README.md`
+- Commands: 45 total tests (5 frontend, 35 harness, 5 backend with 1 skip); JSON/Python/Shell/diff checks; npm install/build attempted
+- Tester: PASS — typed client and `/health` regressions covered; npm build blocked by registry DNS (`ENOTFOUND`)
+- Reviewer: APPROVED — client/endpoint alignment, UI accessibility, responsive layout, and scope verified
+- Rework: replaced direct `/api/health` fetch with typed `getHealth()` against `/health`
+- Changelog: React/Vite dashboard scaffold added
+- Risks: install npm dependencies before runtime/build verification
+- Commit subject: feat(web): bootstrap React dashboard
+- Commit hash: pending

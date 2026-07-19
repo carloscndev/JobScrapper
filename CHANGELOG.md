@@ -129,3 +129,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: dependency installation is required for runtime route coverage
 - Commit subject: feat(api): bootstrap FastAPI service
 - Commit hash: 920d796d30baf3516423840fb89c5efea63301dc
+
+### FRONTEND-001 — Attempt 2
+
+- Added React/TypeScript/Vite scaffold with typed health client, responsive accessible view, and loading/error/status states.
+- Skills: coordinator none; coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `web-design-guidelines`
+- Files: `frontend/**`, `tests/frontend/test_frontend_bootstrap.py`, `README.md`
+- Commands: 45 tests total; static frontend checks; JSON/Python/Shell/diff checks; npm install/build attempted
+- Tester: PASS — endpoint/client regressions pass; npm build awaits network dependencies
+- Reviewer: APPROVED — UI and scope verified
+- Risks: npm registry DNS prevented installing TypeScript/Vite for build execution
+- Commit subject: feat(web): bootstrap React dashboard
+- Commit hash: pending
