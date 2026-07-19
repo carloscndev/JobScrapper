@@ -223,7 +223,7 @@
     {
       "id": "FRONTEND-001",
       "title": "Bootstrap React dashboard",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "BACKEND-001"
       ],
@@ -239,7 +239,8 @@
         "Dashboard starts locally",
         "Base view is tested",
         "The frontend uses a typed API client and has responsive desktop/tablet layout with explicit loading and error states"
-      ]
+      ],
+      "commit_hash": "be8cda8"
     },
     {
       "id": "DATA-001",
@@ -702,7 +703,7 @@
     {
       "id": "OPS-001",
       "title": "Create Docker images, Compose volumes, and local startup documentation",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "BACKEND-001",
         "FRONTEND-001"

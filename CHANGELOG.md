@@ -140,4 +140,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — UI and scope verified
 - Risks: npm registry DNS prevented installing TypeScript/Vite for build execution
 - Commit subject: feat(web): bootstrap React dashboard
-- Commit hash: pending
+- Commit hash: be8cda8c41671d7fe8587984abc2092383b1f954

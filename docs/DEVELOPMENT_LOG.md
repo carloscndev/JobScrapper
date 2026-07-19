@@ -189,4 +189,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: React/Vite dashboard scaffold added
 - Risks: install npm dependencies before runtime/build verification
 - Commit subject: feat(web): bootstrap React dashboard
-- Commit hash: pending
+- Commit hash: be8cda8c41671d7fe8587984abc2092383b1f954
