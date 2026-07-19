@@ -176,4 +176,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — security and scope verified
 - Risks: optional document parser dependencies require installation for full runtime coverage
 - Commit subject: feat(profile): add CV ingestion and profile extraction
-- Commit hash: pending
+- Commit hash: f2af923f2c7bbd79470f965186d5b0017fe48089

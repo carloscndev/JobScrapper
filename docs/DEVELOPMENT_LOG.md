@@ -234,4 +234,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: secure CV ingestion added
 - Risks: pypdf/python-docx runtime coverage requires dependency installation
 - Commit subject: feat(profile): add CV ingestion and profile extraction
-- Commit hash: pending
+- Commit hash: f2af923f2c7bbd79470f965186d5b0017fe48089

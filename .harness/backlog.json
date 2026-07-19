@@ -293,7 +293,7 @@
     {
       "id": "PROFILE-001",
       "title": "Implement CV upload, validation, extraction, and editable profile",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "DATA-002"
       ],
@@ -310,12 +310,13 @@
         "PDF and DOCX uploads are validated",
         "Unreadable or unsafe files are rejected",
         "Extracted profile data is editable"
-      ]
+      ],
+      "commit_hash": "f2af923"
     },
     {
       "id": "PROFILE-002",
       "title": "Add professional preferences, constraints, and profile versioning",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "PROFILE-001"
       ],
