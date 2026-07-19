@@ -162,7 +162,7 @@
     {
       "id": "HARNESS-003",
       "title": "Add harness unit tests",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "HARNESS-002"
       ],
@@ -175,12 +175,13 @@
       "acceptance": [
         "Valid and invalid transitions are covered",
         "Read-only status is verified"
-      ]
+      ],
+      "commit_hash": "942028f"
     },
     {
       "id": "DOCS-001",
       "title": "Add SDD requirements and product backlog",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "HARNESS-003"
       ],

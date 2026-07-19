@@ -104,4 +104,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — tests are scoped and meaningful
 - Risks: pytest is unavailable; unittest remains the configured runner
 - Commit subject: test(harness): cover task lifecycle gates
-- Commit hash: pending
+- Commit hash: 942028fe7a5bc319a119fca60fa62ed66a782c21
