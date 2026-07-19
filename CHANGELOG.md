@@ -33,3 +33,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: task sequencing must be followed through the existing harness
 - Commit subject: docs(backlog): expand application delivery tasks
 - Commit hash: 221154cfd1ec043c7a6eb198b7ce57dbec53ee7f
+
+### SKILLS-001 — Attempt 2
+
+- Added fail-closed validation for skill source, immutable revision/checksum, purpose, risk, risk detail, roles, allowlist, and allowed roles.
+- Skills: coordinator `skill-installer`; coder none; tester none; reviewer none
+- Files: manifest, installer, checker, skills documentation, and harness tests
+- Commands: skill verification, 28 unit tests, Python/shell syntax, JSON, and diff checks
+- Tester: PASS — mandatory-field, mismatch, and idempotence coverage passes
+- Reviewer: APPROVED — no out-of-scope changes
+- Risks: `notion-api` remains marked high risk
+- Commit subject: chore(skills): add managed skill installation
+- Commit hash: pending

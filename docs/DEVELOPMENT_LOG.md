@@ -55,3 +55,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: task sequencing must be followed through the existing harness
 - Commit subject: docs(backlog): expand application delivery tasks
 - Commit hash: 221154cfd1ec043c7a6eb198b7ce57dbec53ee7f
+
+### SKILLS-001 — Attempt 2
+
+- Started / finished: 2026-07-18 / 2026-07-18
+- Acceptance criteria: manifest, reproducible installer/checker, role allowlist, risk documentation, and idempotence; PASS
+- Skills: coordinator `skill-installer`; coder none; tester none; reviewer none
+- Files: `.harness/skills.json`, `scripts/install-skills.sh`, `scripts/check-skills.sh`, `docs/SKILLS.md`, `tests/harness/test_harness.py`
+- Commands: `./scripts/check-skills.sh`; `python3 -m unittest -v tests/harness/test_harness.py`; `python3 -m py_compile scripts/harness.py`; `bash -n scripts/*.sh`; JSON validation; `git diff --check`
+- Tester: PASS — 28 tests, including missing mandatory manifest fields, source/role mismatch, and mock installer idempotence
+- Reviewer: APPROVED — fail-closed manifest and installer, immutable pins, and scoped changes verified
+- Rework: attempt 1 allowed omitted source/allowlist/purpose/risk fields; attempt 2 requires every field with no fallback
+- Changelog: skill governance hardened
+- Risks: `notion-api` remains high risk and requires coordinator acknowledgement before use
+- Commit subject: chore(skills): add managed skill installation
+- Commit hash: pending

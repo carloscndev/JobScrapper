@@ -385,11 +385,17 @@ class SkillVerificationTests(unittest.TestCase):
     def write_manifest(self, checksum: str) -> None:
         manifest = {
             "schema_version": 1,
+            "allowed_roles": ["coder", "tester", "reviewer", "coordinator"],
             "skills": [{
                 "name": "local-skill",
+                "source": "https://github.com/example/skills",
                 "revision": "1" * 40,
                 "roles": ["tester"],
+                "allowlist": ["tester"],
                 "skill_file_sha256": checksum,
+                "purpose": "Testing guidance",
+                "risk": "normal",
+                "risk_detail": "Local-only test guidance.",
             }],
         }
         (self.repo / ".harness" / "skills.json").write_text(json.dumps(manifest), encoding="utf-8")
@@ -451,6 +457,136 @@ class SkillVerificationTests(unittest.TestCase):
             with self.subTest(skill=skill["name"]):
                 self.assertRegex(skill["revision"], r"^[0-9a-f]{40}$")
                 self.assertRegex(skill["skill_file_sha256"], r"^[0-9a-f]{64}$")
+
+    def test_install_script_uses_manifest_revisions_and_is_idempotent_with_mock_npx(self) -> None:
+        """The installer must be reproducible without contacting the network in tests."""
+        install = self.repo / "scripts" / "install-skills.sh"
+        install.write_bytes((REPO_ROOT / "scripts" / "install-skills.sh").read_bytes())
+        os.chmod(install, 0o755)
+        contents = "# approved skill\n"
+        checksum = hashlib.sha256(contents.encode()).hexdigest()
+        manifest = {
+            "schema_version": 1,
+            "allowed_roles": ["coder", "tester", "reviewer", "coordinator"],
+            "skills": [
+                {
+                    "name": "local-skill",
+                    "source": "https://github.com/example/skills",
+                    "revision": "a" * 40,
+                    "skill_file_sha256": checksum,
+                    "roles": ["tester"],
+                    "allowlist": ["tester"],
+                    "purpose": "Testing guidance",
+                    "risk": "normal",
+                    "risk_detail": "Local-only test guidance.",
+                }
+            ],
+        }
+        (self.repo / ".harness" / "skills.json").write_text(
+            json.dumps(manifest), encoding="utf-8"
+        )
+        fake_bin = self.root / "bin"
+        fake_bin.mkdir()
+        calls = self.root / "npx-calls.log"
+        fake_npx = fake_bin / "npx"
+        fake_npx.write_text(
+            "#!/usr/bin/env bash\n"
+            "set -eu\n"
+            f"printf '%s\\n' \"$*\" >> {calls}\n"
+            "name=\"\"\n"
+            "while [ $# -gt 0 ]; do\n"
+            "  if [ \"$1\" = \"--skill\" ]; then name=\"$2\"; shift 2; else shift; fi\n"
+            "done\n"
+            "mkdir -p \"${AGENT_SKILLS_HOME}/$name\"\n"
+            f"printf '%b' {contents!r} > \"${{AGENT_SKILLS_HOME}}/$name/SKILL.md\"\n",
+            encoding="utf-8",
+        )
+        os.chmod(fake_npx, 0o755)
+        env = os.environ.copy()
+        env["PATH"] = f"{fake_bin}:{env['PATH']}"
+        env["AGENT_SKILLS_HOME"] = str(self.skills)
+        result = subprocess.run(
+            [str(install)], cwd=self.repo, env=env, text=True, capture_output=True, check=False
+        )
+        self.assertEqual(0, result.returncode, result.stderr)
+        first_calls = calls.read_text(encoding="utf-8")
+        self.assertIn("https://github.com/example/skills/tree/" + "a" * 40, first_calls)
+        self.assertIn("--skill local-skill", first_calls)
+        second = subprocess.run(
+            [str(install)], cwd=self.repo, env=env, text=True, capture_output=True, check=False
+        )
+        self.assertEqual(0, second.returncode, second.stderr)
+        self.assertEqual(2, len(calls.read_text(encoding="utf-8").splitlines()))
+
+    def test_skill_check_rejects_invalid_manifest_source_and_role_mismatch(self) -> None:
+        skill_file = self.skills / "local-skill" / "SKILL.md"
+        skill_file.parent.mkdir(parents=True)
+        skill_file.write_text("approved", encoding="utf-8")
+        manifest = {
+            "schema_version": 1,
+            "allowed_roles": ["coder", "tester", "reviewer", "coordinator"],
+            "skills": [
+                {
+                    "name": "local-skill",
+                    "source": "http://example.invalid/skills",
+                    "revision": "1" * 40,
+                    "skill_file_sha256": hashlib.sha256(skill_file.read_bytes()).hexdigest(),
+                    "roles": ["tester"],
+                    "allowlist": ["coder"],
+                    "purpose": "Testing guidance",
+                    "risk": "normal",
+                    "risk_detail": "Local-only test guidance.",
+                }
+            ],
+        }
+        (self.repo / ".harness" / "skills.json").write_text(
+            json.dumps(manifest), encoding="utf-8"
+        )
+        result = self.run_check()
+        self.assertEqual(1, result.returncode)
+        self.assertIn("invalid source", result.stderr)
+        self.assertIn("roles and allowlist differ", result.stderr)
+
+    def test_skill_check_rejects_each_required_manifest_field_when_missing(self) -> None:
+        skill_file = self.skills / "local-skill" / "SKILL.md"
+        skill_file.parent.mkdir(parents=True)
+        skill_file.write_text("approved", encoding="utf-8")
+        checksum = hashlib.sha256(skill_file.read_bytes()).hexdigest()
+        baseline = {
+            "schema_version": 1,
+            "allowed_roles": ["coder", "tester", "reviewer", "coordinator"],
+            "skills": [{
+                "name": "local-skill",
+                "source": "https://github.com/example/skills",
+                "revision": "1" * 40,
+                "skill_file_sha256": checksum,
+                "roles": ["tester"],
+                "allowlist": ["tester"],
+                "purpose": "Testing guidance",
+                "risk": "normal",
+                "risk_detail": "Local-only test guidance.",
+            }],
+        }
+        cases = (
+            ("allowed_roles", "manifest allowed_roles"),
+            ("purpose", "missing purpose"),
+            ("risk", "invalid risk"),
+            ("risk_detail", "missing risk_detail"),
+            ("allowlist", "roles and allowlist differ"),
+        )
+        for field, expected in cases:
+            with self.subTest(field=field):
+                manifest = deepcopy(baseline)
+                if field == "allowed_roles":
+                    del manifest[field]
+                else:
+                    del manifest["skills"][0][field]
+                (self.repo / ".harness" / "skills.json").write_text(
+                    json.dumps(manifest), encoding="utf-8"
+                )
+                result = self.run_check()
+                self.assertEqual(1, result.returncode)
+                self.assertIn(expected, result.stderr)
 
 
 if __name__ == "__main__":

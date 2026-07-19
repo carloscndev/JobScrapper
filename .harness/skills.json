@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "install_root": "${HOME}/.agents/skills",
+  "allowed_roles": ["coder", "tester", "reviewer", "coordinator"],
   "reviewed_on": "2026-07-17",
   "skills": [
     {
@@ -9,8 +10,10 @@
       "revision": "f8a72b9603728bb92a217a879b7e62e43ad76c81",
       "skill_file_sha256": "71ed7794962fa6e803ee83030517b5b93a9f70fbfeb431ec4535c5480a8d8355",
       "roles": ["coder", "reviewer"],
+      "purpose": "React and Next.js performance guidance",
       "risk": "normal",
-      "installed": true
+      "risk_detail": "Reviewed upstream guidance; no credentials or external side effects.",
+      "allowlist": ["coder", "reviewer"]
     },
     {
       "name": "web-design-guidelines",
@@ -18,8 +21,10 @@
       "revision": "f8a72b9603728bb92a217a879b7e62e43ad76c81",
       "skill_file_sha256": "f4647ca866a3accf763777f83e7682954f0187cd6bea7eea0399796652414e8f",
       "roles": ["reviewer"],
+      "purpose": "Web UX, accessibility, and interface review",
       "risk": "normal",
-      "installed": true
+      "risk_detail": "Read-only review guidance; no credentials or external side effects.",
+      "allowlist": ["reviewer"]
     },
     {
       "name": "webapp-testing",
@@ -27,8 +32,10 @@
       "revision": "fa0fa64bdc967915dc8399e803be67759e1e62b8",
       "skill_file_sha256": "51b7349e77ec63b7744a6f63647e7566a0b4d2e301121cc10e8c2113af6556a2",
       "roles": ["tester"],
+      "purpose": "Playwright-based local web application testing",
       "risk": "normal",
-      "installed": true
+      "risk_detail": "Testing guidance may interact with local applications only.",
+      "allowlist": ["tester"]
     },
     {
       "name": "notion-api",
@@ -37,8 +44,9 @@
       "skill_file_sha256": "cad2c5f98f0665059abcfe29cbb9609da49f836cb5f22fd85939056e2b2a4d8f",
       "roles": ["coder", "reviewer"],
       "risk": "high",
+      "purpose": "Notion REST API integration guidance",
       "risk_detail": "Snyk assessment reported high risk; use requires explicit coordinator acknowledgement and review of SKILL.md before each Notion task.",
-      "installed": true
+      "allowlist": ["coder", "reviewer"]
     }
   ]
 }
