@@ -62,3 +62,55 @@ class ProfileResponse(BaseModel):
 
 class UploadResponse(ProfileResponse):
     parsed_text_length: int
+
+
+class JobListItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    title: str
+    company: str
+    location: str | None = None
+    region: str
+    modality: str
+    status: str
+    description_url: str
+    application_url: str | None = None
+    published_at: Any = None
+    detected_at: datetime | None = None
+    score: float | None = None
+
+
+class JobEvaluationResponse(BaseModel):
+    id: int
+    profile_id: int
+    score: float
+    ruleset_version: str
+    model_version: str | None = None
+    score_breakdown: dict[str, Any] = Field(default_factory=dict)
+    matches: list[Any] = Field(default_factory=list)
+    gaps: list[Any] = Field(default_factory=list)
+    exclusions: list[Any] = Field(default_factory=list)
+    recommendations: list[Any] = Field(default_factory=list)
+    status: str
+    evaluated_at: datetime | None = None
+
+
+class JobDetailResponse(JobListItem):
+    description: str
+    canonical_url: str
+    salary_min: float | None = None
+    salary_max: float | None = None
+    salary_currency: str | None = None
+    metadata_json: dict[str, Any] = Field(default_factory=dict)
+    score_breakdown: dict[str, Any] = Field(default_factory=dict)
+    recommendations: list[Any] = Field(default_factory=list)
+    evaluation: JobEvaluationResponse | None = None
+    evaluation_history: list[JobEvaluationResponse] = Field(default_factory=list)
+
+
+class PaginatedJobsResponse(BaseModel):
+    items: list[JobListItem]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int

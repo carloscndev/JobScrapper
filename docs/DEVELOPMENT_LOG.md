@@ -430,3 +430,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose profile management endpoints
 - Commit hash: 60fb12751d61fbb54fe6bca9bc2a4ba192738060
+
+### API-002 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: paginated/filterable/ordered vacancy list plus detail with links, score breakdown, recommendations, and history; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/schemas.py`, `tests/backend/test_api_jobs.py`
+- Commands: 6 API tests pass with 4 explicit HTTP dependency skips; 103 backend tests with 48 skips; compileall; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — list/detail contracts, score serialization, and profile-specific outer join covered
+- Reviewer: APPROVED — implementation and scope verified
+- Rework: attempt 1 fixed scalar score serialization and profile_id join semantics
+- Changelog: paginated vacancy search and detailed score history endpoints added
+- Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
+- Commit subject: feat(api): expose vacancy search endpoints
+- Commit hash: pending

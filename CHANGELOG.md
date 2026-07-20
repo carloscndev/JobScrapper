@@ -330,3 +330,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose profile management endpoints
 - Commit hash: 60fb12751d61fbb54fe6bca9bc2a4ba192738060
+
+### API-002 — Attempt 2
+
+- Added paginated vacancy list filters/order and detail responses with score breakdown, recommendations, links, and evaluation history.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/schemas.py`, `tests/backend/test_api_jobs.py`
+- Commands: 6 API tests pass with 4 explicit HTTP dependency skips; 103 backend tests with 48 skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — search/detail and profile-specific score contracts covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
+- Commit subject: feat(api): expose vacancy search endpoints
+- Commit hash: pending
