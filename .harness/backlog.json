@@ -887,7 +887,7 @@
     {
       "id": "TEST-003",
       "title": "Add source isolation, Notion idempotency, rate-limit, and reconciliation tests",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "NOTION-003",
         "SOURCES-003"
@@ -902,7 +902,8 @@
         "One failed source does not stop the run",
         "Notion sync is idempotent and retry-safe",
         "Reconciliation repairs differences"
-      ]
+      ],
+      "commit_hash": "7b61bce"
     },
     {
       "id": "TEST-004",

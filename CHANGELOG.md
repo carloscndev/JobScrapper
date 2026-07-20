@@ -485,7 +485,7 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: connector runtime tests require SQLAlchemy installation
 - Commit subject: test(integration): cover source and Notion synchronization
-- Commit hash: pending
+- Commit hash: 7b61bce5825108d29ae37fb8cbbb308b0abe6dd6
 
 ### TEST-002 — Attempt 1
 
