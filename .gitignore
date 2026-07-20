@@ -8,6 +8,7 @@ htmlcov/
 node_modules/
 dist/
 build/
+backups/
 playwright-report/
 test-results/
 .DS_Store
