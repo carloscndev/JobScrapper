@@ -318,3 +318,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: no live Notion calls; orphan repair is intentionally non-destructive
 - Commit subject: feat(notion): add synchronization reconciliation
 - Commit hash: 5a283bd820c22e2731c5ac7af6f0af3e89cf8b14
+
+### API-001 — Attempt 3
+
+- Added versioned profile upload/read/update and preferences endpoints with consistent validation errors and explicit reevaluation metadata on effective PATCH changes.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/services.py`, `backend/app/schemas.py`, `backend/README.md`, `tests/backend/test_api_profile.py`, `backend/pyproject.toml`
+- Commands: 8 API tests pass with 5 explicit FastAPI/SQLAlchemy skips; 95 backend tests with 43 skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — API contracts and reevaluation behavior covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
+- Commit subject: feat(api): expose profile management endpoints
+- Commit hash: pending

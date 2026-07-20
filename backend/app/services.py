@@ -10,6 +10,40 @@ class ProfileService:
     def __init__(self, profiles: ProfileRepository) -> None: self.profiles = profiles
     def create(self, name: str, **profile_data: object) -> Profile: return self.profiles.add(Profile(name=name, **profile_data))
 
+    def update_profile(self, profile_id: int, **profile_data: object) -> Profile:
+        """Update editable profile dimensions and version the effective change.
+
+        A PATCH may contain fields whose value is already current.  Those fields
+        are not considered changed, so a no-op PATCH does not create a new
+        profile version or unnecessarily enqueue reevaluation.  When at least
+        one value changes, the version marker and metadata are updated together
+        so matching workers can identify the exact profile revision to process.
+        """
+        profile = self.profiles.get(profile_id)
+        if profile is None:
+            raise ValueError(f"profile {profile_id} does not exist")
+
+        changed_dimensions: list[str] = []
+        for key, value in profile_data.items():
+            if not hasattr(profile, key):
+                raise ValueError(f"unsupported profile field: {key}")
+            if getattr(profile, key) != value:
+                setattr(profile, key, value)
+                changed_dimensions.append(key)
+
+        if changed_dimensions:
+            profile.version += 1
+            profile.versioned_at = datetime.now(timezone.utc)
+            profile.reevaluation_required = True
+            profile.reevaluation_reason = "profile_changed"
+            profile.reevaluation_metadata = {
+                "profile_version": profile.version,
+                "changed_dimensions": sorted(changed_dimensions),
+                "requested_at": profile.versioned_at.isoformat(),
+            }
+        self.profiles.session.flush()
+        return profile
+
     def update_preferences(self, profile_id: int, **preference_data: object) -> ProfilePreference:
         """Create a new preference revision and mark the profile for reevaluation.
 

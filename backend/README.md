@@ -94,3 +94,19 @@ access controls, or bot protections. Credentials are referenced through local
 configuration and must never be included in source records, job metadata, or
 logs. A source failure is represented in the fetch result so other sources can
 continue processing.
+
+## Profile API (v1)
+
+OpenAPI is published at `/api/v1/openapi.json` (interactive docs at
+`/api/v1/docs`). Profile operations use a stable validation error envelope:
+`{"error":{"code","message","fields":[{"field","message","type"}]}}`.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | `/api/v1/profiles/upload` | Validate and parse a PDF/DOCX CV |
+| `GET` | `/api/v1/profiles/{profile_id}` | Read profile and current preferences |
+| `PATCH` | `/api/v1/profiles/{profile_id}` | Update editable structured fields |
+| `PUT` | `/api/v1/profiles/{profile_id}/preferences` | Create a preference revision |
+
+Upload failures return `422` with `cv_validation_error`; missing profiles
+return `404` with `profile_not_found`. CV contents remain local to the service.

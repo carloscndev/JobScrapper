@@ -415,3 +415,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: no live Notion calls; orphan repair is intentionally non-destructive
 - Commit subject: feat(notion): add synchronization reconciliation
 - Commit hash: 5a283bd820c22e2731c5ac7af6f0af3e89cf8b14
+
+### API-001 — Attempt 3
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: documented profile upload/read/update/preferences endpoints with consistent validation error envelope and reevaluation metadata; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/services.py`, `backend/app/schemas.py`, `backend/README.md`, `tests/backend/test_api_profile.py`, `backend/pyproject.toml`
+- Commands: 8 API tests pass with 5 explicit FastAPI/SQLAlchemy skips; 95 backend tests with 43 skips; compileall; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — endpoint/error contracts and PATCH reevaluation response covered
+- Reviewer: APPROVED — service versioning, metadata, no-op behavior and scope verified
+- Rework: attempt 1 routed PATCH through ProfileService; attempt 2 exposed reevaluation fields in response/static contract
+- Changelog: profile and preferences API endpoints added
+- Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
+- Commit subject: feat(api): expose profile management endpoints
+- Commit hash: pending
