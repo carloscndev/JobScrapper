@@ -324,4 +324,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: job identity, versioning, and inactive history added
 - Risks: SQLAlchemy runtime coverage requires optional dependency installation
 - Commit subject: feat(jobs): deduplicate and version job changes
-- Commit hash: pending
+- Commit hash: 035454175e0e9c470f0a06d6eaecd3e50a7df41d

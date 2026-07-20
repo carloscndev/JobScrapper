@@ -423,7 +423,7 @@
     {
       "id": "JOBS-002",
       "title": "Implement canonical URLs, fingerprints, deduplication, snapshots, and inactive history",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "JOBS-001"
       ],
@@ -431,6 +431,7 @@
       "allowed_paths": [
         "backend/**",
         "tests/backend/**",
+        "docs/JOBS.md",
         "docs/DEVELOPMENT_LOG.md",
         "CHANGELOG.md"
       ],
@@ -438,7 +439,8 @@
         "Repeated jobs do not duplicate",
         "Source provenance and best fields are retained",
         "Description/link changes are detected and closed jobs remain historical"
-      ]
+      ],
+      "commit_hash": "0354541"
     },
     {
       "id": "MATCH-001",
@@ -509,7 +511,7 @@
     {
       "id": "NOTION-001",
       "title": "Configure Notion credentials, schema, and regional views",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "JOBS-002"
       ],
@@ -828,7 +830,7 @@
     {
       "id": "TEST-001",
       "title": "Add parsing, normalization, region, modality, and deduplication fixtures",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "JOBS-002"
       ],
