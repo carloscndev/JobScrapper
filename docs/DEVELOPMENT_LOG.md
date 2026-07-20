@@ -565,3 +565,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: Docker/system service runtime remains environment-dependent
 - Commit subject: feat(ops): add daily scheduler and run locking
 - Commit hash: fd01a629ab82d7448035ab437915a22e5a221b3c
+
+### OPS-004 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: rotating structured logs with secret redaction, configurable CPU/memory/concurrency limits, and persisted execution metrics; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/observability.py`, `backend/app/config.py`, `backend/app/factory.py`, `backend/app/pipeline.py`, `scripts/run_pipeline.py`, `docker-compose.yml`, `tests/backend/test_observability.py`, `backend/README.md`
+- Commands: 118 backend tests with 51 explicit optional-dependency skips; observability 4 tests pass; compileall; py_compile; compose config; harness validation; `git diff --check`
+- Tester: PASS — redaction/rotation, resource settings, concurrency propagation and enriched metrics covered
+- Reviewer: APPROVED — observability, resource bounds and scope verified
+- Rework: attempt 1 wired max_concurrency into runtime and enriched manual refresh metrics
+- Changelog: observable resource-bounded execution added
+- Risks: live container resource enforcement depends on runtime platform
+- Commit subject: feat(ops): add observable resource-bounded execution
+- Commit hash: pending

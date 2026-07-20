@@ -17,10 +17,22 @@ services:
       NOTION_DATABASE_ID: ${NOTION_DATABASE_ID:-}
       NOTION_API_VERSION: ${NOTION_API_VERSION:-2025-09-03}
       NOTION_TIMEOUT_SECONDS: ${NOTION_TIMEOUT_SECONDS:-20}
+      JOBSCRAPPER_LOG_LEVEL: ${JOBSCRAPPER_LOG_LEVEL:-INFO}
+      JOBSCRAPPER_LOG_FILE: ${JOBSCRAPPER_LOG_FILE:-data/jobscrapper.log}
+      JOBSCRAPPER_LOG_MAX_BYTES: ${JOBSCRAPPER_LOG_MAX_BYTES:-10485760}
+      JOBSCRAPPER_LOG_BACKUP_COUNT: ${JOBSCRAPPER_LOG_BACKUP_COUNT:-5}
+      JOBSCRAPPER_MAX_CONCURRENCY: ${JOBSCRAPPER_MAX_CONCURRENCY:-1}
+      JOBSCRAPPER_CPU_LIMIT: ${JOBSCRAPPER_CPU_LIMIT:-1.0}
+      JOBSCRAPPER_MEMORY_LIMIT: ${JOBSCRAPPER_MEMORY_LIMIT:-512M}
     volumes:
       - jobscrapper_data:/app/data
     ports:
       - "${BACKEND_PORT:-8000}:8000"
+    deploy:
+      resources:
+        limits:
+          cpus: "${JOBSCRAPPER_CPU_LIMIT:-1.0}"
+          memory: "${JOBSCRAPPER_MEMORY_LIMIT:-512M}"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
       interval: 15s

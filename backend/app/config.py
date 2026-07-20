@@ -27,6 +27,13 @@ class Settings:
     notion_database_id_env: str = "NOTION_DATABASE_ID"
     notion_api_version: str = "2025-09-03"
     notion_timeout_seconds: float = 20.0
+    log_level: str = "INFO"
+    log_file: str = "data/jobscrapper.log"
+    log_max_bytes: int = 10 * 1024 * 1024
+    log_backup_count: int = 5
+    max_concurrency: int = 1
+    cpu_limit: str = "1.0"
+    memory_limit: str = "512M"
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -56,6 +63,13 @@ class Settings:
             notion_database_id_env=os.getenv("NOTION_DATABASE_ID_ENV", defaults.notion_database_id_env),
             notion_api_version=os.getenv("NOTION_API_VERSION", defaults.notion_api_version),
             notion_timeout_seconds=_parse_float("NOTION_TIMEOUT_SECONDS", defaults.notion_timeout_seconds),
+            log_level=os.getenv("JOBSCRAPPER_LOG_LEVEL", defaults.log_level).upper(),
+            log_file=os.getenv("JOBSCRAPPER_LOG_FILE", defaults.log_file),
+            log_max_bytes=_parse_int("JOBSCRAPPER_LOG_MAX_BYTES", defaults.log_max_bytes, minimum=1024),
+            log_backup_count=_parse_int("JOBSCRAPPER_LOG_BACKUP_COUNT", defaults.log_backup_count, minimum=1),
+            max_concurrency=_parse_int("JOBSCRAPPER_MAX_CONCURRENCY", defaults.max_concurrency, minimum=1),
+            cpu_limit=os.getenv("JOBSCRAPPER_CPU_LIMIT", defaults.cpu_limit),
+            memory_limit=os.getenv("JOBSCRAPPER_MEMORY_LIMIT", defaults.memory_limit),
         )
 
 

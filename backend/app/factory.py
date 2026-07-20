@@ -27,6 +27,7 @@ from .notion import NotionConfig
 from .process_lock import ProcessLock
 
 from .config import Settings
+from .observability import configure_logging
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -37,6 +38,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     """
 
     runtime = settings or Settings.from_env()
+    configure_logging(level=runtime.log_level, path=runtime.log_file,
+                      max_bytes=runtime.log_max_bytes, backup_count=runtime.log_backup_count)
     app = FastAPI(
         title=runtime.app_name,
         version="0.1.0",
@@ -197,10 +200,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     def _run_refresh() -> PipelineExecution:
         with session_factory() as db:
+            started_clock = datetime.now(timezone.utc)
             execution = PipelineExecution(status="running", started_at=datetime.now(timezone.utc), metrics={})
             db.add(execution); db.flush()
             found = failed = 0
-            for source in db.scalars(select(Source).where(Source.enabled.is_(True)).order_by(Source.name)).all():
+            enabled_sources = db.scalars(select(Source).where(Source.enabled.is_(True)).order_by(Source.name)).all()
+            issues_total = 0
+            for source in enabled_sources:
                 started = datetime.now(timezone.utc)
                 source_config = SourceConfig(name=source.name, kind=SourceKind(source.kind), base_url=source.base_url,
                     terms_url=source.terms_url, terms_accepted=bool((source.config or {}).get("terms_accepted")), settings=source.config or {})
@@ -215,6 +221,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 if result:
                     found += len(result.jobs)
                     failed += 1 if result.error else 0
+                    issues_total += 1 if result.error else 0
                     for normalized in result.jobs:
                         JobRepository(db).upsert(Job(source_id=source.id, title=normalized.title, company=normalized.company, description=normalized.description,
                                     description_url=normalized.description_url, application_url=normalized.application_url,
@@ -224,7 +231,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                     published_at=normalized.published_at, metadata_json={**dict(normalized.metadata), "source": source.name}))
             execution.status = "failed" if failed and not found else ("partial" if failed else "success")
             execution.finished_at = datetime.now(timezone.utc)
-            execution.metrics = {"jobs_found": found, "sources_failed": failed}
+            execution.metrics = {"jobs_found": found, "sources_failed": failed,
+                                 "sources_total": len(enabled_sources), "issues_total": issues_total,
+                                 "duration_seconds": round((datetime.now(timezone.utc) - started_clock).total_seconds(), 3),
+                                 "max_concurrency": runtime.max_concurrency}
             db.commit(); db.refresh(execution)
             return execution
 

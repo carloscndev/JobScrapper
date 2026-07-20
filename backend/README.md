@@ -35,6 +35,17 @@ engine configuration without depending on FastAPI.
 The endpoint intentionally checks only process liveness; dependency checks will
 be added with the persistence and integration tasks.
 
+## Structured logging and resource bounds
+
+The service emits one JSON event per line to `JOBSCRAPPER_LOG_FILE` (default
+`data/jobscrapper.log`) and stderr. `JOBSCRAPPER_LOG_MAX_BYTES` and
+`JOBSCRAPPER_LOG_BACKUP_COUNT` bound rotation; messages redact tokens, cookies,
+passwords, authorization headers, and bearer values before writing. Runtime
+limits are configured with `JOBSCRAPPER_MAX_CONCURRENCY`,
+`JOBSCRAPPER_CPU_LIMIT`, and `JOBSCRAPPER_MEMORY_LIMIT`. Compose applies CPU
+and memory values as container limits, while the guarded pipeline lock prevents
+overlapping processes.
+
 ## Migrations
 
 Alembic reads `DATABASE_URL` and falls back to `alembic.ini`. From the repository

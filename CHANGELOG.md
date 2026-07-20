@@ -438,3 +438,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: Docker/system service runtime remains environment-dependent
 - Commit subject: feat(ops): add daily scheduler and run locking
 - Commit hash: fd01a629ab82d7448035ab437915a22e5a221b3c
+
+### OPS-004 — Attempt 2
+
+- Added JSON rotating/redacted logs, configurable CPU/memory/concurrency limits, Compose resource limits, and persisted duration/source/error/concurrency metrics.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/observability.py`, `backend/app/config.py`, `backend/app/factory.py`, `backend/app/pipeline.py`, `scripts/run_pipeline.py`, `docker-compose.yml`, `tests/backend/test_observability.py`, `backend/README.md`
+- Commands: 118 backend tests with 51 explicit optional-dependency skips; observability 4 tests pass; compileall; py_compile; compose config; harness validation; `git diff --check`
+- Tester: PASS — observability and limits covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: live container resource enforcement depends on runtime platform
+- Commit subject: feat(ops): add observable resource-bounded execution
+- Commit hash: pending

@@ -10,6 +10,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Mapping, Sequence
 from uuid import uuid4
+from time import monotonic
+import logging
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -59,10 +61,13 @@ class JobPipeline:
 
     def __init__(self, session: Session, *, adapters: Sequence[SourceAdapter] = DEFAULT_ADAPTERS,
                  notion: NotionSyncService | None = None, analyzer: Any | None = None,
-                 max_jobs: int = 100) -> None:
+                 max_jobs: int = 100, max_concurrency: int = 1) -> None:
         if max_jobs < 1:
             raise ValueError("max_jobs must be greater than zero")
-        self.session, self.notion, self.analyzer, self.max_jobs = session, notion, analyzer, max_jobs
+        if max_concurrency < 1:
+            raise ValueError("max_concurrency must be greater than zero")
+        self.session, self.notion, self.analyzer = session, notion, analyzer
+        self.max_jobs, self.max_concurrency = max_jobs, max_concurrency
         self.adapters = {adapter.name: adapter for adapter in adapters}
 
     def _adapter(self, source: Source, config: Mapping[str, Any]) -> SourceAdapter | None:
@@ -79,7 +84,10 @@ class JobPipeline:
                             max_retries=int(values.get("max_retries", 2)), settings=values)
 
     def run(self, profile: Profile, sources: Sequence[Source] | None = None) -> PipelineReport:
+        started_clock = monotonic()
         run_id = str(uuid4())
+        logger = logging.getLogger("jobscrapper.pipeline")
+        logger.info("pipeline_started", extra={"event": "pipeline_started", "run_id": run_id})
         report = PipelineReport(run_id, "running")
         execution = PipelineExecution(run_id=run_id, status="running", started_at=datetime.now(timezone.utc), metrics={})
         self.session.add(execution); self.session.flush(); report.execution_id = execution.id
@@ -166,7 +174,13 @@ class JobPipeline:
         report.status = "failed" if report.issues and not successful else ("partial" if report.issues else "success")
         execution.status = report.status
         execution.finished_at = datetime.now(timezone.utc)
-        execution.metrics = report.as_dict()["metrics"]
+        metrics = report.as_dict()["metrics"]
+        metrics.update({"duration_seconds": round(monotonic() - started_clock, 3),
+                        "sources_total": len(source_items), "issues_total": len(report.issues),
+                        "max_concurrency": self.max_concurrency})
+        execution.metrics = metrics
         execution.error = "; ".join(issue.message for issue in report.issues)[:2000] or None
         self.session.commit()
+        logger.info("pipeline_finished", extra={"event": "pipeline_finished", "run_id": run_id,
+                                                 "execution_id": execution.id})
         return report

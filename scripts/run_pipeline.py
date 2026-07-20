@@ -40,6 +40,9 @@ def main(argv: list[str] | None = None) -> int:
         from app.repositories import ProfileRepository
         from sqlalchemy import select
         settings = Settings.from_env()
+        from app.observability import configure_logging
+        configure_logging(level=settings.log_level, path=settings.log_file,
+                          max_bytes=settings.log_max_bytes, backup_count=settings.log_backup_count)
         engine = create_db_engine(settings)
         Base.metadata.create_all(engine)
         sessions = create_session_factory(engine)
@@ -54,7 +57,8 @@ def main(argv: list[str] | None = None) -> int:
             notion = None
             if not args.no_notion:
                 notion = NotionSyncService(NotionHttpClient(NotionConfig.from_settings(settings)))
-            report = JobPipeline(db, notion=notion, analyzer=analyzer, max_jobs=args.max_jobs).run(profile)
+            report = JobPipeline(db, notion=notion, analyzer=analyzer, max_jobs=args.max_jobs,
+                                 max_concurrency=settings.max_concurrency).run(profile)
             print(json.dumps(report.as_dict(), ensure_ascii=False, default=str))
             return 0 if report.status in {"success", "partial"} else 1
     finally:
