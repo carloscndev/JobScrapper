@@ -580,3 +580,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: live container resource enforcement depends on runtime platform
 - Commit subject: feat(ops): add observable resource-bounded execution
 - Commit hash: 995f132d1314447a94994d5b0f2c5d5f643523ce
+
+### OPS-005 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: documented restart/reboot, backup/restore, update/rollback, and failure recovery procedures; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `scripts/ops.sh`, `docs/OPERATIONS.md`, `README.md`
+- Commands: bash syntax/help/static safeguard checks; compileall; harness validation; `git diff --check`; shellcheck unavailable
+- Tester: PASS — executable script, confirmations, clean-tree/ff-only, Compose/health checks and recovery docs covered
+- Reviewer: APPROVED — maintenance workflow and safety verified
+- Rework: none
+- Changelog: recovery and maintenance operations documented
+- Risks: shellcheck unavailable; runtime Docker/service checks remain environment-dependent
+- Commit subject: docs(ops): document recovery and maintenance
+- Commit hash: pending

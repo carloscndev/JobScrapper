@@ -72,6 +72,11 @@ backlog phase index. Operational procedures for cron, backup/restore, and recove
 are delivered by the corresponding `OPS-*` tasks and must be reflected here before
 the `RELEASE-001` gate.
 
+For the Compose deployment, use `scripts/ops.sh` for restart, backup/restore,
+update, rollback, recovery, and reproducible health checks. The complete runbook
+is [docs/OPERATIONS.md](docs/OPERATIONS.md); it documents explicit confirmation
+and clean-working-tree guards for state-changing operations.
+
 ## Container startup
 
 Docker Compose runs the API on `http://localhost:8000` and the dashboard on

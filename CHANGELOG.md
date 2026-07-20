@@ -450,3 +450,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: live container resource enforcement depends on runtime platform
 - Commit subject: feat(ops): add observable resource-bounded execution
 - Commit hash: 995f132d1314447a94994d5b0f2c5d5f643523ce
+
+### OPS-005 — Attempt 1
+
+- Added operations script and documentation for reboot restart, backups/restores, updates, rollback, recovery and health checks with destructive confirmations.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `scripts/ops.sh`, `docs/OPERATIONS.md`, `README.md`
+- Commands: bash syntax/help/static safeguard checks; compileall; harness validation; `git diff --check`; shellcheck unavailable
+- Tester: PASS — maintenance safeguards covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: shellcheck unavailable; runtime Docker/service checks remain environment-dependent
+- Commit subject: docs(ops): document recovery and maintenance
+- Commit hash: pending
