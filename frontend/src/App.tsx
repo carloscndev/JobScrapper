@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { createApiClient, type HealthStatus } from "./api/client";
+import { createApiClient, type ExecutionSummary, type HealthStatus, type OperationsHealth, type OperationsMetrics, type SourceSummary } from "./api/client";
 import "./styles.css";
 
-type Section = "profile" | "preferences" | "vacancies";
+type Section = "profile" | "preferences" | "vacancies" | "operations";
 type WorkMode = "Remoto" | "Híbrido" | "Presencial";
 
 interface ProfileDraft {
@@ -102,15 +102,67 @@ function App() {
           <button id="tab-vacancies" role="tab" type="button" className={section === "vacancies" ? "tab active" : "tab"} aria-controls="vacancies-panel" aria-selected={section === "vacancies"} onClick={() => setSection("vacancies")}>Ofertas</button>
           <button id="tab-profile" role="tab" type="button" className={section === "profile" ? "tab active" : "tab"} aria-controls="profile-panel" aria-selected={section === "profile"} onClick={() => setSection("profile")}>CV y perfil</button>
           <button id="tab-preferences" role="tab" type="button" className={section === "preferences" ? "tab active" : "tab"} aria-controls="preferences-panel" aria-selected={section === "preferences"} onClick={() => setSection("preferences")}>Preferencias y pesos</button>
+          <button id="tab-operations" role="tab" type="button" className={section === "operations" ? "tab active" : "tab"} aria-controls="operations-panel" aria-selected={section === "operations"} onClick={() => setSection("operations")}>Operación</button>
         </nav>
 
-        {section === "vacancies" ? <VacancyDashboard /> : section === "profile" ? <ProfileSection draft={draft} cvName={cvName} setCvName={setCvName} update={update} /> : <PreferencesSection draft={draft} update={update} />}
+        {section === "vacancies" ? <VacancyDashboard /> : section === "operations" ? <OperationsDashboard /> : section === "profile" ? <ProfileSection draft={draft} cvName={cvName} setCvName={setCvName} update={update} /> : <PreferencesSection draft={draft} update={update} />}
 
-        {section !== "vacancies" && <div className="save-bar"><div aria-live="polite"><strong>{saved ? "Cambios guardados" : "Perfil versión 3"}</strong><span>{saved ? "Tu próxima evaluación usará esta configuración." : "Los cambios crearán una nueva versión y reevaluarán las ofertas."}</span></div><button type="button" className="primary-button" onClick={save}>{saved ? "Guardado" : "Guardar cambios"}</button></div>}
+        {(section === "profile" || section === "preferences") && <div className="save-bar"><div aria-live="polite"><strong>{saved ? "Cambios guardados" : "Perfil versión 3"}</strong><span>{saved ? "Tu próxima evaluación usará esta configuración." : "Los cambios crearán una nueva versión y reevaluarán las ofertas."}</span></div><button type="button" className="primary-button" onClick={save}>{saved ? "Guardado" : "Guardar cambios"}</button></div>}
       </main>
     </div>
   );
 }
+
+const fallbackSources: SourceSummary[] = [
+  { id: 1, name: "Greenhouse", kind: "career_page", base_url: "https://boards.greenhouse.io", enabled: true },
+  { id: 2, name: "Lever", kind: "career_page", base_url: "https://jobs.lever.co", enabled: true },
+];
+
+const fallbackExecutions: ExecutionSummary[] = [{ run_id: "local-demo", status: "success", started_at: "2026-07-19T08:00:00Z", finished_at: "2026-07-19T08:01:14Z", metrics: { jobs_found: VACANCIES.length, sources_failed: 0 }, error: null }];
+const fallbackMetrics: OperationsMetrics = { jobs: { total: VACANCIES.length, active: VACANCIES.length - 1 }, sources: { total: 2, enabled: 2 }, executions: { total: 1, running: 0 } };
+
+function OperationsDashboard() {
+  const [sources, setSources] = useState<SourceSummary[]>(fallbackSources);
+  const [executions, setExecutions] = useState<ExecutionSummary[]>(fallbackExecutions);
+  const [metrics, setMetrics] = useState<OperationsMetrics>(fallbackMetrics);
+  const [operationsHealth, setOperationsHealth] = useState<OperationsHealth | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+
+  const load = async () => {
+    setLoading(true); setError(null);
+    try {
+      const [nextSources, nextExecutions, nextMetrics, nextHealth] = await Promise.all([apiClient.getSources(), apiClient.getExecutions(), apiClient.getMetrics(), apiClient.getOperationsHealth()]);
+      setSources(nextSources); setExecutions(nextExecutions); setMetrics(nextMetrics); setOperationsHealth(nextHealth); setLastUpdated(new Date().toISOString());
+    } catch { setError("No pudimos consultar la API. Mostramos el último estado local disponible."); }
+    finally { setLoading(false); }
+  };
+  useEffect(() => { void load(); }, []);
+  const manualRefresh = async () => {
+    setRefreshing(true); setError(null);
+    try { const run = await apiClient.refresh(); setExecutions((current) => [run, ...current].slice(0, 10)); setLastUpdated(new Date().toISOString()); }
+    catch { setError("La actualización no pudo iniciarse. Revisa si ya existe una ejecución en curso."); }
+    finally { setRefreshing(false); }
+  };
+  const toggleSource = (id: number) => setSources((current) => current.map((source) => source.id === id ? { ...source, enabled: !source.enabled } : source));
+  const healthy = operationsHealth?.status === "ok";
+  const highMatch = VACANCIES.filter((job) => (job.score ?? 0) >= 90).length;
+
+  return <section id="operations-panel" className="operations-dashboard" role="tabpanel" aria-labelledby="tab-operations" tabIndex={0}>
+    <div className="dashboard-heading"><div><p className="eyebrow">Centro de operaciones</p><h2>Estado de la búsqueda</h2><p className="hero-copy">Supervisa fuentes, ejecuciones y la salud de tus integraciones locales.</p></div><button type="button" className="primary-button" onClick={manualRefresh} disabled={refreshing} aria-busy={refreshing}>{refreshing ? "Actualizando…" : "Actualizar ofertas"}</button></div>
+    {error && <div className="error-callout" role="alert"><strong>Estado temporalmente limitado</strong><span>{error}</span><button type="button" className="secondary-button compact" onClick={() => void load()}>Reintentar</button></div>}
+    {loading ? <div className="loading-state" role="status" aria-live="polite"><span className="loading-spinner" aria-hidden="true" />Cargando estado operativo…</div> : <>
+      <div className="ops-metrics" aria-label="Métricas de operación"><Metric label="Ofertas activas" value={metrics.jobs.active} hint={`${metrics.jobs.total} registradas`} /><Metric label="Ejecuciones" value={metrics.executions.total} hint={`${metrics.executions.running} en curso`} /><Metric label="Alta compatibilidad" value={highMatch} hint="90% o más" accent /><Metric label="Última actualización" value={lastUpdated ? new Date(lastUpdated).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) : "Local"} hint="hora local" /></div>
+      <div className="operations-grid"><section className="panel" aria-labelledby="sources-title"><div className="panel-heading"><div><p className="card-kicker">Ingesta</p><h3 id="sources-title">Fuentes conectadas</h3></div><span className="source-count">{sources.filter((source) => source.enabled).length}/{sources.length} activas</span></div><p className="muted">Activa o pausa una fuente sin perder su configuración.</p>{sources.length ? <ul className="source-list">{sources.map((source) => <li key={source.id}><div><strong>{source.name}</strong><span>{source.kind} · {source.base_url}</span></div><button type="button" className={`toggle ${source.enabled ? "on" : ""}`} aria-pressed={source.enabled} onClick={() => toggleSource(source.id)}><span aria-hidden="true" />{source.enabled ? "Activa" : "Pausada"}</button></li>)}</ul> : <div className="empty-state"><strong>No hay fuentes configuradas.</strong><span>Agrega una fuente para iniciar la búsqueda.</span></div>}</section>
+        <section className="panel" aria-labelledby="health-title"><div className="panel-heading"><div><p className="card-kicker">Disponibilidad</p><h3 id="health-title">Salud de servicios</h3></div><span className={`health-badge ${healthy ? "healthy" : "degraded"}`}><i aria-hidden="true" />{healthy ? "Saludable" : "Revisar"}</span></div><ul className="health-list">{Object.entries(operationsHealth?.checks ?? { api: { status: "local" }, database: { status: "local" }, ollama: { status: "opcional" }, notion: { status: "opcional" } }).map(([name, check]) => <li key={name}><span>{name === "api" ? "API" : name === "database" ? "SQLite" : name === "ollama" ? "Modelo local" : "Notion"}</span><strong className={check.status === "ok" || check.status === "local" ? "ok" : "muted-status"}>{check.status}</strong></li>)}</ul></section></div>
+      <section className="panel execution-panel" aria-labelledby="executions-title"><div className="panel-heading"><div><p className="card-kicker">Historial</p><h3 id="executions-title">Últimas ejecuciones</h3></div><span className="muted">{executions.length} mostradas</span></div>{executions.length ? <div className="execution-table-wrap"><table><caption className="sr-only">Historial de ejecuciones de búsqueda</caption><thead><tr><th scope="col">Estado</th><th scope="col">Inicio</th><th scope="col">Ofertas</th><th scope="col">Errores</th></tr></thead><tbody>{executions.map((run) => <tr key={run.run_id}><td><span className={`run-status ${run.status}`}>{run.status}</span></td><td>{run.started_at ? new Date(run.started_at).toLocaleString("es-MX") : "—"}</td><td>{run.metrics.jobs_found ?? 0}</td><td>{run.metrics.sources_failed ?? (run.error ? 1 : 0)}</td></tr>)}</tbody></table></div> : <div className="empty-state"><strong>Aún no hay ejecuciones.</strong><span>Usa “Actualizar ofertas” para iniciar la primera.</span></div>}</section>
+    </>}
+  </section>;
+}
+
+function Metric({ label, value, hint, accent = false }: { label: string; value: number | string; hint: string; accent?: boolean }) { return <div className={`metric-card ${accent ? "accent" : ""}`}><span>{label}</span><strong>{value}</strong><small>{hint}</small></div>; }
 
 function VacancyDashboard() {
   const [region, setRegion] = useState("Todas"); const [modality, setModality] = useState("Todas"); const [status, setStatus] = useState("Todos");

@@ -505,3 +505,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add vacancy detail and recommendations
 - Commit hash: d2e3a74f66fc06f0303f3694bd217a80b064246e
+
+### FRONTEND-005 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: operations/source toggles, runs/errors/health/last update/manual refresh/high-match, accessible loading/error/empty states and responsive behavior; PASS
+- Skills: coordinator none; coder `vercel-react-best-practices`, `web-design-guidelines`; tester none; reviewer `vercel-react-best-practices`, `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `frontend/src/styles.css`, `tests/frontend/test_frontend_operations.py`
+- Commands: frontend suite 23 tests pass; compileall; `git diff --check`; npm build skipped because node_modules/tsc unavailable
+- Tester: PASS — operations contracts and reduced-motion regression covered
+- Reviewer: APPROVED — accessibility, responsive behavior and scope verified
+- Rework: attempt 1 added prefers-reduced-motion rule for loading spinner
+- Changelog: operations dashboard and health screens added
+- Risks: install frontend dependencies before build and browser E2E validation
+- Commit subject: feat(web): add operations dashboard
+- Commit hash: pending

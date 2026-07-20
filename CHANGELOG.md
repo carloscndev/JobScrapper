@@ -390,3 +390,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add vacancy detail and recommendations
 - Commit hash: d2e3a74f66fc06f0303f3694bd217a80b064246e
+
+### FRONTEND-005 — Attempt 2
+
+- Added operations dashboard with source toggles, metrics, health, executions, errors, refresh, loading/error/empty states and reduced-motion support.
+- Skills: coder/reviewer `vercel-react-best-practices`, `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `frontend/src/styles.css`, `tests/frontend/test_frontend_operations.py`
+- Commands: frontend suite 23 tests pass; compileall; `git diff --check`; npm build skipped because node_modules/tsc unavailable
+- Tester: PASS — operations and accessibility contracts covered
+- Reviewer: APPROVED — UI/accessibility/performance review complete
+- Risks: install frontend dependencies before build and browser E2E validation
+- Commit subject: feat(web): add operations dashboard
+- Commit hash: pending
