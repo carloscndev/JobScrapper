@@ -365,4 +365,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — UI/accessibility/performance review complete
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add profile configuration screens
-- Commit hash: pending
+- Commit hash: ba255f900fc137ae0d66a306115010479c6f567e

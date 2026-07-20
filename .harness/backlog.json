@@ -645,7 +645,7 @@
     {
       "id": "FRONTEND-002",
       "title": "Build profile and CV configuration screens",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-001",
         "API-001"
@@ -660,7 +660,8 @@
       "acceptance": [
         "CV extraction can be reviewed and corrected",
         "Preferences, constraints, weights, version, and reevaluation warning are visible"
-      ]
+      ],
+      "commit_hash": "ba255f9"
     },
     {
       "id": "FRONTEND-003",

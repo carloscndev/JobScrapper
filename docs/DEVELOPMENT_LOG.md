@@ -474,4 +474,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: profile and CV configuration screens added
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add profile configuration screens
-- Commit hash: pending
+- Commit hash: ba255f900fc137ae0d66a306115010479c6f567e
