@@ -58,7 +58,7 @@ class IngestionDashboardE2ETests(unittest.TestCase):
                     page = browser.new_page()
                     page.on("console", lambda message: browser_logs.append(f"{message.type}: {message.text}"))
                     page.goto(base_url, wait_until="networkidle")
-                    page.get_by_role("button", name="Ofertas").click()
+                    page.get_by_role("tab", name="Ofertas").click()
                     card = page.get_by_role("button", name="Ver detalle de Senior Backend Engineer en Nubank")
                     card.click()
                     self.assertEqual(page.locator("#vacancy-detail-title").inner_text(), "Senior Backend Engineer")
