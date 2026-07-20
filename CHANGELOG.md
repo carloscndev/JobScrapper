@@ -317,4 +317,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: no live Notion calls; orphan repair is intentionally non-destructive
 - Commit subject: feat(notion): add synchronization reconciliation
-- Commit hash: pending
+- Commit hash: 5a283bd820c22e2731c5ac7af6f0af3e89cf8b14

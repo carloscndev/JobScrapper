@@ -560,7 +560,7 @@
     {
       "id": "NOTION-003",
       "title": "Add Notion reconciliation and repair workflow",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "NOTION-002"
       ],
@@ -574,7 +574,8 @@
       "acceptance": [
         "Differences between SQLite and Notion are detected",
         "Repair is retryable and auditable"
-      ]
+      ],
+      "commit_hash": "5a283bd"
     },
     {
       "id": "API-001",
@@ -872,7 +873,7 @@
     {
       "id": "TEST-003",
       "title": "Add source isolation, Notion idempotency, rate-limit, and reconciliation tests",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "NOTION-003",
         "SOURCES-003"
