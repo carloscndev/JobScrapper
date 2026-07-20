@@ -731,7 +731,7 @@
     {
       "id": "OPS-001",
       "title": "Create Docker images, Compose volumes, and local startup documentation",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "BACKEND-001",
         "FRONTEND-001"
@@ -750,7 +750,8 @@
         "Backend and frontend run with Docker Compose",
         "Persistent volumes are configured",
         "Ollama can be local or external"
-      ]
+      ],
+      "commit_hash": "68a3857"
     },
     {
       "id": "OPS-002",

@@ -534,4 +534,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: local container orchestration added
 - Risks: Docker daemon unavailable for image build; frontend dependency lockfile remains future hardening
 - Commit subject: build(ops): add local container orchestration
-- Commit hash: pending
+- Commit hash: 68a3857721766ef653ffe8e6cabca4b1fb12f490
