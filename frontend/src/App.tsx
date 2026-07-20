@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createApiClient, type HealthStatus } from "./api/client";
 import "./styles.css";
 
-type Section = "profile" | "preferences";
+type Section = "profile" | "preferences" | "vacancies";
 type WorkMode = "Remoto" | "Híbrido" | "Presencial";
 
 interface ProfileDraft {
@@ -22,6 +22,18 @@ interface ProfileDraft {
   weightLocation: number;
   weightMode: number;
 }
+
+type VacancyStatus = "new" | "changed" | "inactive" | "pending";
+type Vacancy = { id: number; title: string; company: string; region: string; modality: WorkMode; score: number | null; source: string; publishedAt: string; status: VacancyStatus };
+
+const VACANCIES: Vacancy[] = [
+  { id: 1, title: "Senior Backend Engineer", company: "Nubank", region: "CDMX", modality: "Híbrido", score: 94, source: "Greenhouse", publishedAt: "2026-07-19", status: "new" },
+  { id: 2, title: "Staff Software Engineer", company: "Google", region: "USA", modality: "Remoto", score: 91, source: "Lever", publishedAt: "2026-07-18", status: "changed" },
+  { id: 3, title: "Full-stack Engineer", company: "Kueski", region: "Guadalajara", modality: "Híbrido", score: 86, source: "LinkedIn", publishedAt: "2026-07-16", status: "pending" },
+  { id: 4, title: "Platform Engineer", company: "Stripe", region: "USA", modality: "Remoto", score: 78, source: "Greenhouse", publishedAt: "2026-07-12", status: "inactive" },
+  { id: 5, title: "Software Engineering Manager", company: "Rappi", region: "CDMX", modality: "Presencial", score: 74, source: "Lever", publishedAt: "2026-07-10", status: "new" },
+  { id: 6, title: "API Engineer", company: "Clip", region: "CDMX", modality: "Híbrido", score: 69, source: "LinkedIn", publishedAt: "2026-07-08", status: "pending" },
+];
 
 const initialDraft: ProfileDraft = {
   name: "Carlos Castañeda",
@@ -87,16 +99,33 @@ function App() {
         <div className="page-heading"><div><p className="eyebrow">Configuración</p><h1 id="page-title">Tu perfil de búsqueda</h1><p className="hero-copy">Revisa lo que extrajimos de tu CV y ajusta qué hace relevante una oferta.</p></div><button type="button" className="secondary-button compact" onClick={refreshHealth} disabled={isRefreshing}>{isRefreshing ? "Comprobando…" : "Comprobar conexión"}</button></div>
 
         <nav className="tabs" role="tablist" aria-label="Secciones del perfil">
+          <button id="tab-vacancies" role="tab" type="button" className={section === "vacancies" ? "tab active" : "tab"} aria-controls="vacancies-panel" aria-selected={section === "vacancies"} onClick={() => setSection("vacancies")}>Ofertas</button>
           <button id="tab-profile" role="tab" type="button" className={section === "profile" ? "tab active" : "tab"} aria-controls="profile-panel" aria-selected={section === "profile"} onClick={() => setSection("profile")}>CV y perfil</button>
           <button id="tab-preferences" role="tab" type="button" className={section === "preferences" ? "tab active" : "tab"} aria-controls="preferences-panel" aria-selected={section === "preferences"} onClick={() => setSection("preferences")}>Preferencias y pesos</button>
         </nav>
 
-        {section === "profile" ? <ProfileSection draft={draft} cvName={cvName} setCvName={setCvName} update={update} /> : <PreferencesSection draft={draft} update={update} />}
+        {section === "vacancies" ? <VacancyDashboard /> : section === "profile" ? <ProfileSection draft={draft} cvName={cvName} setCvName={setCvName} update={update} /> : <PreferencesSection draft={draft} update={update} />}
 
-        <div className="save-bar"><div aria-live="polite"><strong>{saved ? "Cambios guardados" : "Perfil versión 3"}</strong><span>{saved ? "Tu próxima evaluación usará esta configuración." : "Los cambios crearán una nueva versión y reevaluarán las ofertas."}</span></div><button type="button" className="primary-button" onClick={save}>{saved ? "Guardado" : "Guardar cambios"}</button></div>
+        {section !== "vacancies" && <div className="save-bar"><div aria-live="polite"><strong>{saved ? "Cambios guardados" : "Perfil versión 3"}</strong><span>{saved ? "Tu próxima evaluación usará esta configuración." : "Los cambios crearán una nueva versión y reevaluarán las ofertas."}</span></div><button type="button" className="primary-button" onClick={save}>{saved ? "Guardado" : "Guardar cambios"}</button></div>}
       </main>
     </div>
   );
+}
+
+function VacancyDashboard() {
+  const [region, setRegion] = useState("Todas"); const [modality, setModality] = useState("Todas"); const [status, setStatus] = useState("Todos");
+  const [company, setCompany] = useState(""); const [source, setSource] = useState("Todas"); const [minScore, setMinScore] = useState(0); const [date, setDate] = useState("Cualquier fecha");
+  const [sort, setSort] = useState<"score" | "date" | "company">("score"); const [page, setPage] = useState(1); const pageSize = 4;
+  const filtered = useMemo(() => VACANCIES.filter((job) => (region === "Todas" || job.region === region) && (modality === "Todas" || job.modality === modality) && (status === "Todos" || job.status === status) && (source === "Todas" || job.source === source) && job.score !== null && job.score >= minScore && job.company.toLowerCase().includes(company.toLowerCase()) && (date === "Cualquier fecha" || job.publishedAt >= date)).sort((a, b) => sort === "score" ? (b.score ?? 0) - (a.score ?? 0) : sort === "company" ? a.company.localeCompare(b.company) : b.publishedAt.localeCompare(a.publishedAt)), [region, modality, status, source, minScore, company, date, sort]);
+  const pages = Math.max(1, Math.ceil(filtered.length / pageSize)); const visible = filtered.slice((page - 1) * pageSize, page * pageSize);
+  useEffect(() => { setPage(1); }, [region, modality, status, source, minScore, company, date, sort]);
+  return <section id="vacancies-panel" className="vacancy-dashboard" role="tabpanel" aria-labelledby="tab-vacancies" tabIndex={0}>
+    <div className="dashboard-heading"><div><p className="eyebrow">Búsqueda inteligente</p><h2>Ofertas para ti</h2><p className="hero-copy">{filtered.length} oportunidades compatibles, actualizadas continuamente.</p></div><button type="button" className="secondary-button">Actualizar ofertas</button></div>
+    <div className="filter-panel" aria-label="Filtros de ofertas"><label>Región<select value={region} onChange={(e) => setRegion(e.target.value)}><option>Todas</option><option>CDMX</option><option>Guadalajara</option><option>USA</option></select></label><label>Modalidad<select value={modality} onChange={(e) => setModality(e.target.value)}><option>Todas</option><option>Remoto</option><option>Híbrido</option><option>Presencial</option></select></label><label>Score mínimo<output className="range-output">{minScore}%</output><input aria-label="Score mínimo" type="range" min="0" max="100" step="5" value={minScore} onChange={(e) => setMinScore(Number(e.target.value))} /></label><label>Empresa<input value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Buscar empresa" /></label><label>Fuente<select value={source} onChange={(e) => setSource(e.target.value)}><option>Todas</option><option>Greenhouse</option><option>Lever</option><option>LinkedIn</option></select></label><label>Desde<select value={date} onChange={(e) => setDate(e.target.value)}><option>Cualquier fecha</option><option>2026-07-15</option><option>2026-07-18</option></select></label><label>Estado<select value={status} onChange={(e) => setStatus(e.target.value)}><option>Todos</option><option value="new">Nuevas</option><option value="changed">Cambiaron</option><option value="inactive">Inactivas</option><option value="pending">Pendientes</option></select></label><label>Ordenar<select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)}><option value="score">Compatibilidad</option><option value="date">Más recientes</option><option value="company">Empresa A-Z</option></select></label></div>
+    <div className="status-legend" aria-label="Estados de ofertas">{([["new", "Nuevas"], ["changed", "Cambió contenido"], ["inactive", "Inactivas"], ["pending", "Pendientes"]] as const).map(([key, label]) => <span key={key}><i className={`status-dot ${key}`} aria-hidden="true" />{label}</span>)}</div>
+    <div className="vacancy-list" aria-live="polite">{visible.length ? visible.map((job) => <article className="vacancy-card" key={job.id}><div className="vacancy-main"><div className="vacancy-title-row"><h3>{job.title}</h3><span className={`status-pill ${job.status}`}>{job.status === "new" ? "Nueva" : job.status === "changed" ? "Cambió" : job.status === "inactive" ? "Inactiva" : "Pendiente"}</span></div><p className="vacancy-company">{job.company} · {job.region} · {job.modality}</p><p className="vacancy-meta">Fuente: {job.source} · Publicada {job.publishedAt}</p></div><div className="score-badge" aria-label={`${job.score}% de compatibilidad`}><strong>{job.score}%</strong><span>match</span></div></article>) : <div className="empty-state"><strong>No hay ofertas con estos filtros.</strong><span>Prueba ampliar la región o bajar el score mínimo.</span></div>}</div>
+    <div className="pagination" aria-label="Paginación"><span>Mostrando {visible.length ? (page - 1) * pageSize + 1 : 0}–{Math.min(page * pageSize, filtered.length)} de {filtered.length}</span><div><button type="button" className="secondary-button compact" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>Anterior</button><span className="page-number">Página {page} de {pages}</span><button type="button" className="secondary-button compact" disabled={page >= pages} onClick={() => setPage((p) => p + 1)}>Siguiente</button></div></div>
+  </section>;
 }
 
 function ProfileSection({ draft, cvName, setCvName, update }: { draft: ProfileDraft; cvName: string; setCvName: (name: string) => void; update: <K extends keyof ProfileDraft>(key: K, value: ProfileDraft[K]) => void }) {

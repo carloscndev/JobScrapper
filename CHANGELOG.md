@@ -366,3 +366,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add profile configuration screens
 - Commit hash: ba255f900fc137ae0d66a306115010479c6f567e
+
+### FRONTEND-003 — Attempt 1
+
+- Added paginated vacancy dashboard with composed filters, sorting, lifecycle status indicators, empty state and responsive accessible layout.
+- Skills: coder/reviewer `vercel-react-best-practices`, `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `frontend/src/styles.css`, `tests/frontend/test_frontend_dashboard.py`
+- Commands: frontend suite 13 tests pass; compileall; `git diff --check`; npm build skipped because node_modules/tsc unavailable
+- Tester: PASS — dashboard contracts covered
+- Reviewer: APPROVED — UI/accessibility/performance review complete
+- Risks: install frontend dependencies before build and browser E2E validation
+- Commit subject: feat(web): add vacancy search dashboard
+- Commit hash: pending
