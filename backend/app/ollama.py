@@ -87,6 +87,10 @@ def _loopback(url: str) -> bool:
     if parsed.scheme != "http" or not parsed.hostname or parsed.path.rstrip("/") not in {"", "/api"}:
         return False
     host = parsed.hostname.casefold()
+    # Docker Desktop routes host services through this fixed local gateway;
+    # Compose uses the fixed service name for an in-network Ollama instance.
+    if host in {"host.docker.internal", "ollama"}:
+        return True
     if host in {"localhost", "ip6-localhost"}:
         return True
     try:
@@ -101,7 +105,7 @@ class OllamaAnalyzer:
     def __init__(self, *, base_url: str = "http://127.0.0.1:11434", model: str = "llama3.2:3b", timeout_seconds: float = 30.0, num_ctx: int = 2048, num_thread: int = 2, max_retries: int = 2, retry_backoff_seconds: float = 0.1, opener: Callable[..., Any] | None = None) -> None:
         self.base_url = base_url.rstrip("/")
         if not _loopback(self.base_url):
-            raise ValueError("Ollama must use a local loopback HTTP endpoint")
+            raise ValueError("Ollama must use an approved local HTTP endpoint")
         if not model.strip() or timeout_seconds <= 0 or num_ctx < 256 or num_thread < 1 or max_retries < 0 or retry_backoff_seconds < 0:
             raise ValueError("invalid Ollama resource configuration")
         self.model, self.timeout_seconds = model.strip(), timeout_seconds

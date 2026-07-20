@@ -56,6 +56,8 @@ class _FailingOpener:
 
 class OllamaContractTests(unittest.TestCase):
     def test_loopback_only_and_resource_configuration(self) -> None:
+        for url in ("http://host.docker.internal:11434", "http://ollama:11434"):
+            OllamaAnalyzer(base_url=url)
         for url in ("https://127.0.0.1:11434", "http://192.168.1.10:11434", "http://127.0.0.1:11434/api/generate"):
             with self.assertRaises(ValueError):
                 OllamaAnalyzer(base_url=url)

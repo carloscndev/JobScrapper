@@ -135,8 +135,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             checks["database"] = {"status": "error", "message": str(exc)[:200]}
         try:
             parsed = urlparse(runtime.ollama_base_url)
-            if parsed.hostname not in {"localhost", "127.0.0.1", "::1"}:
-                raise ValueError("Ollama endpoint is not loopback")
+            if parsed.hostname not in {"localhost", "127.0.0.1", "::1", "host.docker.internal", "ollama"}:
+                raise ValueError("Ollama endpoint is not an approved local host")
             request = UrlRequest(runtime.ollama_base_url.rstrip("/") + "/api/tags", headers={"User-Agent": "JobScrapper-health/1.0"})
             with urlopen(request, timeout=min(runtime.ollama_timeout_seconds, 2.0)):
                 pass
