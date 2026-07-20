@@ -234,3 +234,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: SQLAlchemy/FastAPI runtime coverage requires optional dependency installation
 - Commit subject: feat(jobs): normalize job records and regions
 - Commit hash: 121a0b4e6d1edf06c114aa6986ab9a31a48b0e3e
+
+### JOBS-002 — Attempt 2
+
+- Added canonical URL normalization, stable fingerprints, deduplication, provenance merge, content snapshots, and inactive history tracking.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/jobs.py`, `backend/app/repositories.py`, `tests/backend/test_jobs.py`, `docs/JOBS.md`
+- Commands: 58 backend tests with 32 explicit optional-dependency skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — identity, snapshots, history, and partial-upsert regression covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: SQLAlchemy runtime coverage requires optional dependency installation
+- Commit subject: feat(jobs): deduplicate and version job changes
+- Commit hash: pending

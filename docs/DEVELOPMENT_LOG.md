@@ -310,3 +310,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: SQLAlchemy/FastAPI runtime coverage requires optional dependency installation
 - Commit subject: feat(jobs): normalize job records and regions
 - Commit hash: 121a0b4e6d1edf06c114aa6986ab9a31a48b0e3e
+
+### JOBS-002 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: canonical URLs/fingerprints, deduplication, provenance-preserving merge, snapshots on effective changes, and inactive historical records; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/jobs.py`, `backend/app/repositories.py`, `tests/backend/test_jobs.py`, `docs/JOBS.md`
+- Commands: 58 backend tests with 32 explicit optional-dependency skips; compileall; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — dedupe, canonical identity, snapshot/history, and partial-upsert regression covered
+- Reviewer: APPROVED — effective merged hash and full scope verified
+- Rework: attempt 1 fixed spurious snapshots from partial payloads by hashing merged values
+- Changelog: job identity, versioning, and inactive history added
+- Risks: SQLAlchemy runtime coverage requires optional dependency installation
+- Commit subject: feat(jobs): deduplicate and version job changes
+- Commit hash: pending

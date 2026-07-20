@@ -3,7 +3,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from .models import Evaluation, Job, NotionSync, Profile, ProfilePreference, Source
+from .jobs import canonicalize_url, content_hash, fingerprint_job
+from .models import Evaluation, Job, JobSnapshot, NotionSync, Profile, ProfilePreference, Source
 
 class ProfileRepository:
     def __init__(self, session: Session) -> None: self.session = session
@@ -36,12 +37,46 @@ class JobRepository:
     def by_canonical_url(self, canonical_url: str) -> Job | None: return self.session.scalar(select(Job).where(Job.canonical_url == canonical_url))
     def by_fingerprint(self, fingerprint: str) -> Job | None: return self.session.scalar(select(Job).where(Job.fingerprint == fingerprint))
     def upsert(self, job: Job) -> Job:
+        job.canonical_url = canonicalize_url(job.canonical_url)
+        if not job.fingerprint:
+            job.fingerprint = fingerprint_job(job)
         existing = self.by_canonical_url(job.canonical_url) or self.by_fingerprint(job.fingerprint)
         if existing is None:
             self.session.add(job); self.session.flush(); return job
-        for key in ("title", "company", "description", "description_url", "application_url", "fingerprint", "location", "region", "modality", "salary_min", "salary_max", "salary_currency", "published_at", "status", "metadata_json"):
-            setattr(existing, key, getattr(job, key))
+        # Compare the complete effective record, not the partial incoming
+        # payload. This prevents a sparse rediscovery from creating a false
+        # snapshot merely because optional links were omitted.
+        effective_description = job.description or existing.description
+        effective_description_url = job.description_url or existing.description_url
+        effective_application_url = job.application_url or existing.application_url
+        old_hash = content_hash(description=existing.description, description_url=existing.description_url, application_url=existing.application_url)
+        new_hash = content_hash(description=effective_description, description_url=effective_description_url, application_url=effective_application_url)
+        if old_hash != new_hash:
+            previous = self.session.scalar(select(JobSnapshot).where(JobSnapshot.job_id == existing.id, JobSnapshot.content_hash == old_hash))
+            if previous is None:
+                self.session.add(JobSnapshot(job_id=existing.id, description=existing.description, description_url=existing.description_url, application_url=existing.application_url, content_hash=old_hash))
+        # Keep useful existing values when a source sends a partial record.
+        for key in ("title", "company", "description", "description_url", "application_url", "canonical_url", "fingerprint", "location", "region", "modality", "salary_min", "salary_max", "salary_currency", "published_at", "status"):
+            value = getattr(job, key)
+            if value not in (None, "", "unknown", "other") or getattr(existing, key) in (None, "", "unknown", "other"):
+                setattr(existing, key, value)
+        existing.metadata_json = {**(existing.metadata_json or {}), **(job.metadata_json or {})}
+        if existing.source_id is None and job.source_id is not None:
+            existing.source_id = job.source_id
+        existing.checked_at = job.checked_at
         self.session.flush(); return existing
+
+    def mark_missing(self, source_id: int, seen_canonical_urls: set[str]) -> int:
+        """Mark previously active source jobs absent from a successful run inactive."""
+        jobs = self.session.scalars(select(Job).where(Job.source_id == source_id, Job.status == "active")).all()
+        seen = {canonicalize_url(url) for url in seen_canonical_urls}
+        changed = 0
+        for job in jobs:
+            if canonicalize_url(job.canonical_url) not in seen:
+                job.status = "inactive"
+                changed += 1
+        self.session.flush()
+        return changed
 
 class EvaluationRepository:
     def __init__(self, session: Session) -> None: self.session = session
