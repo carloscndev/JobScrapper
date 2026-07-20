@@ -535,3 +535,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: Docker daemon unavailable for image build; frontend dependency lockfile remains future hardening
 - Commit subject: build(ops): add local container orchestration
 - Commit hash: 68a3857721766ef653ffe8e6cabca4b1fb12f490
+
+### OPS-002 — Attempt 3
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: single command ingest→normalize→score→local analysis→Notion sync with partial failures preserving successful work; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/pipeline.py`, `scripts/run_pipeline.py`, `tests/backend/test_pipeline.py`
+- Commands: 109 backend tests with 50 explicit optional-dependency skips; compileall backend/scripts; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — CLI flags, stage ordering, partial isolation and source error persistence covered
+- Reviewer: APPROVED — pipeline acceptance and auditability verified
+- Rework: attempt 1 persisted adapter fetch errors in SourceRun/report and added regression
+- Changelog: end-to-end ingestion/evaluation pipeline command added
+- Risks: live SQLAlchemy/Notion/Ollama runtime requires dependencies and services
+- Commit subject: feat(ops): add end-to-end job pipeline command
+- Commit hash: pending

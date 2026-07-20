@@ -414,3 +414,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: Docker daemon unavailable for image build; frontend dependency lockfile remains future hardening
 - Commit subject: build(ops): add local container orchestration
 - Commit hash: 68a3857721766ef653ffe8e6cabca4b1fb12f490
+
+### OPS-002 — Attempt 3
+
+- Added one-command pipeline for ingestion, normalization, deterministic scoring, optional local analysis and Notion synchronization with per-stage failure isolation and partial status reporting.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/pipeline.py`, `scripts/run_pipeline.py`, `tests/backend/test_pipeline.py`
+- Commands: 109 backend tests with 50 explicit optional-dependency skips; compileall backend/scripts; py_compile; harness validation; `git diff --check`
+- Tester: PASS — pipeline ordering, CLI flags and persisted source errors covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: live SQLAlchemy/Notion/Ollama runtime requires dependencies and services
+- Commit subject: feat(ops): add end-to-end job pipeline command
+- Commit hash: pending
