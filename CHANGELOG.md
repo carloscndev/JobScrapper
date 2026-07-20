@@ -475,6 +475,18 @@ All notable product changes will be documented here following Keep a Changelog a
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### TEST-006 — Attempt 1
+
+- Added security contracts for unsafe URLs, traversal/polyglot uploads, Notion secret redaction and Ollama payload allowlisting.
+- Skills: coder notion-api; tester none; reviewer notion-api
+- Files: `tests/backend/test_security_contracts.py`
+- Commands: security/CV/connectors/Ollama suites 30 tests with 14 optional skips; compileall; harness validation; `git diff --check`
+- Tester: PASS — security contracts covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: runtime URL/connector checks require SQLAlchemy installation
+- Commit subject: test(security): cover input and secret handling
+- Commit hash: pending
+
 ### TEST-005 — Attempt 2
 
 - Added opt-in Playwright E2E flow from fixture ingestion through scoring to dashboard detail, with server lifecycle and browser/server logs.

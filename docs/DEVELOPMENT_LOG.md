@@ -611,6 +611,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### TEST-006 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: unsafe HTML/URLs, files and secret/sensitive-data handling covered; PASS
+- Skills: coordinator none; coder notion-api; tester none; reviewer notion-api
+- Files: `tests/backend/test_security_contracts.py`
+- Commands: security/CV/connectors/Ollama suites 30 tests with 14 optional skips; compileall; harness validation; `git diff --check`
+- Tester: PASS — URL, upload, Notion redaction and Ollama allowlist contracts pass
+- Reviewer: APPROVED — existing HTML sanitization/isolation plus new security coverage verified
+- Rework: none
+- Changelog: input and secret handling security coverage added
+- Risks: runtime URL/connector checks require SQLAlchemy installation
+- Commit subject: test(security): cover input and secret handling
+- Commit hash: pending
+
 ### TEST-005 — Attempt 2
 
 - Started / finished: 2026-07-20 / 2026-07-20
