@@ -537,7 +537,7 @@
     {
       "id": "NOTION-002",
       "title": "Implement idempotent Notion upsert, retries, and sync status",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "NOTION-001",
         "MATCH-003"
@@ -546,6 +546,7 @@
       "allowed_paths": [
         "backend/**",
         "tests/backend/**",
+        "docs/NOTION.md",
         "docs/DEVELOPMENT_LOG.md",
         "CHANGELOG.md"
       ],
@@ -553,12 +554,13 @@
         "Stable external identifiers prevent duplicates",
         "Score, explanation, recommendations, links, and status are synchronized",
         "Rate limits and partial failures are recorded"
-      ]
+      ],
+      "commit_hash": "212d81b"
     },
     {
       "id": "NOTION-003",
       "title": "Add Notion reconciliation and repair workflow",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "NOTION-002"
       ],
@@ -617,7 +619,7 @@
     {
       "id": "API-003",
       "title": "Expose source, execution, health, metrics, and manual refresh endpoints",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "SOURCES-003",
         "NOTION-002"
@@ -745,7 +747,7 @@
     {
       "id": "OPS-002",
       "title": "Create the single-command ingestion and evaluation pipeline",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "SOURCES-003",
         "MATCH-003",

@@ -305,4 +305,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: no live Notion calls in tests; API credentials and runtime remain operator-managed
 - Commit subject: feat(notion): sync evaluated jobs idempotently
-- Commit hash: pending
+- Commit hash: 212d81bd2a6b97e1336abe79c0a523dd07845eea
