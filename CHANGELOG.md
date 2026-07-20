@@ -475,6 +475,18 @@ All notable product changes will be documented here following Keep a Changelog a
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### TEST-005 — Attempt 2
+
+- Added opt-in Playwright E2E flow from fixture ingestion through scoring to dashboard detail, with server lifecycle and browser/server logs.
+- Skills: coder webapp-testing; tester webapp-testing; reviewer webapp-testing
+- Files: `tests/e2e/test_ingestion_dashboard.py`
+- Commands: E2E contract 2 tests with 1 optional Playwright skip; compileall; harness validation; `git diff --check`
+- Tester: PASS — rework cleanup verified
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: real browser execution requires Playwright and frontend dependencies
+- Commit subject: test(e2e): cover ingestion to dashboard flow
+- Commit hash: pending
+
 ### TEST-004 — Attempt 1
 
 - Added API 404/422 envelope tests and React component contracts for profile, preferences, vacancy list/detail and operations views.

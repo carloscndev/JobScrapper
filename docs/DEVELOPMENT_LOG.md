@@ -611,6 +611,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### TEST-005 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: fixture ingestion through score to dashboard detail, server lifecycle and browser/server log capture; PASS
+- Skills: coordinator none; coder webapp-testing; tester webapp-testing; reviewer webapp-testing
+- Files: `tests/e2e/test_ingestion_dashboard.py`
+- Commands: E2E contract 2 tests with 1 Playwright skip; compileall; harness validation; `git diff --check`
+- Tester: PASS — lifecycle and cleanup contract verified
+- Reviewer: APPROVED — browser logs persist on failure and browser closes before log handle
+- Rework: attempt 1 failed review; moved browser log persistence and close into finally
+- Changelog: E2E ingestion-to-dashboard lifecycle coverage added
+- Risks: real browser execution requires Playwright and frontend dependencies
+- Commit subject: test(e2e): cover ingestion to dashboard flow
+- Commit hash: pending
+
 ### TEST-004 — Attempt 1
 
 - Started / finished: 2026-07-20 / 2026-07-20
