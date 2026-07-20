@@ -309,4 +309,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: normalized job records and regional classification added
 - Risks: SQLAlchemy/FastAPI runtime coverage requires optional dependency installation
 - Commit subject: feat(jobs): normalize job records and regions
-- Commit hash: pending
+- Commit hash: 121a0b4e6d1edf06c114aa6986ab9a31a48b0e3e

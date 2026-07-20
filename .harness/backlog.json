@@ -402,7 +402,7 @@
     {
       "id": "JOBS-001",
       "title": "Normalize job fields, modality, salary, and geographic region",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "SOURCES-002"
       ],
@@ -417,12 +417,13 @@
         "Company, role, description, requirements, location, work mode, salary, currency, source, dates, description URL, and application URL are normalized when available",
         "Jobs classify CDMX, Guadalajara, rest of Mexico, USA, or other",
         "Remote, hybrid, onsite, and unknown modality are represented"
-      ]
+      ],
+      "commit_hash": "121a0b4"
     },
     {
       "id": "JOBS-002",
       "title": "Implement canonical URLs, fingerprints, deduplication, snapshots, and inactive history",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "JOBS-001"
       ],
@@ -442,7 +443,7 @@
     {
       "id": "MATCH-001",
       "title": "Implement deterministic compatibility scoring and explainable weights",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "PROFILE-002",
         "JOBS-001"

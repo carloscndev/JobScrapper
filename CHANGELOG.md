@@ -233,4 +233,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: SQLAlchemy/FastAPI runtime coverage requires optional dependency installation
 - Commit subject: feat(jobs): normalize job records and regions
-- Commit hash: pending
+- Commit hash: 121a0b4e6d1edf06c114aa6986ab9a31a48b0e3e
