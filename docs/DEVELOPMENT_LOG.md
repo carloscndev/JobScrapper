@@ -279,4 +279,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: initial job connectors and compliance gate added
 - Risks: SQLAlchemy runtime checks require dependency installation; real network remains opt-in and governed by robots/terms acknowledgement
 - Commit subject: feat(sources): add initial job connectors
-- Commit hash: pending
+- Commit hash: f4c55a95dae9f1d3532755b346c920324ef842aa

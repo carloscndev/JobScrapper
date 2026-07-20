@@ -210,6 +210,7 @@
       "allowed_paths": [
         "backend/**",
         "tests/backend/**",
+        "docs/SOURCES.md",
         "docs/DEVELOPMENT_LOG.md",
         "CHANGELOG.md",
         "README.md",
@@ -359,7 +360,7 @@
     {
       "id": "SOURCES-002",
       "title": "Implement the first API/feed and two permitted career-page adapters",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "SOURCES-001"
       ],
@@ -373,12 +374,13 @@
       "acceptance": [
         "At least one API or feed and two career pages produce normalized jobs",
         "Terms of use and robots.txt are respected"
-      ]
+      ],
+      "commit_hash": "f4c55a9"
     },
     {
       "id": "SOURCES-003",
       "title": "Add source rate limits, retries, sanitization, and failure isolation",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "SOURCES-002"
       ],
@@ -399,7 +401,7 @@
     {
       "id": "JOBS-001",
       "title": "Normalize job fields, modality, salary, and geographic region",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "SOURCES-002"
       ],

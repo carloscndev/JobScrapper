@@ -208,4 +208,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Added opt-in network fetching with robots.txt and identifiable user-agent checks, source failure isolation, and mandatory `terms_accepted` compliance validation persisted by `SourceService`.
 - Tests: 7 connector tests pass with 7 explicit SQLAlchemy skips; reviewer APPROVED after href parsing and documentation rework.
 - Conventional Commit: `feat(sources): add initial job connectors`
-- Commit hash: pending
+- Commit hash: f4c55a95dae9f1d3532755b346c920324ef842aa
