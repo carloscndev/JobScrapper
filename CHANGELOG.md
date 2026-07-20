@@ -401,4 +401,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — UI/accessibility/performance review complete
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add operations dashboard
-- Commit hash: pending
+- Commit hash: 27504d74048a1f966097a3ff3e91794e0419dd90

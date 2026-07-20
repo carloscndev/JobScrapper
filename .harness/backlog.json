@@ -708,7 +708,7 @@
     {
       "id": "FRONTEND-005",
       "title": "Build operations, source, execution, health, and empty-state screens",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-001",
         "API-003"
@@ -725,7 +725,8 @@
         "Runs, errors, health, last update, manual refresh, and high-match indicators are visible",
         "Keyboard and semantic accessibility requirements are met across the dashboard, including forms, lists, details, and operations views",
         "Responsive behavior, loading states, error states, and empty states are documented and tested"
-      ]
+      ],
+      "commit_hash": "27504d7"
     },
     {
       "id": "OPS-001",
@@ -899,7 +900,7 @@
     {
       "id": "TEST-004",
       "title": "Add API contract and React component tests",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "API-003",
         "FRONTEND-005"
@@ -940,7 +941,7 @@
     {
       "id": "TEST-006",
       "title": "Verify HTML, URL, file-upload, secret, and sensitive-data security",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "API-003",
         "FRONTEND-005"
