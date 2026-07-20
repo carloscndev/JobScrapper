@@ -236,6 +236,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                  "duration_seconds": round((datetime.now(timezone.utc) - started_clock).total_seconds(), 3),
                                  "max_concurrency": runtime.max_concurrency}
             db.commit(); db.refresh(execution)
+            # The response is serialized after this session scope exits;
+            # eagerly load the relationship to avoid DetachedInstanceError.
+            db.refresh(execution, attribute_names=["source_runs"])
             return execution
 
     @app.post("/api/v1/refresh", status_code=status.HTTP_202_ACCEPTED, tags=["operations"])
