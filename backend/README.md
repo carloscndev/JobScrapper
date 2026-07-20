@@ -110,3 +110,21 @@ OpenAPI is published at `/api/v1/openapi.json` (interactive docs at
 
 Upload failures return `422` with `cv_validation_error`; missing profiles
 return `404` with `profile_not_found`. CV contents remain local to the service.
+
+## Operations API (v1)
+
+Operational routes are available under `/api/v1` and are included in the
+published OpenAPI document. `GET /api/v1/sources` lists enabled and disabled
+source registrations without returning credential values. `GET
+/api/v1/executions` and `GET /api/v1/executions/{run_id}` expose pipeline and
+per-source outcomes; `GET /api/v1/metrics` returns aggregate counters.
+
+`GET /api/v1/operations/health` (also `/api/v1/health`) reports independent
+API/database/Ollama/Notion checks; the `api` entry confirms the process and
+service version even when a dependency is unavailable. A missing local Ollama process or Notion
+credentials is reported as `unavailable`/`unconfigured`, while SQLite failure
+degrades the overall status. `POST /api/v1/operations/refresh` starts a
+fixture-first source refresh and returns `202` with the execution record. A
+second concurrent request receives `409` with the stable
+`refresh_in_progress` error envelope. Other missing resources use
+`execution_not_found`; validation errors retain the standard `fields` array.

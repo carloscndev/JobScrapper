@@ -3,6 +3,11 @@
 from __future__ import annotations
 
 from pathlib import Path
+import threading
+import os
+from datetime import datetime, timezone
+from urllib.request import Request as UrlRequest, urlopen
+from urllib.parse import urlparse
 from typing import Any
 
 from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile, status
@@ -10,12 +15,16 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from .database import create_db_engine, create_session_factory
-from .models import Base, Evaluation, Job, Profile
+from .models import Base, Evaluation, Job, Profile, PipelineExecution, Source, SourceRun
 from sqlalchemy import asc, desc, func, or_, select
-from .repositories import ProfileRepository
+from .repositories import ProfileRepository, JobRepository
 from .schemas import (JobDetailResponse, JobEvaluationResponse, JobListItem, PaginatedJobsResponse,
                       PreferencePayload, ProfileResponse, ProfileUpdatePayload, UploadResponse)
 from .services import ProfileService
+from .connectors import DEFAULT_ADAPTERS
+from .jobs import canonicalize_url, fingerprint_job
+from .sources import SourceConfig, SourceKind
+from .notion import NotionConfig
 
 from .config import Settings
 
@@ -40,6 +49,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         Path(runtime.database_url.removeprefix("sqlite:///./")).parent.mkdir(parents=True, exist_ok=True)
     engine = create_db_engine(runtime)
     session_factory = create_session_factory(engine)
+    refresh_lock = threading.Lock()
+    app.state.refresh_lock = refresh_lock
 
     @app.exception_handler(RequestValidationError)
     async def validation_error_handler(_request: Request, exc: RequestValidationError) -> JSONResponse:
@@ -87,6 +98,143 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         """Return a lightweight liveness response without checking dependencies."""
 
         return {"status": "ok", "service": runtime.app_name, "environment": runtime.environment}
+
+    def _safe_source_config(source: Source) -> dict[str, Any]:
+        config = source.config or {}
+        redacted = {key: value for key, value in config.items()
+                    if not any(marker in key.casefold() for marker in ("token", "secret", "password", "cookie"))}
+        return {"id": source.id, "name": source.name, "kind": source.kind, "base_url": source.base_url,
+                "terms_url": source.terms_url, "enabled": source.enabled, "config": redacted,
+                "robots_checked_at": source.robots_checked_at}
+
+    def _execution_payload(item: PipelineExecution) -> dict[str, Any]:
+        return {"id": item.id, "run_id": item.run_id, "status": item.status, "started_at": item.started_at,
+                "finished_at": item.finished_at, "metrics": item.metrics or {}, "error": item.error,
+                "source_runs": [{"id": run.id, "source_id": run.source_id, "status": run.status,
+                                  "jobs_found": run.jobs_found, "error": run.error,
+                                  "started_at": run.started_at, "finished_at": run.finished_at}
+                                 for run in item.source_runs]}
+
+    def _dependency_health() -> dict[str, Any]:
+        # The process-level API check is deliberately independent from
+        # downstream dependencies so operators can distinguish liveness from
+        # readiness failures in a single response.
+        checks: dict[str, Any] = {
+            "api": {"status": "ok", "service": runtime.app_name, "version": "0.1.0"}
+        }
+        try:
+            with session_factory() as db:
+                db.execute(select(func.count()).select_from(Source)).scalar_one()
+            checks["database"] = {"status": "ok"}
+        except Exception as exc:
+            checks["database"] = {"status": "error", "message": str(exc)[:200]}
+        try:
+            parsed = urlparse(runtime.ollama_base_url)
+            if parsed.hostname not in {"localhost", "127.0.0.1", "::1"}:
+                raise ValueError("Ollama endpoint is not loopback")
+            request = UrlRequest(runtime.ollama_base_url.rstrip("/") + "/api/tags", headers={"User-Agent": "JobScrapper-health/1.0"})
+            with urlopen(request, timeout=min(runtime.ollama_timeout_seconds, 2.0)):
+                pass
+            checks["ollama"] = {"status": "ok", "model": runtime.ollama_model}
+        except Exception as exc:
+            checks["ollama"] = {"status": "unavailable", "model": runtime.ollama_model, "message": str(exc)[:200]}
+        notion = NotionConfig.from_settings(runtime)
+        checks["notion"] = {"status": "configured" if notion.database_id and os.getenv(notion.token_env) else "unconfigured",
+                             "config": notion.redacted()}
+        overall = "ok" if checks["database"]["status"] == "ok" else "degraded"
+        return {"status": overall, "checks": checks, "checked_at": datetime.now(timezone.utc)}
+
+    @app.get("/api/v1/operations/health", tags=["operations"])
+    @app.get("/api/v1/health", tags=["operations"])
+    def operations_health() -> dict[str, Any]:
+        """Report API liveness and dependency readiness without exposing secrets."""
+        return _dependency_health()
+
+    @app.get("/api/v1/operations/sources", tags=["operations"])
+    @app.get("/api/v1/sources", tags=["operations"])
+    def list_sources(enabled: bool | None = None) -> dict[str, Any]:
+        with session_factory() as db:
+            query = select(Source).order_by(Source.name)
+            if enabled is not None:
+                query = query.where(Source.enabled.is_(enabled))
+            items = db.scalars(query).all()
+            return {"items": [_safe_source_config(item) for item in items], "total": len(items)}
+
+    @app.get("/api/v1/operations/executions", tags=["operations"])
+    @app.get("/api/v1/executions", tags=["operations"])
+    def list_executions(page: int = Query(1, ge=1), page_size: int = Query(20, ge=1, le=100), status_filter: str | None = Query(None, alias="status")) -> dict[str, Any]:
+        with session_factory() as db:
+            query = select(PipelineExecution).order_by(PipelineExecution.started_at.desc(), PipelineExecution.id.desc())
+            if status_filter:
+                query = query.where(PipelineExecution.status == status_filter)
+            total = db.scalar(select(func.count()).select_from(PipelineExecution).where(*( [PipelineExecution.status == status_filter] if status_filter else []))) or 0
+            rows = db.scalars(query.offset((page - 1) * page_size).limit(page_size)).all()
+            return {"items": [_execution_payload(item) for item in rows], "total": total, "page": page,
+                    "page_size": page_size, "total_pages": (total + page_size - 1) // page_size}
+
+    @app.get("/api/v1/operations/executions/{run_id}", tags=["operations"])
+    @app.get("/api/v1/executions/{run_id}", tags=["operations"])
+    def read_execution(run_id: str) -> dict[str, Any]:
+        with session_factory() as db:
+            item = db.scalar(select(PipelineExecution).where(PipelineExecution.run_id == run_id))
+            if item is None:
+                raise HTTPException(status_code=404, detail={"error": {"code": "execution_not_found", "message": f"Execution {run_id} does not exist", "fields": []}})
+            return _execution_payload(item)
+
+    @app.get("/api/v1/operations/metrics", tags=["operations"])
+    @app.get("/api/v1/metrics", tags=["operations"])
+    def metrics() -> dict[str, Any]:
+        with session_factory() as db:
+            return {"jobs": {"total": db.scalar(select(func.count()).select_from(Job)) or 0,
+                              "active": db.scalar(select(func.count()).select_from(Job).where(Job.status == "active")) or 0},
+                    "sources": {"total": db.scalar(select(func.count()).select_from(Source)) or 0,
+                                 "enabled": db.scalar(select(func.count()).select_from(Source).where(Source.enabled.is_(True))) or 0},
+                    "executions": {"total": db.scalar(select(func.count()).select_from(PipelineExecution)) or 0,
+                                    "running": db.scalar(select(func.count()).select_from(PipelineExecution).where(PipelineExecution.status == "running")) or 0},
+                    "generated_at": datetime.now(timezone.utc)}
+
+    def _run_refresh() -> PipelineExecution:
+        with session_factory() as db:
+            execution = PipelineExecution(status="running", started_at=datetime.now(timezone.utc), metrics={})
+            db.add(execution); db.flush()
+            found = failed = 0
+            for source in db.scalars(select(Source).where(Source.enabled.is_(True)).order_by(Source.name)).all():
+                started = datetime.now(timezone.utc)
+                source_config = SourceConfig(name=source.name, kind=SourceKind(source.kind), base_url=source.base_url,
+                    terms_url=source.terms_url, terms_accepted=bool((source.config or {}).get("terms_accepted")), settings=source.config or {})
+                adapter = next((item for item in DEFAULT_ADAPTERS if item.name == (source.config or {}).get("adapter", source.name)), None)
+                if adapter is None:
+                    adapter = next((item for item in DEFAULT_ADAPTERS if item.name == source.kind), None)
+                result = adapter.fetch(source_config) if adapter else None
+                run = SourceRun(execution_id=execution.id, source_id=source.id, status=result.status if result else "failed",
+                                jobs_found=len(result.jobs) if result else 0, error=result.error if result else "No adapter configured",
+                                started_at=started, finished_at=datetime.now(timezone.utc))
+                db.add(run)
+                if result:
+                    found += len(result.jobs)
+                    failed += 1 if result.error else 0
+                    for normalized in result.jobs:
+                        JobRepository(db).upsert(Job(source_id=source.id, title=normalized.title, company=normalized.company, description=normalized.description,
+                                    description_url=normalized.description_url, application_url=normalized.application_url,
+                                    canonical_url=canonicalize_url(normalized.effective_canonical_url), fingerprint=fingerprint_job(normalized),
+                                    location=normalized.location, region=normalized.region, modality=str(normalized.modality),
+                                    salary_min=normalized.salary_min, salary_max=normalized.salary_max, salary_currency=normalized.salary_currency,
+                                    published_at=normalized.published_at, metadata_json={**dict(normalized.metadata), "source": source.name}))
+            execution.status = "failed" if failed and not found else ("partial" if failed else "success")
+            execution.finished_at = datetime.now(timezone.utc)
+            execution.metrics = {"jobs_found": found, "sources_failed": failed}
+            db.commit(); db.refresh(execution)
+            return execution
+
+    @app.post("/api/v1/refresh", status_code=status.HTTP_202_ACCEPTED, tags=["operations"])
+    @app.post("/api/v1/operations/refresh", status_code=status.HTTP_202_ACCEPTED, tags=["operations"])
+    def manual_refresh() -> dict[str, Any]:
+        if not refresh_lock.acquire(blocking=False):
+            raise HTTPException(status_code=409, detail={"error": {"code": "refresh_in_progress", "message": "A refresh is already running", "fields": []}})
+        try:
+            return _execution_payload(_run_refresh())
+        finally:
+            refresh_lock.release()
 
     @app.on_event("startup")
     def create_tables() -> None:

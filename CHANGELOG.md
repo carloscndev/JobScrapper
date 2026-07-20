@@ -342,3 +342,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose vacancy search endpoints
 - Commit hash: 353af10cfe2b4dbf8e85aa9bb6219afe70985b75
+
+### API-003 — Attempt 2
+
+- Added source/execution observability, metrics, API/SQLite/Ollama/Notion health checks, guarded manual refresh, and OpenAPI operation/error contracts.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/README.md`, `tests/backend/test_api_operations.py`
+- Commands: 4 API tests pass with 1 explicit dependency skip; 107 backend tests with 49 skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — health and operations contracts covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
+- Commit subject: feat(api): expose operations and health endpoints
+- Commit hash: pending

@@ -445,3 +445,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose vacancy search endpoints
 - Commit hash: 353af10cfe2b4dbf8e85aa9bb6219afe70985b75
+
+### API-003 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: observable sources/executions, metrics, API/SQLite/Ollama/Notion health, guarded manual refresh, and documented OpenAPI errors; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/README.md`, `tests/backend/test_api_operations.py`
+- Commands: 4 API tests pass with 1 explicit dependency skip; 107 backend tests with 49 skips; compileall; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — health checks including API, metrics, operations, refresh lock and OpenAPI contracts covered
+- Reviewer: APPROVED — observability and scope verified
+- Rework: attempt 1 added explicit `checks.api` health entry and contract coverage
+- Changelog: operations, health, metrics, and manual refresh endpoints added
+- Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
+- Commit subject: feat(api): expose operations and health endpoints
+- Commit hash: pending

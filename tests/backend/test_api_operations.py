@@ -1,0 +1,91 @@
+"""Contract tests for API-003 operational endpoints.
+
+The repository's lightweight test environment may not have the HTTP stack
+installed.  Static contract assertions therefore always run, while FastAPI
+tests are explicitly skipped until the optional runtime dependencies exist.
+"""
+
+from __future__ import annotations
+
+import importlib.util
+import sys
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[2]
+BACKEND = ROOT / "backend"
+FACTORY = BACKEND / "app" / "factory.py"
+
+
+def _import_backend(module_name: str):
+    backend_text = str(BACKEND)
+    if backend_text not in sys.path:
+        sys.path.insert(0, backend_text)
+    return __import__(module_name, fromlist=["*"])
+
+
+class OperationsContractTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.source = FACTORY.read_text()
+
+    def test_operations_routes_and_tags_are_declared(self) -> None:
+        expected = (
+            '"/api/v1/sources"', '"/api/v1/executions"',
+            '"/api/v1/executions/{run_id}"', '"/api/v1/metrics"',
+            '"/api/v1/operations/health"', '"/api/v1/health"',
+            '"/api/v1/operations/refresh"',
+        )
+        for path in expected:
+            self.assertIn(path, self.source)
+        self.assertGreaterEqual(self.source.count('tags=["operations"]'), 7)
+
+    def test_refresh_lock_returns_structured_conflict(self) -> None:
+        self.assertIn("refresh_lock.acquire(blocking=False)", self.source)
+        self.assertIn("status_code=409", self.source)
+        self.assertIn('"code": "refresh_in_progress"', self.source)
+        self.assertIn("finally:", self.source)
+        self.assertIn("refresh_lock.release()", self.source)
+
+    def test_health_metrics_and_execution_payloads_include_contract_fields(self) -> None:
+        for field in ("api", "database", "ollama", "notion", "checked_at"):
+            self.assertIn(f'"{field}"', self.source)
+        for field in ("jobs", "sources", "executions", "generated_at"):
+            self.assertIn(f'"{field}"', self.source)
+        for field in ("run_id", "status", "metrics", "source_runs"):
+            self.assertIn(f'"{field}"', self.source)
+
+    def test_http_contract_and_openapi_when_dependencies_are_available(self) -> None:
+        if importlib.util.find_spec("fastapi") is None or importlib.util.find_spec("sqlalchemy") is None:
+            self.skipTest("FastAPI/SQLAlchemy are not installed; static contract checks still run")
+
+        factory = _import_backend("app.factory")
+        config = _import_backend("app.config")
+        app = factory.create_app(config.Settings(database_url="sqlite:///:memory:", environment="test"))
+        paths = {route.path for route in app.routes}
+        self.assertIn("/api/v1/operations/refresh", paths)
+        self.assertIn("/api/v1/metrics", paths)
+        schema = app.openapi()
+        self.assertIn("/api/v1/operations/refresh", schema["paths"])
+        operation_tags = [
+            tag
+            for path_item in schema["paths"].values()
+            for operation in path_item.values()
+            if isinstance(operation, dict)
+            for tag in operation.get("tags", [])
+        ]
+        self.assertIn("operations", schema.get("tags", operation_tags))
+
+        manual = next(route.endpoint for route in app.routes if route.path == "/api/v1/operations/refresh")
+        lock = app.state.refresh_lock
+        self.assertTrue(lock.acquire(blocking=False))
+        try:
+            with self.assertRaises(Exception) as raised:
+                manual()
+            self.assertEqual(getattr(raised.exception, "status_code", None), 409)
+        finally:
+            lock.release()
+
+
+if __name__ == "__main__":
+    unittest.main()
