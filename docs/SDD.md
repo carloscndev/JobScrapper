@@ -160,3 +160,12 @@ the harness one task at a time:
 `.harness/backlog.json` is authoritative for dependencies, acceptance criteria,
 allowed paths, state, and Conventional Commit subject; this table is the readable
 phase index and must be updated if task IDs change.
+
+## Release readiness
+
+Release `0.1.0` is local-first and single-user: it does not auto-apply to jobs or
+publish CV data to a hosted model. Before tagging, the coordinator must complete
+the checklist in [docs/RELEASE.md](RELEASE.md), attach command evidence to the
+development log, and confirm every dependency-tracked task is `committed`. A
+documented optional-dependency skip is acceptable; an unverified security,
+backup/restore, lock, or secret-handling gate is not.

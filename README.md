@@ -49,6 +49,7 @@ Use `scripts/check-skills.sh` for read-only verification. `scripts/install-skill
 ## Documentation
 
 - `docs/SDD.md`: product story, requirements, and delivery sequence.
+- `docs/RELEASE.md`: version 0.1.0 release gate and operational checklist.
 - `docs/DEVELOPMENT_LOG.md`: coordinator-owned incremental task history.
 - `AGENTS.md`: mandatory multi-agent protocol.
 

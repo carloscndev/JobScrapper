@@ -611,6 +611,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### RELEASE-001 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: installation/operations docs, final SDD acceptance checklist and CHANGELOG version 0.1.0; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `README.md`, `docs/SDD.md`, `docs/RELEASE.md`, `CHANGELOG.md`
+- Commands: 35 harness tests; check-skills; docs/reference checks; harness validate; compileall; `git diff --check`
+- Tester: PASS — documentation and gates validated; environment-dependent checks remain explicitly pending
+- Reviewer: APPROVED — release readiness documentation and scope verified
+- Rework: none
+- Changelog: version 0.1.0 readiness checklist finalized
+- Risks: Docker/npm/Playwright/SQLAlchemy/credentials/tag gates require release environment
+- Commit subject: docs(release): finalize version 0.1.0 readiness
+- Commit hash: pending
+
 ### TEST-007 — Attempt 2
 
 - Started / finished: 2026-07-20 / 2026-07-20

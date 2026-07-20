@@ -2,6 +2,18 @@
 
 All notable product changes will be documented here following Keep a Changelog and Semantic Versioning.
 
+## [0.1.0] - 2026-07-20
+
+### Added
+
+- Initial local-first JobScrapper release: CV/profile preferences, compliant source ingestion, deterministic compatibility scoring with local-model fallback, Notion synchronization and reconciliation, FastAPI contracts, React dashboard, guarded daily pipeline, operations runbook, security controls, and verification suites.
+- Release gate and operational checklist in `docs/RELEASE.md`.
+
+### Release notes
+
+- Notion and Ollama are optional integrations; SQLite and deterministic scoring remain the source of truth.
+- Live Docker, npm, Playwright, SQLAlchemy, and credential-backed checks depend on the release environment and must be recorded as evidence or explicit skips.
+
 ## [Unreleased]
 
 ### Added
@@ -546,3 +558,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: runtime fallback test requires SQLAlchemy installation
 - Commit subject: test(match): cover scoring and local model fallback
 - Commit hash: 4cf7ff545a9b6b1615f9bba7f7cdbadd8fbc2da8
+
+### RELEASE-001 — Attempt 1
+
+- Finalized release 0.1.0 documentation, SDD readiness criteria and operational checklist.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `README.md`, `docs/SDD.md`, `docs/RELEASE.md`, `CHANGELOG.md`
+- Commands: 35 harness tests; check-skills; docs/reference checks; harness validate; compileall; `git diff --check`
+- Tester: PASS — environment-dependent gates remain explicitly pending
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: Docker/npm/Playwright/SQLAlchemy/credentials/tag gates require release environment
+- Commit subject: docs(release): finalize version 0.1.0 readiness
+- Commit hash: pending
