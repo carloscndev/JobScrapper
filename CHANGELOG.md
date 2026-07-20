@@ -246,3 +246,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: SQLAlchemy runtime coverage requires optional dependency installation
 - Commit subject: feat(jobs): deduplicate and version job changes
 - Commit hash: 035454175e0e9c470f0a06d6eaecd3e50a7df41d
+
+### MATCH-001 — Attempt 3
+
+- Added deterministic compatibility scoring from 0 to 100 with configurable weights, required/desirable requirements, hard exclusions, explainable breakdowns, matches, gaps, recommendations, and persistence.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/matching.py`, `tests/backend/test_matching.py`
+- Commands: 63 backend tests with 36 explicit optional-dependency skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — matching behavior and weight precedence covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: SQLAlchemy runtime persistence checks require optional dependency installation
+- Commit subject: feat(match): add explainable compatibility scoring
+- Commit hash: pending

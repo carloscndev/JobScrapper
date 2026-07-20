@@ -325,3 +325,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: SQLAlchemy runtime coverage requires optional dependency installation
 - Commit subject: feat(jobs): deduplicate and version job changes
 - Commit hash: 035454175e0e9c470f0a06d6eaecd3e50a7df41d
+
+### MATCH-001 — Attempt 3
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: deterministic 0-100 compatibility scoring, configurable dimension weights, required/desirable requirements, exclusions, explainable breakdown, and persistence; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/matching.py`, `tests/backend/test_matching.py`
+- Commands: 63 backend tests with 36 explicit optional-dependency skips; compileall; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — score determinism, required years, exclusions, persistence, and explicit weight precedence covered
+- Reviewer: APPROVED — supported experience source and weight precedence verified
+- Rework: attempt 1 added supported Profile.experience years; attempt 2 made explicit weights override persisted preferences
+- Changelog: explainable compatibility scoring added
+- Risks: SQLAlchemy runtime persistence checks require optional dependency installation
+- Commit subject: feat(match): add explainable compatibility scoring
+- Commit hash: pending
