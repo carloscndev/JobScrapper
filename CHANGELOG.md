@@ -449,4 +449,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: live container resource enforcement depends on runtime platform
 - Commit subject: feat(ops): add observable resource-bounded execution
-- Commit hash: pending
+- Commit hash: 995f132d1314447a94994d5b0f2c5d5f643523ce
