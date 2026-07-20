@@ -17,7 +17,7 @@ if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 
 from app.notion import NotionConfig  # noqa: E402
-from app.notion_sync import NotionHttpClient, NotionRequestError, NotionSyncService, job_properties  # noqa: E402
+from app.notion_sync import NotionHttpClient, NotionRequestError, NotionSyncService, ReconciliationReport, job_properties  # noqa: E402
 
 
 class QueueTransport:
@@ -173,6 +173,72 @@ class NotionSyncTests(unittest.TestCase):
         self.assertEqual(outcome.state, "failed")
         self.assertEqual(outcome.attempts, 2)
         self.assertEqual(outcome.reconciliation["retry_statuses"], [503])
+
+    def test_reconcile_reports_missing_stale_and_orphan_without_mutation(self):
+        expected = job_properties(job("stale"), evaluation())
+        stale_props = dict(expected)
+        stale_props["Title"] = {"title": [{"plain_text": "Old title"}]}
+        stale_page = {"id": "page-stale", "properties": stale_props}
+        orphan_page = {"id": "page-orphan", "properties": {
+            "Fingerprint": {"rich_text": [{"plain_text": "orphan-fp"}]},
+            "Title": {"title": [{"plain_text": "Legacy listing"}]},
+        }}
+        untracked_page = {"id": "page-untracked", "properties": {
+            "Title": {"title": [{"plain_text": "Untracked listing"}]},
+        }}
+        transport = QueueTransport([(200, {}, json.dumps({"results": [stale_page, orphan_page, untracked_page], "has_more": False}).encode())])
+        service = NotionSyncService(NotionHttpClient(config(), transport=transport, min_interval_seconds=0))
+        missing_job = job("missing")
+        missing_job.id = 8
+        report = service.reconcile([(missing_job, evaluation()), (job("stale"), evaluation())])
+        self.assertEqual(report.state, "drift")
+        kinds = {item["kind"] for item in report.differences}
+        self.assertEqual(kinds, {"missing_in_notion", "stale_in_notion", "orphan_in_notion"})
+        self.assertEqual(report.evidence["page_count"], 3)
+        self.assertEqual(report.evidence["orphan_count"], 2)
+        self.assertEqual([call[0] for call in transport.calls], ["POST"])
+
+    def test_reconciliation_report_serializes_and_preserves_audit_state(self):
+        report = ReconciliationReport("r-1", "2026-01-01T00:00:00+00:00", 1,
+                                      [{"id": "d-1", "kind": "missing_in_notion", "retryable": True}],
+                                      "drift", {"page_count": 0})
+        payload = report.as_dict()
+        self.assertEqual(payload["reconciliation_id"], "r-1")
+        self.assertEqual(json.loads(json.dumps(payload)), payload)
+        self.assertNotIn("token", json.dumps(payload).lower())
+
+    def test_repair_retries_retryable_drift_and_skips_orphans(self):
+        page = {"id": "page-stale", "properties": {"Fingerprint": {"rich_text": [{"plain_text": "stale"}]}}}
+        transport = QueueTransport([
+            (200, {}, json.dumps({"results": [page], "has_more": False}).encode()),
+            (200, {}, b'{"id":"page-stale"}'),
+        ])
+        service = NotionSyncService(NotionHttpClient(config(), transport=transport, min_interval_seconds=0))
+        report = ReconciliationReport("r-2", "2026-01-01T00:00:00+00:00", 2, [
+            {"id": "d-stale", "external_id": "job:stale", "kind": "stale_in_notion", "retryable": True},
+            {"id": "d-orphan", "external_id": "job:orphan-fp", "kind": "orphan_in_notion", "retryable": False},
+        ], "drift", {"page_count": 2})
+        repaired = service.repair(report, [(job("stale"), evaluation())])
+        self.assertEqual(repaired.state, "repaired")
+        attempts = repaired.evidence["repair_attempts"]
+        self.assertEqual([item["state"] for item in attempts], ["repaired", "skipped"])
+        self.assertEqual([call[0] for call in transport.calls], ["POST", "PATCH"])
+        self.assertFalse(any(call[0] == "DELETE" for call in transport.calls))
+
+    def test_repair_records_failed_retryable_drift_and_missing_local_job(self):
+        transport = QueueTransport([
+            (200, {}, json.dumps({"results": [], "has_more": False}).encode()),
+            (500, {}, b'{"message":"temporary"}'),
+        ])
+        service = NotionSyncService(NotionHttpClient(config(), transport=transport, max_retries=0, min_interval_seconds=0))
+        report = ReconciliationReport("r-3", "2026-01-01T00:00:00+00:00", 2, [
+            {"id": "d-fail", "external_id": "job:fail", "kind": "missing_in_notion", "retryable": True},
+            {"id": "d-absent", "external_id": "job:absent", "kind": "stale_in_notion", "retryable": True},
+        ], "drift", {})
+        repaired = service.repair(report, [(job("fail"), None)])
+        self.assertEqual(repaired.state, "repair_failed")
+        self.assertEqual(repaired.evidence["repair_attempts"][0]["state"], "failed")
+        self.assertEqual(repaired.evidence["repair_attempts"][1]["error"], "local_job_not_found")
 
 
 if __name__ == "__main__":

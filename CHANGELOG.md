@@ -306,3 +306,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: no live Notion calls in tests; API credentials and runtime remain operator-managed
 - Commit subject: feat(notion): sync evaluated jobs idempotently
 - Commit hash: 212d81bd2a6b97e1336abe79c0a523dd07845eea
+
+### NOTION-003 — Attempt 2
+
+- Added auditable SQLite/Notion reconciliation reports, retryable repairs, orphan detection, and safe non-destructive handling of fingerprint-less pages.
+- Skills: coordinator `notion-api`; coder `notion-api`; tester none; reviewer `notion-api`
+- Files: `backend/app/notion_sync.py`, `tests/backend/test_notion_sync.py`
+- Commands: 89 backend tests with 39 explicit optional-dependency skips; 13 Notion tests pass; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — reconciliation and repair contracts covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: no live Notion calls; orphan repair is intentionally non-destructive
+- Commit subject: feat(notion): add synchronization reconciliation
+- Commit hash: pending

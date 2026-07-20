@@ -400,3 +400,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: no live Notion calls in tests; API credentials and runtime remain operator-managed
 - Commit subject: feat(notion): sync evaluated jobs idempotently
 - Commit hash: 212d81bd2a6b97e1336abe79c0a523dd07845eea
+
+### NOTION-003 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: SQLite/Notion drift detection, auditable retryable repairs, and safe handling of orphan/unkeyed pages; PASS
+- Skills: coordinator `notion-api`; coder `notion-api`; tester none; reviewer `notion-api`
+- Files: `backend/app/notion_sync.py`, `tests/backend/test_notion_sync.py`
+- Commands: 89 backend tests with 39 explicit optional-dependency skips; 13 Notion tests pass; compileall; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — missing/stale/orphan detection, unkeyed orphan audit, repair states and no-delete behavior covered
+- Reviewer: APPROVED — reconciliation audit and safety verified
+- Rework: attempt 1 fixed silent omission of pages without Fingerprint
+- Changelog: reconciliation and repair workflow added
+- Risks: no live Notion calls; orphan repair is intentionally non-destructive
+- Commit subject: feat(notion): add synchronization reconciliation
+- Commit hash: pending
