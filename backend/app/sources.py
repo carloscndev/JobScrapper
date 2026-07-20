@@ -36,6 +36,16 @@ class WorkModality(StrEnum):
     UNKNOWN = "unknown"
 
 
+class JobRegion(StrEnum):
+    """Stable geographic buckets used by the dashboard and regional views."""
+
+    CDMX = "cdmx"
+    GUADALAJARA = "guadalajara"
+    MEXICO = "mexico"
+    USA = "usa"
+    OTHER = "other"
+
+
 @dataclass(frozen=True, slots=True)
 class SourceConfig:
     """Runtime configuration supplied to an adapter.
@@ -96,6 +106,9 @@ class NormalizedJob:
     salary_max: float | None = None
     salary_currency: str | None = None
     published_at: date | None = None
+    requirements: tuple[str, ...] = field(default_factory=tuple)
+    salary_period: str | None = None
+    source: str | None = None
     metadata: Mapping[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -107,6 +120,8 @@ class NormalizedJob:
             raise ValueError("title, company, and description are required")
         if self.salary_min is not None and self.salary_max is not None and self.salary_min > self.salary_max:
             raise ValueError("salary_min cannot exceed salary_max")
+        if self.salary_currency is not None and len(self.salary_currency) != 3:
+            raise ValueError("salary_currency must be an ISO 4217 code")
 
     @property
     def effective_canonical_url(self) -> str:

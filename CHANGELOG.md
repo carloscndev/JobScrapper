@@ -222,3 +222,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: live SQLAlchemy coverage requires dependency installation; network remains opt-in and robots/terms constrained
 - Commit subject: feat(sources): harden ingestion controls
 - Commit hash: bc37edb54fabe89fd07378e2da6bee01ac99305e
+
+### JOBS-001 — Attempt 1
+
+- Added normalized requirements, salary period/currency/source metadata, URL validation, geographic region buckets, and modality classification.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/sources.py`, `backend/app/connectors.py`, `tests/backend/test_sources.py`
+- Commands: 52 backend tests with 26 explicit optional-dependency skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — normalized fields and region/modality contracts covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: SQLAlchemy/FastAPI runtime coverage requires optional dependency installation
+- Commit subject: feat(jobs): normalize job records and regions
+- Commit hash: pending

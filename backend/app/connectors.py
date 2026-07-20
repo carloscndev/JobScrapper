@@ -19,7 +19,7 @@ from urllib.parse import urljoin, urlparse
 from urllib.robotparser import RobotFileParser
 from typing import Any, Mapping
 
-from .sources import NormalizedJob, SourceAdapter, SourceConfig, SourceFetchResult, WorkModality
+from .sources import JobRegion, NormalizedJob, SourceAdapter, SourceConfig, SourceFetchResult, WorkModality
 
 
 class _RateLimiter:
@@ -48,6 +48,56 @@ def _date(value: Any) -> date | None:
         return None
 
 
+def _number(value: Any) -> float | None:
+    """Parse common feed salary values without failing the whole source."""
+    if value is None or value == "":
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    text = str(value).replace(",", "").strip()
+    match = re.search(r"\d+(?:\.\d+)?", text)
+    return float(match.group()) if match else None
+
+
+def _currency(value: Any) -> str | None:
+    if not value:
+        return None
+    text = str(value).strip().upper()
+    if "MXN" in text or "MX$" in text:
+        return "MXN"
+    if "USD" in text or "US$" in text:
+        return "USD"
+    aliases = {"$": "USD", "US$": "USD", "USD$": "USD", "MX$": "MXN", "M\u00d7N": "MXN"}
+    text = aliases.get(text, text)
+    return text if re.fullmatch(r"[A-Z]{3}", text) else None
+
+
+def classify_region(location: Any, explicit: Any = None) -> JobRegion:
+    """Map free-form locations to the five supported regional buckets."""
+    text = " ".join(str(value or "") for value in (explicit, location)).lower()
+    text = re.sub(r"[\u00e1\u00e0\u00e4]", "a", text)
+    text = re.sub(r"[\u00e9\u00e8\u00eb]", "e", text)
+    text = re.sub(r"[\u00ed\u00ec\u00ef]", "i", text)
+    text = re.sub(r"[\u00f3\u00f2\u00f6]", "o", text)
+    text = re.sub(r"[\u00fa\u00f9\u00fc]", "u", text)
+    if re.search(r"\b(cdmx|ciudad de mexico|mexico city|distrito federal)\b", text):
+        return JobRegion.CDMX
+    if re.search(r"\b(guadalajara|zapopan|jalisco)\b", text):
+        return JobRegion.GUADALAJARA
+    if re.search(r"\b(usa|u\.s\.a\.?|united states|estados unidos|\b(us)\b)", text):
+        return JobRegion.USA
+    if re.search(r"\b(mexico|mexico|mx|monterrey|queretaro|puebla|merida|tijuana)\b", text):
+        return JobRegion.MEXICO
+    return JobRegion.OTHER
+
+
+def _requirements(value: Any) -> tuple[str, ...]:
+    if value is None:
+        return ()
+    values = value if isinstance(value, (list, tuple, set)) else re.split(r"\n|[•;]", str(value))
+    return tuple(item for item in (_sanitize_text(str(item)) for item in values) if item)
+
+
 def _modality(value: Any) -> WorkModality:
     text = str(value or "").lower()
     if "remote" in text:
@@ -73,6 +123,17 @@ def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> Normaliz
     application_url = urljoin(base_url or "", str(application_url)) if application_url else None
     if not description_url or urlparse(description_url).scheme not in {"http", "https"}:
         raise ValueError("job is missing a valid description URL")
+    location = str(item.get("location") or item.get("locations") or "").strip() or None
+    salary_min = _number(item.get("salary_min"))
+    salary_max = _number(item.get("salary_max"))
+    # Some providers only expose a range as one string (e.g. "$50,000-$70,000 USD").
+    if salary_min is None and salary_max is None and item.get("salary"):
+        amounts = re.findall(r"\d[\d,]*(?:\.\d+)?", str(item["salary"]))
+        if amounts:
+            salary_min = _number(amounts[0])
+            salary_max = _number(amounts[-1])
+    requirements = _requirements(item.get("requirements") or item.get("qualifications") or item.get("must_have"))
+    metadata = {"source_adapter": source, "requirements": list(requirements), **dict(item.get("metadata") or {})}
     return NormalizedJob(
         title=str(item.get("title") or item.get("name") or "Untitled role").strip(),
         company=str(item.get("company") or item.get("employer") or source).strip(),
@@ -80,15 +141,18 @@ def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> Normaliz
         description_url=description_url,
         application_url=application_url,
         canonical_url=urljoin(base_url or "", str(item["canonical_url"])) if item.get("canonical_url") else description_url,
-        location=item.get("location"),
-        region=str(item.get("region") or "other"),
+        location=location,
+        region=classify_region(location, item.get("region")).value,
         # Many career pages only encode work mode in the location label
         # (for example, ``Remote - United States``), so use it as a fallback.
         modality=_modality(item.get("modality") or item.get("workplace_type") or item.get("location")),
-        salary_min=item.get("salary_min"), salary_max=item.get("salary_max"),
-        salary_currency=item.get("salary_currency") or item.get("currency"),
+        salary_min=salary_min, salary_max=salary_max,
+        salary_currency=_currency(item.get("salary_currency") or item.get("currency") or item.get("salary")),
         published_at=_date(item.get("published_at") or item.get("date_posted")),
-        metadata={"source_adapter": source, **dict(item.get("metadata") or {})},
+        requirements=requirements,
+        salary_period=str(item.get("salary_period") or item.get("pay_period") or "").strip().lower() or None,
+        source=str(item.get("source") or source),
+        metadata=metadata,
     )
 
 

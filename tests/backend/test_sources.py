@@ -69,6 +69,80 @@ class SourceContractTests(unittest.TestCase):
             module.NormalizedJob(title="x", company="y", description="z", description_url="https://x", salary_min=2, salary_max=1)
 
     @unittest.skipUnless(_available("sqlalchemy"), "SQLAlchemy is required for runtime source tests")
+    def test_normalized_job_carries_requirements_salary_period_currency_and_source(self) -> None:
+        module = _source_module()
+        job = module.NormalizedJob(
+            title="Senior Python Engineer",
+            company="Acme",
+            description="Build reliable APIs",
+            description_url="https://jobs.example/roles/42",
+            application_url="https://apply.example/roles/42",
+            canonical_url="https://jobs.example/roles/42?source=feed",
+            salary_min=50000,
+            salary_max=70000,
+            salary_currency="MXN",
+            salary_period="month",
+            requirements=("Python", "FastAPI", "SQL"),
+            source="jobs-json-feed",
+        )
+
+        self.assertEqual(job.requirements, ("Python", "FastAPI", "SQL"))
+        self.assertEqual((job.salary_min, job.salary_max), (50000, 70000))
+        self.assertEqual(job.salary_currency, "MXN")
+        self.assertEqual(job.salary_period, "month")
+        self.assertEqual(job.source, "jobs-json-feed")
+        self.assertEqual(job.effective_canonical_url, "https://jobs.example/roles/42?source=feed")
+
+        with self.assertRaises(ValueError):
+            module.NormalizedJob(
+                title="x", company="y", description="z",
+                description_url="https://jobs.example/x", salary_currency="pesos",
+            )
+
+    @unittest.skipUnless(_available("sqlalchemy"), "SQLAlchemy is required for runtime source tests")
+    def test_job_region_buckets_and_work_modalities_are_stable(self) -> None:
+        module = _source_module()
+        self.assertEqual(
+            {item.value for item in module.JobRegion},
+            {"cdmx", "guadalajara", "mexico", "usa", "other"},
+        )
+        self.assertEqual(
+            {item.value for item in module.WorkModality},
+            {"remote", "hybrid", "onsite", "unknown"},
+        )
+        for region in module.JobRegion:
+            job = module.NormalizedJob(
+                title="Role", company="Company", description="Description",
+                description_url="https://jobs.example/role", region=region.value,
+            )
+            self.assertEqual(job.region, region.value)
+        for modality in module.WorkModality:
+            job = module.NormalizedJob(
+                title="Role", company="Company", description="Description",
+                description_url="https://jobs.example/role", modality=modality,
+            )
+            self.assertEqual(job.modality, modality)
+
+    @unittest.skipUnless(_available("sqlalchemy"), "SQLAlchemy is required for runtime source tests")
+    def test_normalized_job_validates_description_application_and_canonical_urls(self) -> None:
+        module = _source_module()
+        valid = module.NormalizedJob(
+            title="Role", company="Company", description="Description",
+            description_url="https://jobs.example/description",
+            application_url="http://apply.example/role",
+            canonical_url="https://jobs.example/role",
+        )
+        self.assertEqual(valid.description_url, "https://jobs.example/description")
+        self.assertEqual(valid.application_url, "http://apply.example/role")
+        self.assertEqual(valid.canonical_url, "https://jobs.example/role")
+        for field_name in ("description_url", "application_url", "canonical_url"):
+            kwargs = {field_name: "javascript:alert(1)"}
+            if field_name != "description_url":
+                kwargs["description_url"] = "https://jobs.example/description"
+            with self.subTest(field_name=field_name), self.assertRaises(ValueError):
+                module.NormalizedJob(title="x", company="y", description="z", **kwargs)
+
+    @unittest.skipUnless(_available("sqlalchemy"), "SQLAlchemy is required for runtime source tests")
     def test_fetch_result_statuses_cover_success_partial_and_failure(self) -> None:
         module = _source_module()
         job = module.NormalizedJob(title="x", company="y", description="z", description_url="https://x")
