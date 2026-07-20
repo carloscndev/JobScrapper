@@ -86,6 +86,7 @@ class PipelineCommandTests(unittest.TestCase):
         self.assertTrue(any(issue.stage == "ingest" for issue in report.issues))
         self.assertTrue(any(issue.stage == "notion" for issue in report.issues))
         failed_runs = [run for run in report.source_runs if run["source"] == "bad"]
+        self.assertEqual(failed_runs[0]["status"], "failed")
         self.assertEqual(failed_runs[0]["error"], "RuntimeError: source unavailable")
         self.assertLess(events.index("ingest:good"), events.index("analyze"))
         self.assertLess(events.index("analyze"), events.index("notion"))
