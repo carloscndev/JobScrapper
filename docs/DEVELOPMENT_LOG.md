@@ -594,4 +594,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: recovery and maintenance operations documented
 - Risks: shellcheck unavailable; runtime Docker/service checks remain environment-dependent
 - Commit subject: docs(ops): document recovery and maintenance
-- Commit hash: pending
+- Commit hash: 4e75c423fd82cdb66c20873c6b7ca1a2f1cdfea4

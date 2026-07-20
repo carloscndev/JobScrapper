@@ -827,7 +827,7 @@
     {
       "id": "OPS-005",
       "title": "Document restart, backup, restore, update, and failure recovery",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "OPS-003",
         "OPS-004"
@@ -843,7 +843,8 @@
       "acceptance": [
         "Restart after reboot is documented",
         "Backup, restore, update, and recovery procedures are tested or documented"
-      ]
+      ],
+      "commit_hash": "4e75c42"
     },
     {
       "id": "TEST-001",
