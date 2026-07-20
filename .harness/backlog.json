@@ -601,7 +601,7 @@
     {
       "id": "API-002",
       "title": "Expose paginated jobs, filters, details, and score history",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "JOBS-002",
         "MATCH-001"
@@ -616,7 +616,8 @@
       "acceptance": [
         "List supports pagination, filtering, and ordering",
         "Detail exposes score breakdown, history, links, and recommendations"
-      ]
+      ],
+      "commit_hash": "353af10"
     },
     {
       "id": "API-003",
@@ -663,7 +664,7 @@
     {
       "id": "FRONTEND-003",
       "title": "Build paginated vacancy list, filters, sorting, and status indicators",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "FRONTEND-001",
         "API-002"

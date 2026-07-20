@@ -444,4 +444,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: paginated vacancy search and detailed score history endpoints added
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose vacancy search endpoints
-- Commit hash: pending
+- Commit hash: 353af10cfe2b4dbf8e85aa9bb6219afe70985b75
