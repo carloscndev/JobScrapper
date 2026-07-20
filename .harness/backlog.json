@@ -622,7 +622,7 @@
     {
       "id": "API-003",
       "title": "Expose source, execution, health, metrics, and manual refresh endpoints",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "SOURCES-003",
         "NOTION-002"
@@ -639,7 +639,8 @@
         "Manual refresh prevents concurrent runs",
         "API, database, Ollama, and Notion health are reported",
         "OpenAPI documents contracts and errors"
-      ]
+      ],
+      "commit_hash": "35e2d0f"
     },
     {
       "id": "FRONTEND-002",
@@ -704,7 +705,7 @@
     {
       "id": "FRONTEND-005",
       "title": "Build operations, source, execution, health, and empty-state screens",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "FRONTEND-001",
         "API-003"

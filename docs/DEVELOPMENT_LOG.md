@@ -459,4 +459,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: operations, health, metrics, and manual refresh endpoints added
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose operations and health endpoints
-- Commit hash: pending
+- Commit hash: 35e2d0f5c53e870790e5e58aeb14c15d174f063d

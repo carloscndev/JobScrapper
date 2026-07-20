@@ -353,4 +353,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose operations and health endpoints
-- Commit hash: pending
+- Commit hash: 35e2d0f5c53e870790e5e58aeb14c15d174f063d
