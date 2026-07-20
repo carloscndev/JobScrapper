@@ -269,4 +269,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: Ollama runtime availability is operator-managed; endpoint remains loopback-only
 - Commit subject: feat(match): add local Ollama analysis
-- Commit hash: pending
+- Commit hash: aa3d379722c75f1ac8c03637bdce8c4fa616b482

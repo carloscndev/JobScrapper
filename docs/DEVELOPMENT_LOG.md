@@ -354,4 +354,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: local Ollama analysis integration added
 - Risks: Ollama runtime availability is operator-managed; endpoint remains loopback-only
 - Commit subject: feat(match): add local Ollama analysis
-- Commit hash: pending
+- Commit hash: aa3d379722c75f1ac8c03637bdce8c4fa616b482

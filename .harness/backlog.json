@@ -470,7 +470,7 @@
     {
       "id": "MATCH-002",
       "title": "Integrate Ollama for local summaries, gaps, and recommendations",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "MATCH-001"
       ],
@@ -487,12 +487,13 @@
         "Model selection is configurable for limited CPU/RAM",
         "Structured output is validated",
         "No profile secrets are sent outside the local model"
-      ]
+      ],
+      "commit_hash": "aa3d379"
     },
     {
       "id": "MATCH-003",
       "title": "Add Ollama timeout, retry, sequential processing, and deterministic fallback",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "MATCH-002"
       ],
