@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-import threading
 import os
 from datetime import datetime, timezone
 from urllib.request import Request as UrlRequest, urlopen
@@ -25,6 +24,7 @@ from .connectors import DEFAULT_ADAPTERS
 from .jobs import canonicalize_url, fingerprint_job
 from .sources import SourceConfig, SourceKind
 from .notion import NotionConfig
+from .process_lock import ProcessLock
 
 from .config import Settings
 
@@ -49,7 +49,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         Path(runtime.database_url.removeprefix("sqlite:///./")).parent.mkdir(parents=True, exist_ok=True)
     engine = create_db_engine(runtime)
     session_factory = create_session_factory(engine)
-    refresh_lock = threading.Lock()
+    # File-backed lock coordinates API requests with scheduler/manual workers
+    # running in other processes, not only requests in this server process.
+    refresh_lock = ProcessLock()
     app.state.refresh_lock = refresh_lock
 
     @app.exception_handler(RequestValidationError)

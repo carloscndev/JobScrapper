@@ -550,3 +550,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: live SQLAlchemy/Notion/Ollama runtime requires dependencies and services
 - Commit subject: feat(ops): add end-to-end job pipeline command
 - Commit hash: 30e709dc8d076a01afe5315cd9f0b23e6248bc90
+
+### OPS-003 — Attempt 3
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: documented daily scheduler, shared manual/scheduled process lock, and auditable concurrent skip; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/process_lock.py`, `backend/app/factory.py`, `scripts/run_pipeline.py`, `scripts/scheduler.py`, `scripts/jobscrapper.cron.example`, `tests/backend/test_scheduler_lock.py`, `scripts/README.md`, `backend/README.md`
+- Commands: scheduler lock suite 5 tests pass with 1 explicit API dependency skip; compileall; py_compile; bash syntax; harness validation; `git diff --check`
+- Tester: PASS — cross-process lock, repo-relative path, cron data directory, exit75 and API lock contracts covered
+- Reviewer: APPROVED — scheduler/lock and documentation verified
+- Rework: attempt 1 moved heavy imports after lock; attempt 2 added `mkdir -p data` before cron redirection
+- Changelog: daily scheduler and shared process locking added
+- Risks: Docker/system service runtime remains environment-dependent
+- Commit subject: feat(ops): add daily scheduler and run locking
+- Commit hash: pending

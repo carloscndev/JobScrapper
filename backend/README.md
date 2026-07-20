@@ -128,3 +128,10 @@ fixture-first source refresh and returns `202` with the execution record. A
 second concurrent request receives `409` with the stable
 `refresh_in_progress` error envelope. Other missing resources use
 `execution_not_found`; validation errors retain the standard `fields` array.
+
+Manual refreshes and `python3 scripts/scheduler.py` use the same file-backed
+advisory lock (`JOBSCRAPPER_LOCK_FILE`, default
+`data/jobscrapper.pipeline.lock`), preventing overlap across processes. See
+`scripts/jobscrapper.cron.example` for daily cron installation. A skipped
+scheduled run exits `75` and emits a redacted JSON status; completed runs are
+audited in `PipelineExecution`.

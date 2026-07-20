@@ -1,0 +1,2 @@
+# Install after editing the checkout path: crontab scripts/jobscrapper.cron.example
+17 2 * * * cd /Users/carloscastaneda/Develop/interviews/JobScrapper && mkdir -p data && /usr/bin/env python3 scripts/scheduler.py --no-ollama >> data/scheduler.log 2>&1
