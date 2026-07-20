@@ -908,7 +908,7 @@
     {
       "id": "TEST-004",
       "title": "Add API contract and React component tests",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "API-003",
         "FRONTEND-005"
@@ -923,7 +923,8 @@
       "acceptance": [
         "API success and error contracts are covered",
         "Profile, list, detail, and operations components are covered"
-      ]
+      ],
+      "commit_hash": "48faecd"
     },
     {
       "id": "TEST-005",

@@ -485,7 +485,7 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: runtime API tests depend on optional FastAPI/SQLAlchemy packages
 - Commit subject: test(app): cover API contracts and UI components
-- Commit hash: pending
+- Commit hash: 48faecd0155fece17afc0a2cac17e9514969e9e2
 
 ### TEST-003 — Attempt 1
 
