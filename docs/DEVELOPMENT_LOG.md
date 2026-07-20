@@ -520,3 +520,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add operations dashboard
 - Commit hash: 27504d74048a1f966097a3ff3e91794e0419dd90
+
+### OPS-001 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: backend/frontend Docker Compose startup, persistent volumes, and local or external Ollama configuration; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/Dockerfile`, `frontend/Dockerfile`, `frontend/nginx.conf`, `docker-compose.yml`, `README.md`
+- Commands: docker compose config and local-ollama profile config pass; backend 107 tests with 49 skips; compileall; harness validation; `git diff --check`; Docker build skipped daemon unavailable
+- Tester: PASS — Compose, volumes, healthcheck, proxy and static container contracts covered
+- Reviewer: APPROVED — container orchestration and documentation verified
+- Rework: none
+- Changelog: local container orchestration added
+- Risks: Docker daemon unavailable for image build; frontend dependency lockfile remains future hardening
+- Commit subject: build(ops): add local container orchestration
+- Commit hash: pending

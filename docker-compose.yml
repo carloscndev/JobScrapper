@@ -1,0 +1,55 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite:///./data/jobscrapper.db}
+      JOBSCRAPPER_ENV: ${JOBSCRAPPER_ENV:-container}
+      JOBSCRAPPER_HOST: 0.0.0.0
+      JOBSCRAPPER_PORT: 8000
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2:3b}
+      OLLAMA_TIMEOUT_SECONDS: ${OLLAMA_TIMEOUT_SECONDS:-30}
+      OLLAMA_NUM_CTX: ${OLLAMA_NUM_CTX:-2048}
+      OLLAMA_NUM_THREAD: ${OLLAMA_NUM_THREAD:-2}
+      NOTION_API_TOKEN: ${NOTION_API_TOKEN:-}
+      NOTION_DATABASE_ID: ${NOTION_DATABASE_ID:-}
+      NOTION_API_VERSION: ${NOTION_API_VERSION:-2025-09-03}
+      NOTION_TIMEOUT_SECONDS: ${NOTION_TIMEOUT_SECONDS:-20}
+    volumes:
+      - jobscrapper_data:/app/data
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+
+  # Start this profile when Ollama should run in Compose. For a host-managed
+  # or remote Ollama, omit the profile and set OLLAMA_BASE_URL in .env.
+  ollama:
+    image: ollama/ollama:0.9.6
+    profiles: ["local-ollama"]
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+
+volumes:
+  jobscrapper_data:
+    name: ${JOBSCRAPPER_DATA_VOLUME:-jobscrapper_data}
+  ollama_data:
+    name: ${OLLAMA_DATA_VOLUME:-jobscrapper_ollama}

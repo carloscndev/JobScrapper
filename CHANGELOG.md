@@ -402,3 +402,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add operations dashboard
 - Commit hash: 27504d74048a1f966097a3ff3e91794e0419dd90
+
+### OPS-001 — Attempt 1
+
+- Added backend/frontend Dockerfiles, Compose services, persistent data/model volumes, healthcheck, nginx SPA/API proxy, and local/external Ollama configuration.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/Dockerfile`, `frontend/Dockerfile`, `frontend/nginx.conf`, `docker-compose.yml`, `README.md`
+- Commands: docker compose configs pass; backend 107 tests with 49 skips; compileall; harness validation; `git diff --check`; Docker build skipped daemon unavailable
+- Tester: PASS — container/static contracts covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: Docker daemon unavailable for image build; frontend dependency lockfile remains future hardening
+- Commit subject: build(ops): add local container orchestration
+- Commit hash: pending

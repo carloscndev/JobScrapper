@@ -71,3 +71,33 @@ flow, API/data contracts, security boundaries, Notion mapping, and the readable
 backlog phase index. Operational procedures for cron, backup/restore, and recovery
 are delivered by the corresponding `OPS-*` tasks and must be reflected here before
 the `RELEASE-001` gate.
+
+## Container startup
+
+Docker Compose runs the API on `http://localhost:8000` and the dashboard on
+`http://localhost:5173`. The SQLite database is stored in the named
+`jobscrapper_data` volume, so recreating containers does not remove job data.
+
+```sh
+cp .env.example .env
+docker compose up --build
+```
+
+To run Ollama in a Compose-managed container (and persist its models), enable
+the local profile and pull the configured model once:
+
+```sh
+docker compose --profile local-ollama up --build -d
+docker compose exec ollama ollama pull "${OLLAMA_MODEL:-llama3.2:3b}"
+```
+
+For a host-managed or remote Ollama instance, leave the profile disabled and set
+`OLLAMA_BASE_URL` in `.env` to a URL reachable from the backend container (for a
+host service on Docker Desktop, use `http://host.docker.internal:11434`). The
+backend never requires Ollama for its liveness endpoint; model availability is
+reported by the operations health endpoint. Set `NOTION_API_TOKEN` and
+`NOTION_DATABASE_ID` only when Notion synchronization is enabled.
+
+Stop services with `docker compose down`; named volumes remain intact. Remove
+them explicitly only when intentionally deleting local state:
+`docker compose down --volumes`.
