@@ -951,7 +951,7 @@
     {
       "id": "TEST-006",
       "title": "Verify HTML, URL, file-upload, secret, and sensitive-data security",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "API-003",
         "FRONTEND-005"
@@ -968,12 +968,13 @@
         "Unsafe HTML and URLs are sanitized or rejected",
         "Unsafe files are rejected",
         "Logs, API, frontend, and model calls do not expose secrets"
-      ]
+      ],
+      "commit_hash": "97b2121"
     },
     {
       "id": "TEST-007",
       "title": "Run seven-day scheduler stability and recovery validation",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "OPS-005",
         "TEST-003",

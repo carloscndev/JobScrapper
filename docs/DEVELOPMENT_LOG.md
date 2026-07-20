@@ -624,7 +624,7 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: input and secret handling security coverage added
 - Risks: runtime URL/connector checks require SQLAlchemy installation
 - Commit subject: test(security): cover input and secret handling
-- Commit hash: pending
+- Commit hash: 97b2121e04303be886b2c5ba2350e92654b43e20
 
 ### TEST-005 — Attempt 2
 

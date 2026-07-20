@@ -485,7 +485,7 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: runtime URL/connector checks require SQLAlchemy installation
 - Commit subject: test(security): cover input and secret handling
-- Commit hash: pending
+- Commit hash: 97b2121e04303be886b2c5ba2350e92654b43e20
 
 ### TEST-005 — Attempt 2
 
