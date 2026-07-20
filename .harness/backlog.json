@@ -493,7 +493,7 @@
     {
       "id": "MATCH-003",
       "title": "Add Ollama timeout, retry, sequential processing, and deterministic fallback",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "MATCH-002"
       ],
@@ -508,7 +508,8 @@
         "Ollama failures preserve deterministic score",
         "Analysis is sequential and bounded",
         "Profile, rule, model, or description changes trigger reevaluation"
-      ]
+      ],
+      "commit_hash": "cc7bba9"
     },
     {
       "id": "NOTION-001",
@@ -850,7 +851,7 @@
     {
       "id": "TEST-002",
       "title": "Add score, bounds, reproducibility, and Ollama fallback tests",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "MATCH-003"
       ],

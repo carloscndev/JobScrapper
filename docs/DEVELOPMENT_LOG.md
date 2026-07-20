@@ -369,4 +369,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: resilient local analysis fallback added
 - Risks: SQLAlchemy runtime checks require optional dependency installation; Ollama remains local and operator-managed
 - Commit subject: feat(match): add resilient local analysis fallback
-- Commit hash: pending
+- Commit hash: cc7bba9fdb5b149f80522ca4d81038a965df20cc

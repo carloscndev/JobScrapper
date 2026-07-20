@@ -281,4 +281,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: SQLAlchemy runtime checks require optional dependency installation; Ollama remains local and operator-managed
 - Commit subject: feat(match): add resilient local analysis fallback
-- Commit hash: pending
+- Commit hash: cc7bba9fdb5b149f80522ca4d81038a965df20cc
