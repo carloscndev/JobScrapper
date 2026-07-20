@@ -475,6 +475,18 @@ All notable product changes will be documented here following Keep a Changelog a
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### TEST-007 — Attempt 2
+
+- Added observable seven-tick scheduler simulation with transient exit recovery, retry invariants, lock cycles and resource-bound checks.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `tests/backend/test_scheduler_stability.py`
+- Commands: scheduler stability/lock 10 tests with 1 optional skip; compileall; harness validation; `git diff --check`
+- Tester: PASS — stability and recovery contracts covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: seven-day behavior is simulated; production cron remains environment-dependent
+- Commit subject: test(ops): validate scheduler stability and recovery
+- Commit hash: pending
+
 ### TEST-006 — Attempt 1
 
 - Added security contracts for unsafe URLs, traversal/polyglot uploads, Notion secret redaction and Ollama payload allowlisting.

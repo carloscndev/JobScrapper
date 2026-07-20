@@ -611,6 +611,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### TEST-007 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: seven scheduler ticks, transient retry/recovery, locking and resource bounds recorded; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `tests/backend/test_scheduler_stability.py`
+- Commands: scheduler stability/lock 10 tests with 1 optional skip; compileall; harness validation; `git diff --check`
+- Tester: PASS — observable seven-tick retry and lock/recovery behavior verified
+- Reviewer: APPROVED — exit codes, invariant args, resource limits and lock cycles verified
+- Rework: attempt 1 synthetic simulation rejected; added observable mocked scheduler invocations and transient exit recovery
+- Changelog: scheduler stability and recovery validation added
+- Risks: seven-day behavior is simulated; production cron remains environment-dependent
+- Commit subject: test(ops): validate scheduler stability and recovery
+- Commit hash: pending
+
 ### TEST-006 — Attempt 1
 
 - Started / finished: 2026-07-20 / 2026-07-20
