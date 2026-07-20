@@ -624,7 +624,7 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: version 0.1.0 readiness checklist finalized
 - Risks: Docker/npm/Playwright/SQLAlchemy/credentials/tag gates require release environment
 - Commit subject: docs(release): finalize version 0.1.0 readiness
-- Commit hash: pending
+- Commit hash: f5a6d0320fea1a324afea298aba496eba70f3830
 
 ### TEST-007 — Attempt 2
 

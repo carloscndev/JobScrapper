@@ -999,7 +999,7 @@
     {
       "id": "RELEASE-001",
       "title": "Finalize documentation, release checklist, and version 0.1.0",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "TEST-007"
       ],
@@ -1015,7 +1015,8 @@
         "Installation and operation docs are complete",
         "Final SDD and acceptance checklist are complete",
         "CHANGELOG records version 0.1.0"
-      ]
+      ],
+      "commit_hash": "f5a6d03"
     }
   ]
 }
