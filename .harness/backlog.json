@@ -780,7 +780,7 @@
     {
       "id": "OPS-003",
       "title": "Configure daily cron scheduling and process locking",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "OPS-002"
       ],
@@ -797,7 +797,8 @@
         "Daily execution is documented",
         "Concurrent runs are prevented",
         "Manual and scheduled runs share the same lock"
-      ]
+      ],
+      "commit_hash": "fd01a62"
     },
     {
       "id": "OPS-004",

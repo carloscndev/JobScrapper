@@ -437,4 +437,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: Docker/system service runtime remains environment-dependent
 - Commit subject: feat(ops): add daily scheduler and run locking
-- Commit hash: pending
+- Commit hash: fd01a629ab82d7448035ab437915a22e5a221b3c
