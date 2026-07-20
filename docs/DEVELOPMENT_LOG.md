@@ -489,4 +489,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: vacancy search dashboard added
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add vacancy search dashboard
-- Commit hash: pending
+- Commit hash: ed64711c8cde79cccf40cdd7ceadae823a4b3285

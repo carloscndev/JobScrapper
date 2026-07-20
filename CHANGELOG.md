@@ -377,4 +377,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — UI/accessibility/performance review complete
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add vacancy search dashboard
-- Commit hash: pending
+- Commit hash: ed64711c8cde79cccf40cdd7ceadae823a4b3285

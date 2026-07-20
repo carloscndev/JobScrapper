@@ -666,7 +666,7 @@
     {
       "id": "FRONTEND-003",
       "title": "Build paginated vacancy list, filters, sorting, and status indicators",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-001",
         "API-002"
@@ -681,12 +681,13 @@
       "acceptance": [
         "Region, modality, score, company, source, date, and status filters work",
         "New, changed, inactive, and pending jobs are distinguishable"
-      ]
+      ],
+      "commit_hash": "ed64711"
     },
     {
       "id": "FRONTEND-004",
       "title": "Build vacancy detail, compatibility explanation, and safe external links",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "FRONTEND-003",
         "MATCH-003"
