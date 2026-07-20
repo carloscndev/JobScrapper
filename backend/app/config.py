@@ -21,6 +21,12 @@ class Settings:
     ollama_timeout_seconds: float = 30.0
     ollama_num_ctx: int = 2048
     ollama_num_thread: int = 2
+    # Notion credentials are always resolved from environment variables.  The
+    # token itself is intentionally not stored in Settings or persisted.
+    notion_api_token_env: str = "NOTION_API_TOKEN"
+    notion_database_id_env: str = "NOTION_DATABASE_ID"
+    notion_api_version: str = "2025-09-03"
+    notion_timeout_seconds: float = 20.0
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -46,6 +52,10 @@ class Settings:
             ollama_timeout_seconds=_parse_float("OLLAMA_TIMEOUT_SECONDS", defaults.ollama_timeout_seconds),
             ollama_num_ctx=_parse_int("OLLAMA_NUM_CTX", defaults.ollama_num_ctx, minimum=256),
             ollama_num_thread=_parse_int("OLLAMA_NUM_THREAD", defaults.ollama_num_thread, minimum=1),
+            notion_api_token_env=os.getenv("NOTION_API_TOKEN_ENV", defaults.notion_api_token_env),
+            notion_database_id_env=os.getenv("NOTION_DATABASE_ID_ENV", defaults.notion_database_id_env),
+            notion_api_version=os.getenv("NOTION_API_VERSION", defaults.notion_api_version),
+            notion_timeout_seconds=_parse_float("NOTION_TIMEOUT_SECONDS", defaults.notion_timeout_seconds),
         )
 
 

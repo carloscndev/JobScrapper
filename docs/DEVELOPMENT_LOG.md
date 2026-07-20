@@ -370,3 +370,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: SQLAlchemy runtime checks require optional dependency installation; Ollama remains local and operator-managed
 - Commit subject: feat(match): add resilient local analysis fallback
 - Commit hash: cc7bba9fdb5b149f80522ca4d81038a965df20cc
+
+### NOTION-001 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: env-only credentials, complete normalized vacancy schema, and regional views for CDMX, Guadalajara, Mexico, USA, and other; PASS
+- Skills: coordinator `notion-api`; coder `notion-api`; tester none; reviewer `notion-api`
+- Files: `backend/app/notion.py`, `backend/app/config.py`, `tests/backend/test_notion.py`, `.env.example`, `docs/NOTION.md`
+- Commands: 76 backend tests with 39 explicit optional-dependency skips; 5 Notion tests pass; compileall; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — credentials redaction, schema fields, regional views, and Settings env covered offline
+- Reviewer: APPROVED — implementation re-review passed after traceability correction
+- Rework: attempt 1 added mandatory structured traceability before approval
+- Changelog: Notion schema and regional view configuration added
+- Risks: no network or destructive Notion operations performed; API runtime remains operator-managed
+- Commit subject: feat(notion): define vacancy database integration
+- Commit hash: pending
