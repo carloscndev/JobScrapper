@@ -445,7 +445,7 @@
     {
       "id": "MATCH-001",
       "title": "Implement deterministic compatibility scoring and explainable weights",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "PROFILE-002",
         "JOBS-001"
@@ -464,12 +464,13 @@
         "Required and desirable requirements are separated",
         "Exclusions and score breakdown are persisted",
         "Weights for skills, experience, seniority, language, location, modality, salary, and work authorization are configurable without code changes"
-      ]
+      ],
+      "commit_hash": "5d53745"
     },
     {
       "id": "MATCH-002",
       "title": "Integrate Ollama for local summaries, gaps, and recommendations",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "MATCH-001"
       ],
@@ -593,7 +594,7 @@
     {
       "id": "API-002",
       "title": "Expose paginated jobs, filters, details, and score history",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "JOBS-002",
         "MATCH-001"

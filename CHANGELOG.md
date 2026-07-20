@@ -257,4 +257,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: SQLAlchemy runtime persistence checks require optional dependency installation
 - Commit subject: feat(match): add explainable compatibility scoring
-- Commit hash: pending
+- Commit hash: 5d537456331cf4c52961825688b9309affd65cd5

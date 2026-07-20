@@ -339,4 +339,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: explainable compatibility scoring added
 - Risks: SQLAlchemy runtime persistence checks require optional dependency installation
 - Commit subject: feat(match): add explainable compatibility scoring
-- Commit hash: pending
+- Commit hash: 5d537456331cf4c52961825688b9309affd65cd5
