@@ -929,7 +929,7 @@
     {
       "id": "TEST-005",
       "title": "Add end-to-end ingestion-to-dashboard Playwright test",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-004",
         "OPS-002"
@@ -945,7 +945,8 @@
       "acceptance": [
         "A fixture job flows from ingestion through score to dashboard detail",
         "Server lifecycle is automated and browser logs are captured"
-      ]
+      ],
+      "commit_hash": "b045862"
     },
     {
       "id": "TEST-006",

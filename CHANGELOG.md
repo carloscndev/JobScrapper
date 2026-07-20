@@ -485,7 +485,7 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: real browser execution requires Playwright and frontend dependencies
 - Commit subject: test(e2e): cover ingestion to dashboard flow
-- Commit hash: pending
+- Commit hash: b04586250f2e700d13504a09bd573a57e48d6ce5
 
 ### TEST-004 — Attempt 1
 
