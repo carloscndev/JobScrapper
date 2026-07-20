@@ -48,6 +48,10 @@ class SourceConfig:
     kind: SourceKind = SourceKind.CAREER_PAGE
     base_url: str | None = None
     terms_url: str | None = None
+    # Explicit operator acknowledgement is required before an adapter may
+    # fetch a source.  ``settings['terms_accepted']`` is accepted as a config
+    # file equivalent for backwards-compatible deserialization.
+    terms_accepted: bool = False
     enabled: bool = True
     timeout_seconds: float = 20.0
     requests_per_minute: int = 30
@@ -67,6 +71,12 @@ class SourceConfig:
             raise ValueError("requests_per_minute must be greater than zero")
         if self.max_retries < 0:
             raise ValueError("max_retries cannot be negative")
+
+    def validate_terms_acceptance(self) -> None:
+        if not (self.terms_accepted or self.settings.get("terms_accepted") is True):
+            raise ValueError(
+                "terms_accepted=True is required after reviewing the source terms of use"
+            )
 
 
 @dataclass(frozen=True, slots=True)
@@ -157,6 +167,7 @@ class SourceService:
                 "timeout_seconds": config.timeout_seconds,
                 "requests_per_minute": config.requests_per_minute,
                 "max_retries": config.max_retries,
+                "terms_accepted": config.terms_accepted or config.settings.get("terms_accepted", False),
             },
         )
         source.kind = config.kind.value
@@ -168,6 +179,7 @@ class SourceService:
             "timeout_seconds": config.timeout_seconds,
             "requests_per_minute": config.requests_per_minute,
             "max_retries": config.max_retries,
+            "terms_accepted": config.terms_accepted or config.settings.get("terms_accepted", False),
         }
         self.sources.session.flush()
         return source

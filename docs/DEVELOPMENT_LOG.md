@@ -265,3 +265,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: SQLAlchemy runtime checks require dependency installation; real connectors are deferred to SOURCES-002
 - Commit subject: feat(sources): define job source adapters
 - Commit hash: 2268fa9cdfe6745830ea4ba8c04804a8c86cd583
+
+### SOURCES-002 — Attempt 4
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: JSON/feed plus Greenhouse and Lever adapters, normalized description/application URLs, fixture-first operation, opt-in network access with robots/user-agent checks, source isolation, and enforceable terms-of-use acknowledgement; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `backend/app/sources.py`, `docs/SOURCES.md`, `tests/backend/test_connectors.py`
+- Commands: 7 connector tests with 7 explicit SQLAlchemy skips; 45 backend tests with 19 skips; compileall; py_compile; JSON; shell syntax; skills; harness validation; `git diff --check`
+- Tester: PASS — href-priority, fixture normalization, robots/user-agent, failure isolation, and terms rejection covered
+- Reviewer: APPROVED — terms gate enforced, documentation example corrected, implementation and scope verified
+- Rework: attempt 1 fixed application anchor text overriding href; attempt 3 added terms acceptance gate and persistence; attempt 4 corrected documentation fixture example
+- Changelog: initial job connectors and compliance gate added
+- Risks: SQLAlchemy runtime checks require dependency installation; real network remains opt-in and governed by robots/terms acknowledgement
+- Commit subject: feat(sources): add initial job connectors
+- Commit hash: pending
