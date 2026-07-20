@@ -611,6 +611,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### TEST-003 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: source failure isolation, idempotent/retry-safe Notion sync and reconciliation repair coverage; PASS
+- Skills: coordinator none; coder notion-api; tester none; reviewer notion-api
+- Files: `tests/backend/test_notion_sync.py`
+- Commands: pipeline/connectors/Notion suites 27 tests with 12 explicit SQLAlchemy skips; compileall; harness validation; `git diff --check`
+- Tester: PASS — source isolation, idempotency, rate limit and reconciliation behaviors covered
+- Reviewer: APPROVED — retry audit and scope verified; unrelated observability files excluded
+- Rework: none
+- Changelog: synchronization and reconciliation resilience coverage added
+- Risks: connector runtime tests require SQLAlchemy installation
+- Commit subject: test(integration): cover source and Notion synchronization
+- Commit hash: pending
+
 ### TEST-002 — Attempt 1
 
 - Started / finished: 2026-07-20 / 2026-07-20

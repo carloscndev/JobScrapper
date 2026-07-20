@@ -240,6 +240,26 @@ class NotionSyncTests(unittest.TestCase):
         self.assertEqual(repaired.evidence["repair_attempts"][0]["state"], "failed")
         self.assertEqual(repaired.evidence["repair_attempts"][1]["error"], "local_job_not_found")
 
+    def test_repair_retries_transient_rate_limit_and_keeps_audit_attempts(self):
+        page = {"id": "page-retry", "properties": {"Fingerprint": {"rich_text": [{"plain_text": "retry"}]}}}
+        transport = QueueTransport([
+            (200, {}, json.dumps({"results": [page], "has_more": False}).encode()),
+            (429, {"Retry-After": "0"}, b'{"message":"rate limited"}'),
+            (200, {}, b'{"id":"page-retry"}'),
+        ])
+        client = NotionHttpClient(config(), transport=transport, max_retries=1, min_interval_seconds=0)
+        service = NotionSyncService(client)
+        report = ReconciliationReport("r-retry", "2026-01-01T00:00:00+00:00", 1, [
+            {"id": "d-retry", "external_id": "job:retry", "kind": "stale_in_notion", "retryable": True},
+        ], "drift", {})
+        with patch("app.notion_sync.time.sleep"):
+            repaired = service.repair(report, [(job("retry"), evaluation())])
+        self.assertEqual(repaired.state, "repaired")
+        evidence = repaired.evidence["repair_attempts"][0]
+        self.assertEqual(evidence["state"], "repaired")
+        self.assertEqual(evidence["attempts"], 2)
+        self.assertEqual([item[0] for item in transport.calls], ["POST", "PATCH", "PATCH"])
+
 
 if __name__ == "__main__":
     unittest.main()

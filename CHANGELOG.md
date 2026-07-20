@@ -475,6 +475,18 @@ All notable product changes will be documented here following Keep a Changelog a
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### TEST-003 — Attempt 1
+
+- Added retry-safe Notion reconciliation coverage for 429 responses, audit attempts, idempotency and source isolation contracts.
+- Skills: coordinator none; coder notion-api; tester none; reviewer notion-api
+- Files: `tests/backend/test_notion_sync.py`
+- Commands: pipeline/connectors/Notion suites 27 tests with 12 optional skips; compileall; harness validation; `git diff --check`
+- Tester: PASS — integration resilience covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: connector runtime tests require SQLAlchemy installation
+- Commit subject: test(integration): cover source and Notion synchronization
+- Commit hash: pending
+
 ### TEST-002 — Attempt 1
 
 - Added tests for bounded/reproducible compatibility scores, Ollama retries and deterministic fallback when the local model is unavailable.
