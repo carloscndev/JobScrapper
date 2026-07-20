@@ -378,3 +378,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add vacancy search dashboard
 - Commit hash: ed64711c8cde79cccf40cdd7ceadae823a4b3285
+
+### FRONTEND-004 — Attempt 1
+
+- Added accessible vacancy detail view with compatibility explanation, recommendations, gaps, full links and safe external link attributes.
+- Skills: coder/reviewer `vercel-react-best-practices`, `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `frontend/src/styles.css`, `tests/frontend/test_frontend_detail.py`
+- Commands: frontend suite 17 tests pass; compileall; `git diff --check`; npm build skipped because node_modules/tsc unavailable
+- Tester: PASS — detail and link safety contracts covered
+- Reviewer: APPROVED — UI/accessibility/performance review complete
+- Risks: install frontend dependencies before build and browser E2E validation
+- Commit subject: feat(web): add vacancy detail and recommendations
+- Commit hash: pending

@@ -490,3 +490,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add vacancy search dashboard
 - Commit hash: ed64711c8cde79cccf40cdd7ceadae823a4b3285
+
+### FRONTEND-004 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: vacancy detail with description/salary/location/modality/links/score/gaps/recommendations and safe external navigation; PASS
+- Skills: coordinator none; coder `vercel-react-best-practices`, `web-design-guidelines`; tester none; reviewer `vercel-react-best-practices`, `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `frontend/src/styles.css`, `tests/frontend/test_frontend_detail.py`
+- Commands: frontend suite 17 tests pass; compileall; `git diff --check`; npm build skipped because node_modules/tsc unavailable
+- Tester: PASS — detail fields, safe links, back navigation and accessibility covered
+- Reviewer: APPROVED — UI/accessibility/performance review complete
+- Rework: none
+- Changelog: vacancy detail and recommendations view added
+- Risks: install frontend dependencies before build and browser E2E validation
+- Commit subject: feat(web): add vacancy detail and recommendations
+- Commit hash: pending
