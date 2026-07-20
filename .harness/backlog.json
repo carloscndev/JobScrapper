@@ -868,7 +868,7 @@
     {
       "id": "TEST-002",
       "title": "Add score, bounds, reproducibility, and Ollama fallback tests",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "MATCH-003"
       ],
@@ -881,7 +881,8 @@
       "acceptance": [
         "Scores and exclusions are reproducible",
         "Model timeout and unavailable-model fallback are covered"
-      ]
+      ],
+      "commit_hash": "4cf7ff5"
     },
     {
       "id": "TEST-003",

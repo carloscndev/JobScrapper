@@ -624,4 +624,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: scoring and local model fallback test coverage added
 - Risks: runtime fallback test requires SQLAlchemy installation
 - Commit subject: test(match): cover scoring and local model fallback
-- Commit hash: pending
+- Commit hash: 4cf7ff545a9b6b1615f9bba7f7cdbadd8fbc2da8

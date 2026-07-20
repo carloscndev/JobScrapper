@@ -485,4 +485,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: runtime fallback test requires SQLAlchemy installation
 - Commit subject: test(match): cover scoring and local model fallback
-- Commit hash: pending
+- Commit hash: 4cf7ff545a9b6b1615f9bba7f7cdbadd8fbc2da8
