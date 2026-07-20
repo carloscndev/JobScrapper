@@ -514,7 +514,7 @@
     {
       "id": "NOTION-001",
       "title": "Configure Notion credentials, schema, and regional views",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "JOBS-002"
       ],
@@ -531,12 +531,13 @@
         "Secrets remain local",
         "Schema maps all normalized job fields",
         "Regional views cover CDMX, Guadalajara, Mexico, USA, and other"
-      ]
+      ],
+      "commit_hash": "9e141e6"
     },
     {
       "id": "NOTION-002",
       "title": "Implement idempotent Notion upsert, retries, and sync status",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "NOTION-001",
         "MATCH-003"

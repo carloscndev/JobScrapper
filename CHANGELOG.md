@@ -293,4 +293,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation re-review passed after traceability correction
 - Risks: no network or destructive Notion operations performed; API runtime remains operator-managed
 - Commit subject: feat(notion): define vacancy database integration
-- Commit hash: pending
+- Commit hash: 9e141e6d29e2c4a16b69fce34333d8dfb593d1fd
