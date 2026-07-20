@@ -385,3 +385,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: no network or destructive Notion operations performed; API runtime remains operator-managed
 - Commit subject: feat(notion): define vacancy database integration
 - Commit hash: 9e141e6d29e2c4a16b69fce34333d8dfb593d1fd
+
+### NOTION-002 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: idempotent fingerprint upsert, evaluated property synchronization, rate/retry controls, pagination, and persisted partial-failure status; PASS
+- Skills: coordinator `notion-api`; coder `notion-api`; tester none; reviewer `notion-api`
+- Files: `backend/app/notion_sync.py`, `tests/backend/test_notion_sync.py`, `docs/NOTION.md`
+- Commands: 85 backend tests with 39 explicit optional-dependency skips; 9 Notion sync tests pass; compileall; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — mapping, idempotency, pagination, retries, actual attempts, outcome persistence and isolation covered
+- Reviewer: APPROVED — persistence and retry metadata verified
+- Rework: attempt 1 added repository/callback persistence and actual request-attempt propagation
+- Changelog: idempotent Notion synchronization and status tracking added
+- Risks: no live Notion calls in tests; API credentials and runtime remain operator-managed
+- Commit subject: feat(notion): sync evaluated jobs idempotently
+- Commit hash: pending

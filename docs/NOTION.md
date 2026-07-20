@@ -26,3 +26,19 @@ check dates, score and explanation, matches/gaps/recommendations, status, and
 stable local job ID/fingerprint. Full descriptions stay in SQLite because
 Notion rich-text blocks have size limits; the Notion page links to the original
 description.
+
+## Idempotent synchronization
+
+`backend/app/notion_sync.py` provides an injected-transport client and a
+`NotionSyncService`. Each job uses `job:<fingerprint>` as its stable external
+identity; an existing page is found by `Fingerprint` or `Local job ID` before
+the service creates or patches it. Score, explanation, matches, gaps,
+recommendations, links, and status are sent on every upsert. Rich text is
+bounded to Notion's 2,000-character limit.
+
+The HTTP client enforces the documented three-requests-per-second average,
+honours `Retry-After`, and retries 429/5xx responses with exponential backoff.
+`sync_jobs` returns one `SyncOutcome` per item, including `synced`/`failed`
+state, page ID, retry attempts, and redacted reconciliation metadata; one
+failure therefore cannot hide successes from the rest of a batch. Tests should
+inject a transport and never require a live token or network access.

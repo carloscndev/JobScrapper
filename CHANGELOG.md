@@ -294,3 +294,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: no network or destructive Notion operations performed; API runtime remains operator-managed
 - Commit subject: feat(notion): define vacancy database integration
 - Commit hash: 9e141e6d29e2c4a16b69fce34333d8dfb593d1fd
+
+### NOTION-002 — Attempt 2
+
+- Added idempotent Notion upserts by stable fingerprint, evaluated property synchronization, pagination, rate limiting, Retry-After/backoff, and persisted sync outcomes with accurate attempts and errors.
+- Skills: coordinator `notion-api`; coder `notion-api`; tester none; reviewer `notion-api`
+- Files: `backend/app/notion_sync.py`, `tests/backend/test_notion_sync.py`, `docs/NOTION.md`
+- Commands: 85 backend tests with 39 explicit optional-dependency skips; 9 Notion sync tests pass; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — sync contracts and persistence metadata covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: no live Notion calls in tests; API credentials and runtime remain operator-managed
+- Commit subject: feat(notion): sync evaluated jobs idempotently
+- Commit hash: pending
