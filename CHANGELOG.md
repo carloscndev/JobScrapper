@@ -485,7 +485,7 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: seven-day behavior is simulated; production cron remains environment-dependent
 - Commit subject: test(ops): validate scheduler stability and recovery
-- Commit hash: pending
+- Commit hash: 45302952f2a41714ec91ed13d86b208c305f4747
 
 ### TEST-006 — Attempt 1
 

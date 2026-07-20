@@ -974,7 +974,7 @@
     {
       "id": "TEST-007",
       "title": "Run seven-day scheduler stability and recovery validation",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "OPS-005",
         "TEST-003",
@@ -993,12 +993,13 @@
       "acceptance": [
         "Seven daily runs complete without intervention",
         "Locking, retries, resource bounds, and recovery behavior are recorded"
-      ]
+      ],
+      "commit_hash": "4530295"
     },
     {
       "id": "RELEASE-001",
       "title": "Finalize documentation, release checklist, and version 0.1.0",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "TEST-007"
       ],
