@@ -380,7 +380,7 @@
     {
       "id": "SOURCES-003",
       "title": "Add source rate limits, retries, sanitization, and failure isolation",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "SOURCES-002"
       ],
@@ -396,7 +396,8 @@
         "CAPTCHA/authentication/block evasion is absent",
         "One source failure does not stop other sources",
         "Scraped HTML is sanitized and external description/application URLs are validated before persistence or model processing"
-      ]
+      ],
+      "commit_hash": "bc37edb"
     },
     {
       "id": "JOBS-001",

@@ -294,4 +294,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: ingestion controls hardened
 - Risks: live SQLAlchemy coverage requires dependency installation; network remains opt-in and robots/terms constrained
 - Commit subject: feat(sources): harden ingestion controls
-- Commit hash: pending
+- Commit hash: bc37edb54fabe89fd07378e2da6bee01ac99305e

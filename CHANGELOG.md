@@ -221,4 +221,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: live SQLAlchemy coverage requires dependency installation; network remains opt-in and robots/terms constrained
 - Commit subject: feat(sources): harden ingestion controls
-- Commit hash: pending
+- Commit hash: bc37edb54fabe89fd07378e2da6bee01ac99305e
