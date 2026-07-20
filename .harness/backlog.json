@@ -756,7 +756,7 @@
     {
       "id": "OPS-002",
       "title": "Create the single-command ingestion and evaluation pipeline",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "SOURCES-003",
         "MATCH-003",
@@ -774,12 +774,13 @@
       "acceptance": [
         "One command ingests, normalizes, scores, analyzes, and syncs jobs",
         "Partial failures are reported without losing successful work"
-      ]
+      ],
+      "commit_hash": "30e709d"
     },
     {
       "id": "OPS-003",
       "title": "Configure daily cron scheduling and process locking",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "OPS-002"
       ],
@@ -801,7 +802,7 @@
     {
       "id": "OPS-004",
       "title": "Add structured logs, rotation, secret redaction, and resource limits",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "OPS-002"
       ],
@@ -921,7 +922,7 @@
     {
       "id": "TEST-005",
       "title": "Add end-to-end ingestion-to-dashboard Playwright test",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "FRONTEND-004",
         "OPS-002"

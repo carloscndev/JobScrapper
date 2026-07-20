@@ -549,4 +549,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: end-to-end ingestion/evaluation pipeline command added
 - Risks: live SQLAlchemy/Notion/Ollama runtime requires dependencies and services
 - Commit subject: feat(ops): add end-to-end job pipeline command
-- Commit hash: pending
+- Commit hash: 30e709dc8d076a01afe5315cd9f0b23e6248bc90
