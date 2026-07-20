@@ -8,6 +8,9 @@ opt-in through ``settings['allow_network']`` and checks robots.txt first.
 from __future__ import annotations
 
 import json
+import re
+import threading
+import time
 import urllib.request
 from datetime import date
 from html.parser import HTMLParser
@@ -17,6 +20,23 @@ from urllib.robotparser import RobotFileParser
 from typing import Any, Mapping
 
 from .sources import NormalizedJob, SourceAdapter, SourceConfig, SourceFetchResult, WorkModality
+
+
+class _RateLimiter:
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self._last: dict[str, float] = {}
+
+    def wait(self, source: str, requests_per_minute: int) -> None:
+        interval = 60.0 / requests_per_minute
+        with self._lock:
+            delay = interval - (time.monotonic() - self._last.get(source, 0.0))
+            if delay > 0:
+                time.sleep(min(delay, 60.0))
+            self._last[source] = time.monotonic()
+
+
+_RATE_LIMITER = _RateLimiter()
 
 
 def _date(value: Any) -> date | None:
@@ -39,6 +59,13 @@ def _modality(value: Any) -> WorkModality:
     return WorkModality.UNKNOWN
 
 
+def _sanitize_text(value: str) -> str:
+    """Remove markup/control content before storing or model processing."""
+    value = re.sub(r"(?is)<(script|style|noscript).*?>.*?</\1>", " ", value)
+    value = re.sub(r"<[^>]+>", " ", value)
+    return " ".join("".join(ch for ch in value if ch == "\n" or ch == "\t" or ord(ch) >= 32).split())
+
+
 def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> NormalizedJob:
     description_url = str(item.get("description_url") or item.get("url") or item.get("apply_url") or "")
     application_url = item.get("application_url") or item.get("apply_url")
@@ -49,13 +76,15 @@ def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> Normaliz
     return NormalizedJob(
         title=str(item.get("title") or item.get("name") or "Untitled role").strip(),
         company=str(item.get("company") or item.get("employer") or source).strip(),
-        description=str(item.get("description") or item.get("summary") or "No description provided").strip(),
+        description=_sanitize_text(str(item.get("description") or item.get("summary") or "No description provided")),
         description_url=description_url,
         application_url=application_url,
         canonical_url=urljoin(base_url or "", str(item["canonical_url"])) if item.get("canonical_url") else description_url,
         location=item.get("location"),
         region=str(item.get("region") or "other"),
-        modality=_modality(item.get("modality") or item.get("workplace_type")),
+        # Many career pages only encode work mode in the location label
+        # (for example, ``Remote - United States``), so use it as a fallback.
+        modality=_modality(item.get("modality") or item.get("workplace_type") or item.get("location")),
         salary_min=item.get("salary_min"), salary_max=item.get("salary_max"),
         salary_currency=item.get("salary_currency") or item.get("currency"),
         published_at=_date(item.get("published_at") or item.get("date_posted")),
@@ -76,9 +105,19 @@ def _content(config: SourceConfig, key: str) -> str:
     if not config.base_url:
         raise ValueError("base_url is required for network fetching")
     _robots_check(config.base_url, str(settings.get("user_agent", "JobScrapper/0.1")))
-    request = urllib.request.Request(config.base_url, headers={"User-Agent": str(settings.get("user_agent", "JobScrapper/0.1"))})
-    with urllib.request.urlopen(request, timeout=config.timeout_seconds) as response:  # noqa: S310 - explicit opt-in
-        return response.read().decode("utf-8", errors="replace")
+    user_agent = str(settings.get("user_agent", "JobScrapper/0.1"))
+    last_error: Exception | None = None
+    for attempt in range(config.max_retries + 1):
+        try:
+            _RATE_LIMITER.wait(config.name, config.requests_per_minute)
+            request = urllib.request.Request(config.base_url, headers={"User-Agent": user_agent})
+            with urllib.request.urlopen(request, timeout=config.timeout_seconds) as response:  # noqa: S310 - explicit opt-in
+                return response.read().decode("utf-8", errors="replace")
+        except Exception as exc:
+            last_error = exc
+            if attempt < config.max_retries:
+                time.sleep(min(2**attempt, 10.0))
+    raise RuntimeError(f"source fetch failed after retries: {last_error}") from last_error
 
 
 def _robots_check(url: str, user_agent: str) -> None:
@@ -104,8 +143,16 @@ class JsonApiFeedAdapter(SourceAdapter):
             config.validate_terms_acceptance()
             payload = json.loads(_content(config, "payload"))
             items = payload if isinstance(payload, list) else payload.get("jobs", payload.get("data", []))
-            jobs = tuple(_job(item, config.base_url, self.name) for item in items if isinstance(item, Mapping))
-            return SourceFetchResult(jobs=jobs)
+            jobs: list[NormalizedJob] = []
+            errors: list[str] = []
+            for item in items:
+                if not isinstance(item, Mapping):
+                    continue
+                try:
+                    jobs.append(_job(item, config.base_url, self.name))
+                except Exception as exc:
+                    errors.append(f"invalid job: {exc}")
+            return SourceFetchResult(jobs=tuple(jobs), error="; ".join(errors) if errors else None)
         except Exception as exc:  # source isolation is handled by the pipeline
             return SourceFetchResult(error=f"{type(exc).__name__}: {exc}")
 
@@ -117,9 +164,15 @@ class _CardParser(HTMLParser):
         self._current: dict[str, str] | None = None
         self._field: str | None = None
         self._anchor: dict[str, str] | None = None
+        self._blocked = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = {k: v or "" for k, v in attrs}
+        if tag in {"script", "style", "noscript"}:
+            self._blocked += 1
+            return
+        if self._blocked:
+            return
         if values.get("data-job") == "true" or "job-card" in values.get("class", "") or tag == "article":
             self._current = {}
         if self._current is not None:
@@ -138,12 +191,19 @@ class _CardParser(HTMLParser):
                 self._field = None
 
     def handle_data(self, data: str) -> None:
+        if self._blocked:
+            return
         if self._current is not None and self._field:
             self._current[self._field] = (self._current.get(self._field, "") + " " + data).strip()
         if self._anchor is not None:
             self._anchor["text"] = (self._anchor.get("text", "") + " " + data).strip()
 
     def handle_endtag(self, tag: str) -> None:
+        if tag in {"script", "style", "noscript"}:
+            self._blocked = max(0, self._blocked - 1)
+            return
+        if self._blocked:
+            return
         if tag == "a" and self._current is not None and self._anchor is not None:
             anchor = self._anchor
             label = f"{anchor.get('class', '')} {anchor.get('field', '')} {anchor.get('text', '')}".lower()
@@ -173,8 +233,16 @@ class _CareerPageAdapter(SourceAdapter):
             config.validate_terms_acceptance()
             parser = _CardParser()
             parser.feed(_content(config, "html"))
-            jobs = tuple(_job({**card, "company": self.company, "description_url": card.get("url")}, config.base_url, self.name) for card in parser.cards if card.get("url"))
-            return SourceFetchResult(jobs=jobs)
+            jobs: list[NormalizedJob] = []
+            errors: list[str] = []
+            for card in parser.cards:
+                if not card.get("url"):
+                    continue
+                try:
+                    jobs.append(_job({**card, "company": self.company, "description_url": card.get("url")}, config.base_url, self.name))
+                except Exception as exc:
+                    errors.append(f"invalid job: {exc}")
+            return SourceFetchResult(jobs=tuple(jobs), error="; ".join(errors) if errors else None)
         except Exception as exc:
             return SourceFetchResult(error=f"{type(exc).__name__}: {exc}")
 

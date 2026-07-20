@@ -209,3 +209,16 @@ All notable product changes will be documented here following Keep a Changelog a
 - Tests: 7 connector tests pass with 7 explicit SQLAlchemy skips; reviewer APPROVED after href parsing and documentation rework.
 - Conventional Commit: `feat(sources): add initial job connectors`
 - Commit hash: f4c55a95dae9f1d3532755b346c920324ef842aa
+
+### SOURCES-003 — Attempt 2
+
+- Added bounded per-source rate limiting, exponential retries, safe HTML sanitization, URL validation, and per-item failure isolation while preserving robots and identifiable user-agent controls.
+- Added regression coverage for modality inference from remote locations.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_connectors.py`
+- Commands: 11 connector tests pass under forced runtime; related suite 38 tests with 12 skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — ingestion controls and modality regression covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: live SQLAlchemy coverage requires dependency installation; network remains opt-in and robots/terms constrained
+- Commit subject: feat(sources): harden ingestion controls
+- Commit hash: pending

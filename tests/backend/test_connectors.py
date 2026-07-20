@@ -8,10 +8,12 @@ connector safety contract.
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import call, patch
+from urllib.error import URLError
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -184,6 +186,56 @@ class ConnectorFixtureTests(unittest.TestCase):
 
         self.assertEqual(result.status, "failed")
         self.assertIn("terms_accepted=True", result.error or "")
+
+    def test_network_fetch_applies_rate_limit_and_retries_with_backoff(self) -> None:
+        connectors, SourceConfig, SourceKind, _WorkModality = _modules()
+        config = SourceConfig(
+            name="retry-source", kind=SourceKind.API, base_url="https://jobs.example/feed",
+            terms_accepted=True, requests_per_minute=12, max_retries=1,
+            settings={"allow_network": True},
+        )
+        response = _Response(json.dumps({"data": [{"title": "SRE", "company": "Acme", "description": "Operate", "url": "/sre"}]}))
+        with patch.object(connectors, "_robots_check"), patch.object(connectors._RATE_LIMITER, "wait") as wait, patch.object(
+            connectors.urllib.request, "urlopen", side_effect=[URLError("temporary"), response]
+        ) as urlopen, patch.object(connectors.time, "sleep") as sleep:
+            result = connectors.JsonApiFeedAdapter().fetch(config)
+
+        self.assertEqual(result.status, "success")
+        self.assertEqual(urlopen.call_count, 2)
+        wait.assert_has_calls([call("retry-source", 12), call("retry-source", 12)])
+        sleep.assert_called_once_with(1.0)
+
+    def test_json_description_sanitizes_script_style_and_noscript_content(self) -> None:
+        connectors, SourceConfig, _SourceKind, _WorkModality = _modules()
+        payload = {"jobs": [{
+            "title": "Safe", "company": "Acme",
+            "description": "Build <script>alert(1)</script><style>.x{}</style><noscript>hidden</noscript> APIs",
+            "url": "https://jobs.example/safe",
+        }]}
+        result = connectors.JsonApiFeedAdapter().fetch(SourceConfig(name="sanitize", terms_accepted=True, settings={"payload": json.dumps(payload)}))
+        self.assertEqual(result.status, "success")
+        description = result.jobs[0].description
+        self.assertEqual(description, "Build APIs")
+        for marker in ("script", "alert", "style", "noscript", "hidden"):
+            self.assertNotIn(marker, description.lower())
+
+    def test_invalid_item_isolated_while_valid_item_is_retained(self) -> None:
+        connectors, SourceConfig, _SourceKind, _WorkModality = _modules()
+        payload = {"jobs": [
+            {"title": "Broken", "company": "Acme", "description": "No valid URL", "url": "javascript:alert(1)"},
+            {"title": "Valid", "company": "Acme", "description": "Works", "url": "/valid"},
+        ]}
+        result = connectors.JsonApiFeedAdapter().fetch(SourceConfig(name="isolated", base_url="https://jobs.example", terms_accepted=True, settings={"payload": json.dumps(payload)}))
+        self.assertEqual(result.status, "partial")
+        self.assertEqual([job.title for job in result.jobs], ["Valid"])
+        self.assertIn("invalid job", result.error or "")
+
+    def test_invalid_description_url_is_rejected(self) -> None:
+        connectors, SourceConfig, _SourceKind, _WorkModality = _modules()
+        payload = {"jobs": [{"title": "Broken", "company": "Acme", "description": "Bad", "url": "javascript:alert(1)"}]}
+        result = connectors.JsonApiFeedAdapter().fetch(SourceConfig(name="url-check", terms_accepted=True, settings={"payload": json.dumps(payload)}))
+        self.assertEqual(result.status, "failed")
+        self.assertIn("invalid job", result.error or "")
 
 
 if __name__ == "__main__":

@@ -280,3 +280,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: SQLAlchemy runtime checks require dependency installation; real network remains opt-in and governed by robots/terms acknowledgement
 - Commit subject: feat(sources): add initial job connectors
 - Commit hash: f4c55a95dae9f1d3532755b346c920324ef842aa
+
+### SOURCES-003 — Attempt 2
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: bounded source rate limits, retries/backoff, identifiable user-agent, no evasion, HTML sanitization, URL validation, and per-source/item failure isolation; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_connectors.py`
+- Commands: 11 connector tests pass under forced runtime; normal connector suite 11 tests with explicit SQLAlchemy skips; related suite 38 tests with 12 skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — rate limiting, retry behavior, sanitization, invalid URL/item isolation, and modality regression covered
+- Reviewer: APPROVED — implementation, safety constraints, and scope verified
+- Rework: attempt 1 fixed modality inference from location (`Remote - United States`)
+- Changelog: ingestion controls hardened
+- Risks: live SQLAlchemy coverage requires dependency installation; network remains opt-in and robots/terms constrained
+- Commit subject: feat(sources): harden ingestion controls
+- Commit hash: pending
