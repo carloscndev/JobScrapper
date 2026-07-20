@@ -595,3 +595,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: shellcheck unavailable; runtime Docker/service checks remain environment-dependent
 - Commit subject: docs(ops): document recovery and maintenance
 - Commit hash: 4e75c423fd82cdb66c20873c6b7ca1a2f1cdfea4
+
+### TEST-001 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: representative/ambiguous parsing, normalization, region/modality, deduplication and deterministic change fixtures; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `tests/backend/test_job_fixtures.py`
+- Commands: related suite 23 tests with 23 explicit SQLAlchemy skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — fixtures cover URLs/salary/requirements/date, region/modalities, canonical identity/content hash, rediscovery and snapshots
+- Reviewer: APPROVED — test scope and determinism verified
+- Rework: none
+- Changelog: parsing/normalization/deduplication fixture coverage added
+- Risks: runtime persistence fixtures require SQLAlchemy installation
+- Commit subject: test(jobs): cover parsing normalization and deduplication
+- Commit hash: pending
