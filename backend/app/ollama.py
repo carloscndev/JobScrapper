@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import socket
+import time
 from dataclasses import dataclass
 from typing import Any, Callable, Mapping
 from urllib.error import URLError
@@ -97,14 +98,15 @@ def _loopback(url: str) -> bool:
 class OllamaAnalyzer:
     """Call Ollama's local ``/api/generate`` endpoint with bounded resources."""
 
-    def __init__(self, *, base_url: str = "http://127.0.0.1:11434", model: str = "llama3.2:3b", timeout_seconds: float = 30.0, num_ctx: int = 2048, num_thread: int = 2, opener: Callable[..., Any] | None = None) -> None:
+    def __init__(self, *, base_url: str = "http://127.0.0.1:11434", model: str = "llama3.2:3b", timeout_seconds: float = 30.0, num_ctx: int = 2048, num_thread: int = 2, max_retries: int = 2, retry_backoff_seconds: float = 0.1, opener: Callable[..., Any] | None = None) -> None:
         self.base_url = base_url.rstrip("/")
         if not _loopback(self.base_url):
             raise ValueError("Ollama must use a local loopback HTTP endpoint")
-        if not model.strip() or timeout_seconds <= 0 or num_ctx < 256 or num_thread < 1:
+        if not model.strip() or timeout_seconds <= 0 or num_ctx < 256 or num_thread < 1 or max_retries < 0 or retry_backoff_seconds < 0:
             raise ValueError("invalid Ollama resource configuration")
         self.model, self.timeout_seconds = model.strip(), timeout_seconds
         self.num_ctx, self.num_thread = num_ctx, num_thread
+        self.max_retries, self.retry_backoff_seconds = max_retries, retry_backoff_seconds
         self._opener = opener or urlopen
 
     def analyze(self, profile: object, job: object) -> LocalAnalysis:
@@ -113,11 +115,18 @@ class OllamaAnalyzer:
                   "Do not invent facts; base every item on the supplied profile and job.\n" + json.dumps(payload, ensure_ascii=False))
         request_body = {"model": self.model, "prompt": prompt, "stream": False, "format": "json", "options": {"num_ctx": self.num_ctx, "num_thread": self.num_thread}}
         request = Request(self.base_url + "/api/generate", data=json.dumps(request_body).encode(), headers={"Content-Type": "application/json", "User-Agent": "JobScrapper-local/1.0"}, method="POST")
-        try:
-            with self._opener(request, timeout=self.timeout_seconds) as response:
-                raw = json.loads(response.read().decode("utf-8"))
-        except (OSError, URLError, ValueError, json.JSONDecodeError) as exc:
-            raise LocalModelError("local Ollama request failed") from exc
+        last_error: Exception | None = None
+        for attempt in range(self.max_retries + 1):
+            try:
+                with self._opener(request, timeout=self.timeout_seconds) as response:
+                    raw = json.loads(response.read().decode("utf-8"))
+                break
+            except (OSError, URLError, ValueError, json.JSONDecodeError) as exc:
+                last_error = exc
+                if attempt < self.max_retries and self.retry_backoff_seconds:
+                    time.sleep(self.retry_backoff_seconds * (2 ** attempt))
+        else:
+            raise LocalModelError("local Ollama request failed") from last_error
         try:
             result = raw.get("response", raw) if isinstance(raw, Mapping) else raw
             if isinstance(result, str):

@@ -9,6 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 import re
+import hashlib
+import json
 
 from .models import Evaluation, Job, Profile, ProfilePreference
 from .repositories import EvaluationRepository, ProfileRepository
@@ -151,10 +153,45 @@ class MatchingService:
     def __init__(self, evaluations: EvaluationRepository, profiles: ProfileRepository) -> None:
         self.evaluations, self.profiles = evaluations, profiles
 
-    def evaluate(self, profile: Profile, job: Job, preferences: ProfilePreference | None = None, *, model_version: str | None = None) -> Evaluation:
+    def evaluate(self, profile: Profile, job: Job, preferences: ProfilePreference | None = None, *, model_version: str | None = None, analyzer: OllamaAnalyzer | None = None) -> Evaluation:
         result = CompatibilityScorer().score(profile, job, preferences)
-        evaluation = Evaluation(job_id=job.id, profile_id=profile.id, score=result.score, ruleset_version="deterministic-v1", model_version=model_version, score_breakdown=result.breakdown, matches=result.matches, gaps=result.gaps, exclusions=result.exclusions, recommendations=result.recommendations, status="pending")
+        analysis = None
+        if analyzer is not None:
+            analysis = analyze_with_fallback(profile, job, result=result, analyzer=analyzer)
+            if analysis.model != "deterministic-fallback":
+                model_version = analysis.model
+        breakdown = {**result.breakdown, "input_fingerprint": evaluation_fingerprint(profile, job, ruleset_version="deterministic-v1", model_version=model_version)}
+        evaluation = Evaluation(job_id=job.id, profile_id=profile.id, score=result.score, ruleset_version="deterministic-v1", model_version=model_version, score_breakdown=breakdown, matches=(analysis.matches if analysis else result.matches), gaps=(analysis.gaps if analysis else result.gaps), exclusions=result.exclusions, recommendations=(analysis.recommendations if analysis else result.recommendations), status="pending")
         return self.evaluations.add(evaluation)
+
+    def evaluate_sequential(self, profile: Profile, jobs: list[Job], preferences: ProfilePreference | None = None, *, analyzer: OllamaAnalyzer | None = None, max_jobs: int = 100) -> list[Evaluation]:
+        """Evaluate a bounded list serially; one model failure never aborts the batch."""
+        if max_jobs < 1:
+            return []
+        return [self.evaluate(profile, job, preferences, analyzer=analyzer) for job in jobs[:max_jobs]]
+
+
+def evaluation_fingerprint(profile: object, job: object, *, ruleset_version: str = "deterministic-v1", model_version: str | None = None) -> str:
+    """Stable input identity used to decide whether a persisted evaluation is stale."""
+    get = lambda obj, key, default=None: obj.get(key, default) if isinstance(obj, Mapping) else getattr(obj, key, default)
+    payload = {"profile_version": get(profile, "version", 1), "profile": {"skills": get(profile, "skills", []), "experience": get(profile, "experience", []), "languages": get(profile, "languages", []), "preferences": get(profile, "preferences", [])}, "job": {"description": get(job, "description", ""), "title": get(job, "title", ""), "metadata": get(job, "metadata_json", {})}, "ruleset": ruleset_version, "model": model_version or "deterministic"}
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()
+
+
+def needs_reevaluation(previous: object | None, profile: object, job: object, *, ruleset_version: str = "deterministic-v1", model_version: str | None = None) -> bool:
+    if previous is None:
+        return True
+    breakdown = _value(previous, "score_breakdown", {}) or {}
+    return breakdown.get("input_fingerprint") != evaluation_fingerprint(profile, job, ruleset_version=ruleset_version, model_version=model_version)
+
+
+def analyze_with_fallback(profile: object, job: object, *, result: ScoreResult | None = None, analyzer: OllamaAnalyzer) -> LocalAnalysis:
+    """Return local narrative or deterministic explanations while preserving score separately."""
+    score = result or CompatibilityScorer().score(profile, job)
+    try:
+        return analyzer.analyze(profile, job)
+    except LocalModelError:
+        return LocalAnalysis("Local model unavailable; deterministic analysis retained.", list(score.matches), list(score.gaps), list(score.recommendations), "deterministic-fallback")
 
 
 def score_job(profile: object, job: object, preferences: object | None = None, weights: Mapping[str, Any] | None = None) -> ScoreResult:

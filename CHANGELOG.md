@@ -270,3 +270,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: Ollama runtime availability is operator-managed; endpoint remains loopback-only
 - Commit subject: feat(match): add local Ollama analysis
 - Commit hash: aa3d379722c75f1ac8c03637bdce8c4fa616b482
+
+### MATCH-003 — Attempt 1
+
+- Added bounded retry/backoff and sequential evaluation for local analysis, deterministic fallback preserving scores, and stable reevaluation fingerprints.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/ollama.py`, `backend/app/matching.py`, `tests/backend/test_match_resilience.py`
+- Commands: 71 backend tests with 39 explicit optional-dependency skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — resilience and reevaluation contracts covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: SQLAlchemy runtime checks require optional dependency installation; Ollama remains local and operator-managed
+- Commit subject: feat(match): add resilient local analysis fallback
+- Commit hash: pending
