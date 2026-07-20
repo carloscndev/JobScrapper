@@ -389,4 +389,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — UI/accessibility/performance review complete
 - Risks: install frontend dependencies before build and browser E2E validation
 - Commit subject: feat(web): add vacancy detail and recommendations
-- Commit hash: pending
+- Commit hash: d2e3a74f66fc06f0303f3694bd217a80b064246e

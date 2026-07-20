@@ -687,7 +687,7 @@
     {
       "id": "FRONTEND-004",
       "title": "Build vacancy detail, compatibility explanation, and safe external links",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-003",
         "MATCH-003"
@@ -702,7 +702,8 @@
       "acceptance": [
         "Description, salary, location, modality, links, score, gaps, and recommendations are shown",
         "External links open safely"
-      ]
+      ],
+      "commit_hash": "d2e3a74"
     },
     {
       "id": "FRONTEND-005",
