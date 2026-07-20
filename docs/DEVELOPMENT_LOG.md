@@ -609,4 +609,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: parsing/normalization/deduplication fixture coverage added
 - Risks: runtime persistence fixtures require SQLAlchemy installation
 - Commit subject: test(jobs): cover parsing normalization and deduplication
-- Commit hash: pending
+- Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af

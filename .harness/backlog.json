@@ -849,7 +849,7 @@
     {
       "id": "TEST-001",
       "title": "Add parsing, normalization, region, modality, and deduplication fixtures",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "JOBS-002"
       ],
@@ -862,7 +862,8 @@
       "acceptance": [
         "Representative and ambiguous fixtures are covered",
         "Duplicate and changed jobs behave deterministically"
-      ]
+      ],
+      "commit_hash": "4ee0851"
     },
     {
       "id": "TEST-002",
