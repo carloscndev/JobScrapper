@@ -475,6 +475,18 @@ All notable product changes will be documented here following Keep a Changelog a
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### TEST-004 — Attempt 1
+
+- Added API 404/422 envelope tests and React component contracts for profile, preferences, vacancy list/detail and operations views.
+- Skills: coder vercel-react-best-practices, web-design-guidelines; tester webapp-testing; reviewer vercel-react-best-practices, web-design-guidelines
+- Files: `tests/backend/test_api_jobs.py`, `tests/frontend/test_frontend_contracts.py`
+- Commands: API/frontend suite 44 tests with 11 optional skips; compileall; harness validation; `git diff --check`
+- Tester: PASS — API and UI contracts covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: runtime API tests depend on optional FastAPI/SQLAlchemy packages
+- Commit subject: test(app): cover API contracts and UI components
+- Commit hash: pending
+
 ### TEST-003 — Attempt 1
 
 - Added retry-safe Notion reconciliation coverage for 429 responses, audit attempts, idempotency and source isolation contracts.

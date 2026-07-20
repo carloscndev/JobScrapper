@@ -132,6 +132,16 @@ class JobsApiHttpTests(unittest.TestCase):
         self.assertEqual(len(body["evaluation_history"]), 1)
         self.assertEqual(body["evaluation"]["profile_id"], 1)
 
+    def test_detail_not_found_and_invalid_query_use_error_envelope(self) -> None:
+        missing = self.client.get("/api/v1/jobs/999")
+        self.assertEqual(missing.status_code, 404)
+        self.assertEqual(missing.json()["error"]["code"], "job_not_found")
+        invalid = self.client.get("/api/v1/jobs", params={"page": 0})
+        self.assertEqual(invalid.status_code, 422)
+        body = invalid.json()["error"]
+        self.assertEqual(body["code"], "validation_error")
+        self.assertTrue(body["fields"])
+
 
 if __name__ == "__main__":
     unittest.main()

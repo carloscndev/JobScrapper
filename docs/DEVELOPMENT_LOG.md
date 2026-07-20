@@ -611,6 +611,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
 
+### TEST-004 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: API success/error contracts and Profile, list, detail, operations component coverage; PASS
+- Skills: coordinator none; coder vercel-react-best-practices, web-design-guidelines; tester webapp-testing; reviewer vercel-react-best-practices, web-design-guidelines
+- Files: `tests/backend/test_api_jobs.py`, `tests/frontend/test_frontend_contracts.py`
+- Commands: API/frontend suite 44 tests with 11 optional skips; compileall; harness validation; `git diff --check`
+- Tester: PASS — API envelopes and component success/error paths covered
+- Reviewer: APPROVED — UI/API scope verified; unrelated observability files excluded
+- Rework: none
+- Changelog: API contracts and React component test coverage added
+- Risks: runtime API tests depend on optional FastAPI/SQLAlchemy packages
+- Commit subject: test(app): cover API contracts and UI components
+- Commit hash: pending
+
 ### TEST-003 — Attempt 1
 
 - Started / finished: 2026-07-20 / 2026-07-20
