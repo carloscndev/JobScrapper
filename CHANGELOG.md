@@ -258,3 +258,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: SQLAlchemy runtime persistence checks require optional dependency installation
 - Commit subject: feat(match): add explainable compatibility scoring
 - Commit hash: 5d537456331cf4c52961825688b9309affd65cd5
+
+### MATCH-002 — Attempt 1
+
+- Added loopback-only Ollama analysis with configurable model/resources, allowlisted prompts, structured JSON validation, and summary/gap/recommendation mapping.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/ollama.py`, `backend/app/config.py`, `backend/app/matching.py`, `tests/backend/test_ollama.py`, `.env.example`
+- Commands: 67 backend tests with 36 explicit optional-dependency skips; compileall; py_compile; harness validation; `git diff --check`
+- Tester: PASS — local boundary and structured output contract covered
+- Reviewer: APPROVED — implementation and scope verified
+- Risks: Ollama runtime availability is operator-managed; endpoint remains loopback-only
+- Commit subject: feat(match): add local Ollama analysis
+- Commit hash: pending

@@ -16,6 +16,11 @@ class Settings:
     port: int = 8000
     database_url: str = "sqlite:///./data/jobscrapper.db"
     database_echo: bool = False
+    ollama_base_url: str = "http://127.0.0.1:11434"
+    ollama_model: str = "llama3.2:3b"
+    ollama_timeout_seconds: float = 30.0
+    ollama_num_ctx: int = 2048
+    ollama_num_thread: int = 2
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -36,6 +41,11 @@ class Settings:
             port=port,
             database_url=os.getenv("DATABASE_URL", defaults.database_url),
             database_echo=_parse_bool(os.getenv("JOBSCRAPPER_DB_ECHO", str(defaults.database_echo))),
+            ollama_base_url=os.getenv("OLLAMA_BASE_URL", defaults.ollama_base_url),
+            ollama_model=os.getenv("OLLAMA_MODEL", defaults.ollama_model),
+            ollama_timeout_seconds=_parse_float("OLLAMA_TIMEOUT_SECONDS", defaults.ollama_timeout_seconds),
+            ollama_num_ctx=_parse_int("OLLAMA_NUM_CTX", defaults.ollama_num_ctx, minimum=256),
+            ollama_num_thread=_parse_int("OLLAMA_NUM_THREAD", defaults.ollama_num_thread, minimum=1),
         )
 
 
@@ -48,3 +58,23 @@ def _parse_bool(value: str) -> bool:
     if normalized in {"0", "false", "no", "off"}:
         return False
     raise ValueError("JOBSCRAPPER_DB_ECHO must be a boolean")
+
+
+def _parse_float(name: str, default: float) -> float:
+    try:
+        value = float(os.getenv(name, str(default)))
+    except ValueError as exc:
+        raise ValueError(f"{name} must be a number") from exc
+    if value <= 0:
+        raise ValueError(f"{name} must be greater than zero")
+    return value
+
+
+def _parse_int(name: str, default: int, *, minimum: int = 1) -> int:
+    try:
+        value = int(os.getenv(name, str(default)))
+    except ValueError as exc:
+        raise ValueError(f"{name} must be an integer") from exc
+    if value < minimum:
+        raise ValueError(f"{name} must be at least {minimum}")
+    return value

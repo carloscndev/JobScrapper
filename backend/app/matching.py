@@ -12,6 +12,7 @@ import re
 
 from .models import Evaluation, Job, Profile, ProfilePreference
 from .repositories import EvaluationRepository, ProfileRepository
+from .ollama import LocalAnalysis, LocalModelError, OllamaAnalyzer
 
 DIMENSIONS = ("skills", "experience", "seniority", "language", "location", "modality", "salary", "work_authorization")
 DEFAULT_WEIGHTS = {name: 1.0 for name in DIMENSIONS}
@@ -159,3 +160,8 @@ class MatchingService:
 def score_job(profile: object, job: object, preferences: object | None = None, weights: Mapping[str, Any] | None = None) -> ScoreResult:
     """Convenience API; ``weights`` explicitly overrides persisted preferences."""
     return CompatibilityScorer().score(profile, job, preferences, weights_override=weights)
+
+
+def analyze_job_locally(profile: object, job: object, *, analyzer: OllamaAnalyzer) -> LocalAnalysis:
+    """Generate narrative matching details using only the configured local model."""
+    return analyzer.analyze(profile, job)

@@ -340,3 +340,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: SQLAlchemy runtime persistence checks require optional dependency installation
 - Commit subject: feat(match): add explainable compatibility scoring
 - Commit hash: 5d537456331cf4c52961825688b9309affd65cd5
+
+### MATCH-002 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: local Ollama integration, configurable model/resources, validated structured output, and no profile secrets sent outside loopback model; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/ollama.py`, `backend/app/config.py`, `backend/app/matching.py`, `tests/backend/test_ollama.py`, `.env.example`
+- Commands: 67 backend tests with 36 explicit optional-dependency skips; compileall; py_compile; JSON; shell syntax; harness validation; `git diff --check`
+- Tester: PASS — loopback/config, payload allowlist, secret exclusion, invalid JSON, and settings coverage
+- Reviewer: APPROVED — local-only boundary and structured contract verified
+- Rework: none
+- Changelog: local Ollama analysis integration added
+- Risks: Ollama runtime availability is operator-managed; endpoint remains loopback-only
+- Commit subject: feat(match): add local Ollama analysis
+- Commit hash: pending
