@@ -14,11 +14,13 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 from enum import StrEnum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
 from .models import Source
-from .repositories import SourceRepository
+
+if TYPE_CHECKING:
+    from .repositories import SourceRepository
 
 
 class SourceKind(StrEnum):
