@@ -429,4 +429,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: profile and preferences API endpoints added
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose profile management endpoints
-- Commit hash: pending
+- Commit hash: 60fb12751d61fbb54fe6bca9bc2a4ba192738060

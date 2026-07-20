@@ -329,4 +329,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation and scope verified
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose profile management endpoints
-- Commit hash: pending
+- Commit hash: 60fb12751d61fbb54fe6bca9bc2a4ba192738060

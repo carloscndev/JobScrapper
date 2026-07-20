@@ -580,7 +580,7 @@
     {
       "id": "API-001",
       "title": "Expose profile and preference API endpoints",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "PROFILE-002",
         "BACKEND-001"
@@ -595,7 +595,8 @@
       "acceptance": [
         "Profile upload, read, update, and preference endpoints are documented",
         "Validation errors use a consistent contract"
-      ]
+      ],
+      "commit_hash": "60fb127"
     },
     {
       "id": "API-002",
@@ -642,7 +643,7 @@
     {
       "id": "FRONTEND-002",
       "title": "Build profile and CV configuration screens",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "FRONTEND-001",
         "API-001"
