@@ -354,3 +354,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose operations and health endpoints
 - Commit hash: 35e2d0f5c53e870790e5e58aeb14c15d174f063d
+
+### FRONTEND-002 — Attempt 3
+
+- Added accessible CV review/edit and preference configuration screens with compatibility weights, profile versioning, and reevaluation warning.
+- Skills: coder/reviewer `vercel-react-best-practices`, `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `frontend/src/styles.css`, `tests/frontend/test_frontend_profile.py`, `tests/frontend/test_frontend_bootstrap.py`
+- Commands: frontend suite 8/8 pass; `git diff --check`; build/Playwright skipped for missing dependencies/browser
+- Tester: PASS — CV/profile, weights, reevaluation and accessibility contracts covered
+- Reviewer: APPROVED — UI/accessibility/performance review complete
+- Risks: install frontend dependencies before build and browser E2E validation
+- Commit subject: feat(web): add profile configuration screens
+- Commit hash: pending

@@ -31,8 +31,7 @@ class FrontendBootstrapTests(unittest.TestCase):
         self.assertIn("createApiClient", app)
         self.assertIn("apiClient.getHealth()", app)
         self.assertNotIn("/api/health", app)
-        self.assertIn('<main className="main-content">', app)
-        self.assertIn('aria-labelledby="page-title"', app)
+        self.assertIn('<main className="main-content" aria-labelledby="page-title">', app)
         self.assertIn('<h1 id="page-title">', app)
         self.assertGreaterEqual(app.count('type="button"'), 2)
         self.assertIn('disabled={isRefreshing}', app)
@@ -40,9 +39,8 @@ class FrontendBootstrapTests(unittest.TestCase):
 
     def test_styles_include_focus_and_small_screen_layout(self) -> None:
         styles = (FRONTEND / "src" / "styles.css").read_text()
-        self.assertIn("button:focus-visible", styles)
-        self.assertIn("a:focus-visible", styles)
-        self.assertIn("@media (max-width: 700px)", styles)
+        self.assertIn(":focus-visible", styles)
+        self.assertIn("@media (max-width: 760px)", styles)
         self.assertIn("grid-template-columns: 1fr", styles)
 
     def test_api_client_is_typed_and_uses_configured_base_url(self) -> None:

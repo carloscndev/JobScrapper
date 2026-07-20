@@ -460,3 +460,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): expose operations and health endpoints
 - Commit hash: 35e2d0f5c53e870790e5e58aeb14c15d174f063d
+
+### FRONTEND-002 — Attempt 3
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: CV extraction review/edit, preferences/constraints/weights, profile version and reevaluation warning; PASS
+- Skills: coordinator none; coder `vercel-react-best-practices`, `web-design-guidelines`; tester none; reviewer `vercel-react-best-practices`, `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `frontend/src/styles.css`, `tests/frontend/test_frontend_profile.py`, `tests/frontend/test_frontend_bootstrap.py`
+- Commands: frontend suite 8 tests pass; compile/static checks; `git diff --check`; build/Playwright skipped because node_modules/tsc/browser unavailable
+- Tester: PASS — CV/profile controls, weights, reevaluation, accessibility and responsive contracts covered
+- Reviewer: APPROVED — semantic tabs, skip link, named controls and responsive UI verified
+- Rework: attempt 1 corrected legacy accessibility contracts; attempt 2 added skip link/tab semantics/name/autocomplete and compatibility ordering
+- Changelog: profile and CV configuration screens added
+- Risks: install frontend dependencies before build and browser E2E validation
+- Commit subject: feat(web): add profile configuration screens
+- Commit hash: pending
