@@ -610,3 +610,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: runtime persistence fixtures require SQLAlchemy installation
 - Commit subject: test(jobs): cover parsing normalization and deduplication
 - Commit hash: 4ee0851ae05cb8b24433d7aada4635dd7f9474af
+
+### TEST-002 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: reproducible bounded scores and Ollama timeout/unavailable-model fallback coverage; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `tests/backend/test_matching.py`, `tests/backend/test_ollama.py`
+- Commands: matching/ollama suites 16 tests with 9 explicit SQLAlchemy skips; compileall; harness validation; `git diff --check`
+- Tester: PASS — retries, timeout, invalid output, allowlist, loopback, score bounds and reproducibility covered
+- Reviewer: APPROVED — scope and acceptance verified; unrelated `backend/app/__main__.py` excluded
+- Rework: none
+- Changelog: scoring and local model fallback test coverage added
+- Risks: runtime fallback test requires SQLAlchemy installation
+- Commit subject: test(match): cover scoring and local model fallback
+- Commit hash: pending

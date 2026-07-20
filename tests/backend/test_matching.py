@@ -116,6 +116,19 @@ class MatchingRuntimeTests(unittest.TestCase):
         self.assertEqual(excluded.score, 0.0)
         self.assertEqual(excluded.exclusions, ["relocation_required"])
 
+    def test_sparse_inputs_remain_bounded_and_reproducible(self) -> None:
+        profile = self.models.Profile(name="Sparse", skills=[], experience=[], languages=[])
+        preference = self.models.ProfilePreference(profile=profile, weights={"skills": -10, "experience": 0})
+        job = self.models.Job(
+            title="Unknown role", company="Acme", description="", description_url="https://jobs.example/sparse",
+            canonical_url="https://jobs.example/sparse", fingerprint="sparse", region="other", modality="unknown",
+        )
+        first = self.module.score_job(profile, job, preference)
+        second = self.module.score_job(profile, job, preference)
+        self.assertEqual(first, second)
+        self.assertGreaterEqual(first.score, 0)
+        self.assertLessEqual(first.score, 100)
+
     def test_required_years_uses_structured_profile_experience(self) -> None:
         profile, preference, job = self._objects()
         full = self.module.score_job(profile, job, preference)

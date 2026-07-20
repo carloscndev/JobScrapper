@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import json
+import importlib.util
 import os
 import sys
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -42,6 +44,16 @@ class _Opener:
         return _Response(self.payload)
 
 
+class _FailingOpener:
+    def __init__(self, error: Exception) -> None:
+        self.error = error
+        self.calls = 0
+
+    def __call__(self, _request: object, *, timeout: float) -> _Response:
+        self.calls += 1
+        raise self.error
+
+
 class OllamaContractTests(unittest.TestCase):
     def test_loopback_only_and_resource_configuration(self) -> None:
         for url in ("https://127.0.0.1:11434", "http://192.168.1.10:11434", "http://127.0.0.1:11434/api/generate"):
@@ -74,6 +86,31 @@ class OllamaContractTests(unittest.TestCase):
         for payload in payloads:
             with self.subTest(payload=payload), self.assertRaises(LocalModelError):
                 OllamaAnalyzer(opener=_Opener(payload)).analyze({}, {})
+
+    def test_timeout_retries_then_reports_local_model_error(self) -> None:
+        opener = _FailingOpener(TimeoutError("ollama timed out"))
+        analyzer = OllamaAnalyzer(opener=opener, max_retries=1, retry_backoff_seconds=0)
+        with patch("app.ollama.time.sleep"):
+            with self.assertRaises(LocalModelError):
+                analyzer.analyze({}, {})
+        self.assertEqual(opener.calls, 2)
+
+    def test_unavailable_model_error_is_converted_to_deterministic_fallback(self) -> None:
+        if not importlib.util.find_spec("sqlalchemy"):
+            self.skipTest("SQLAlchemy is not installed; matching fallback import is optional")
+        from types import SimpleNamespace
+
+        from app.matching import analyze_with_fallback, score_job
+
+        class Unavailable:
+            def analyze(self, _profile: object, _job: object) -> object:
+                raise LocalModelError("model unavailable")
+
+        profile = SimpleNamespace(skills=["Python"], experience=[], languages=[])
+        job = SimpleNamespace(title="Python", description="", metadata_json={"required_skills": ["Python"]}, location="", region="other", modality="unknown")
+        result = analyze_with_fallback(profile, job, result=score_job(profile, job), analyzer=Unavailable())
+        self.assertEqual(result.model, "deterministic-fallback")
+        self.assertIn("python", result.matches)
 
     def test_settings_read_local_model_limits(self) -> None:
         old = {key: os.environ.get(key) for key in ("OLLAMA_MODEL", "OLLAMA_TIMEOUT_SECONDS", "OLLAMA_NUM_CTX", "OLLAMA_NUM_THREAD")}
