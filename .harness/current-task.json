@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "active": false,
-  "task_id": null,
-  "state": "committed",
+  "active": true,
+  "task_id": "API-012",
+  "state": "coding",
   "attempt": 1,
-  "evidence": {"tester": "PASS: 9/9 profile API tests", "reviewer": "APPROVED"},
+  "evidence": {},
   "rejections": [],
-  "commit": "8f6e7f463f6024b347e06e7eebce460c4bb24927"
+  "commit": "9aa80ec77a6de09a61006bb52aae123996d9db5c"
 }
