@@ -743,4 +743,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Rework: none
 - Changelog: connect dashboard to live API, remove demo data, add source creation UI
 - Risks: requires running API server for full runtime dashboard interaction
-- Commit hash: b4c6696
+- Commit hash: 032e1bc

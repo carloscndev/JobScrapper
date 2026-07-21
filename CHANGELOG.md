@@ -573,7 +573,7 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — test assertions correctly reflect API-driven components
 - Risks: requires running API server for full runtime dashboard interaction
 - Commit subject: feat(web): connect dashboard to live API and remove demo data
-- Commit hash: b4c6696
+- Commit hash: 032e1bc
 
 ### TEST-002 — Attempt 1
 

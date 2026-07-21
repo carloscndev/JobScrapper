@@ -1062,7 +1062,7 @@
         "Hardcoded fallbackSources, fallbackExecutions, fallbackMetrics, and VACANCIES are removed",
         "All existing frontend tests still pass"
       ],
-      "commit_hash": "b4c6696"
+      "commit_hash": "032e1bc"
     }
   ]
 }
