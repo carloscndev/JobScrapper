@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { createApiClient, type ExecutionSummary, type HealthStatus, type JobDetailResponse, type JobSummary, type OperationsHealth, type OperationsMetrics, type SourceSummary } from "./api/client";
+import { createApiClient, type ExecutionSummary, type HealthStatus, type JobDetailResponse, type JobSummary, type OperationsHealth, type OperationsMetrics, type ProfileResponse, type SourceSummary } from "./api/client";
 import "./styles.css";
 
 type Section = "profile" | "preferences" | "vacancies" | "operations";
@@ -66,7 +66,11 @@ function App() {
   const [health, setHealth] = useState<HealthStatus>("unavailable");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [cvName, setCvName] = useState("CV_Carlos_Castaneda.pdf");
+  const [profileId, setProfileId] = useState<number | null>(null);
+  const [profileVersion, setProfileVersion] = useState(1);
+  const [profileError, setProfileError] = useState<string | null>(null);
 
   const refreshHealth = async () => {
     setIsRefreshing(true);
@@ -82,13 +86,89 @@ function App() {
 
   useEffect(() => { void refreshHealth(); }, []);
 
+  useEffect(() => {
+    const stored = localStorage.getItem("profileId");
+    if (stored) {
+      const id = parseInt(stored);
+      if (!isNaN(id)) {
+        apiClient.getProfile(id).then((p) => {
+          setProfileId(p.id);
+          setProfileVersion(p.version);
+          setCvName(p.cv_filename || cvName);
+          setDraft({
+            name: p.name,
+            headline: p.seniority || initialDraft.headline,
+            skills: Array.isArray(p.skills) ? p.skills.join(", ") : initialDraft.skills,
+            experience: Array.isArray(p.experience) ? p.experience.join("\n") : initialDraft.experience,
+            languages: Array.isArray(p.languages) ? p.languages.join("\n") : initialDraft.languages,
+            education: Array.isArray(p.education) ? p.education.join("\n") : initialDraft.education,
+            locations: p.preferences?.locations?.join(", ") || initialDraft.locations,
+            mode: (p.preferences?.modalities?.[0] === "remote" ? "Remoto" : p.preferences?.modalities?.[0] === "hybrid" ? "Híbrido" : p.preferences?.modalities?.[0] === "onsite" ? "Presencial" : initialDraft.mode) as WorkMode,
+            authorization: p.preferences?.work_authorization?.join(", ") || initialDraft.authorization,
+            minSalary: p.preferences?.salary_min?.toString() || initialDraft.minSalary,
+            maxSalary: p.preferences?.salary_max?.toString() || initialDraft.maxSalary,
+            weightSkills: (p.preferences?.weights as Record<string, number>)?.skills ?? initialDraft.weightSkills,
+            weightExperience: (p.preferences?.weights as Record<string, number>)?.experience ?? initialDraft.weightExperience,
+            weightLocation: (p.preferences?.weights as Record<string, number>)?.location ?? initialDraft.weightLocation,
+            weightMode: (p.preferences?.weights as Record<string, number>)?.modality ?? initialDraft.weightMode,
+          });
+        }).catch(() => localStorage.removeItem("profileId"));
+      }
+    }
+  }, []);
+
   const update = <K extends keyof ProfileDraft>(key: K, value: ProfileDraft[K]) => {
     setSaved(false);
     setDraft((current) => ({ ...current, [key]: value }));
   };
 
-  const save = () => {
-    setSaved(true);
+  const handleCvUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setCvName(file.name);
+    try {
+      const result = await apiClient.uploadProfile(file);
+      setProfileId(result.id);
+      setProfileVersion(result.version);
+      localStorage.setItem("profileId", result.id.toString());
+      setDraft((current) => ({
+        ...current,
+        name: result.name,
+        skills: Array.isArray(result.skills) ? result.skills.join(", ") : current.skills,
+        experience: Array.isArray(result.experience) ? result.experience.join("\n") : current.experience,
+        languages: Array.isArray(result.languages) ? result.languages.join("\n") : current.languages,
+        education: Array.isArray(result.education) ? result.education.join("\n") : current.education,
+      }));
+      setProfileError(null);
+    } catch { setProfileError("No se pudo subir el CV."); }
+  };
+
+  const save = async () => {
+    if (!profileId) { setProfileError("Sube un CV antes de guardar."); return; }
+    setSaving(true); setProfileError(null);
+    try {
+      if (section === "profile") {
+        const updated = await apiClient.updateProfile(profileId, {
+          name: draft.name,
+          skills: draft.skills.split(",").map((s) => s.trim()).filter(Boolean),
+          experience: [draft.experience],
+          languages: draft.languages.split("\n").map((s) => s.trim()).filter(Boolean),
+          education: [draft.education],
+        });
+        setProfileVersion(updated.version);
+      } else {
+        await apiClient.updateProfilePreferences(profileId, {
+          locations: draft.locations.split(",").map((s) => s.trim()).filter(Boolean),
+          modalities: [draft.mode === "Remoto" ? "remote" : draft.mode === "Híbrido" ? "hybrid" : "onsite"],
+          salary_min: parseInt(draft.minSalary) || undefined,
+          salary_max: parseInt(draft.maxSalary) || undefined,
+          work_authorization: draft.authorization ? [draft.authorization] : undefined,
+          weights: { skills: draft.weightSkills, experience: draft.weightExperience, location: draft.weightLocation, modality: draft.weightMode },
+        });
+      }
+      setSaved(true);
+    } catch { setProfileError("No se pudieron guardar los cambios."); }
+    finally { setSaving(false); }
   };
 
   return (
@@ -109,9 +189,11 @@ function App() {
           <button id="tab-operations" role="tab" type="button" className={section === "operations" ? "tab active" : "tab"} aria-controls="operations-panel" aria-selected={section === "operations"} onClick={() => setSection("operations")}>Operación</button>
         </nav>
 
-        {section === "vacancies" ? <VacancyDashboard /> : section === "operations" ? <OperationsDashboard /> : section === "profile" ? <ProfileSection draft={draft} cvName={cvName} setCvName={setCvName} update={update} /> : <PreferencesSection draft={draft} update={update} />}
+        {profileError && <div className="error-callout" role="alert"><strong>Error</strong><span>{profileError}</span></div>}
 
-        {(section === "profile" || section === "preferences") && <div className="save-bar"><div aria-live="polite"><strong>{saved ? "Cambios guardados" : "Perfil versión 3"}</strong><span>{saved ? "Tu próxima evaluación usará esta configuración." : "Los cambios crearán una nueva versión y reevaluarán las ofertas."}</span></div><button type="button" className="primary-button" onClick={save}>{saved ? "Guardado" : "Guardar cambios"}</button></div>}
+        {section === "vacancies" ? <VacancyDashboard /> : section === "operations" ? <OperationsDashboard /> : section === "profile" ? <ProfileSection draft={draft} cvName={cvName} onUpload={handleCvUpload} update={update} /> : <PreferencesSection draft={draft} update={update} />}
+
+        {(section === "profile" || section === "preferences") && <div className="save-bar"><div aria-live="polite"><strong>{saved ? "Cambios guardados" : `Perfil versión ${profileVersion}`}</strong><span>{profileId ? (saved ? "Tu próxima evaluación usará esta configuración." : "Los cambios crearán una nueva versión y reevaluarán las ofertas.") : "Sube un CV para comenzar."}</span></div><button type="button" className="primary-button" onClick={save} disabled={saving}>{saving ? "Guardando…" : saved ? "Guardado" : "Guardar cambios"}</button></div>}
       </main>
     </div>
   );
@@ -261,10 +343,10 @@ function VacancyDetail({ jobId, onBack }: { jobId: number; onBack: () => void })
   return <section className="vacancy-detail" aria-labelledby="vacancy-detail-title"><button type="button" className="secondary-button compact detail-back" onClick={onBack}>← Volver a ofertas</button><div className="detail-header"><div><p className="eyebrow">Detalle de oferta</p><h2 id="vacancy-detail-title">{detail.title}</h2><p className="vacancy-company">{detail.company} · {detail.region}</p></div><div className="detail-score" aria-label={`${detail.score ?? "N/A"}% de compatibilidad`}><strong>{detail.score != null ? `${detail.score}%` : "—"}</strong><span>compatibilidad</span></div></div><div className="detail-grid"><div className="detail-main"><section className="panel" aria-labelledby="description-title"><h3 id="description-title">Descripción</h3><p>{detail.description}</p><dl className="detail-facts"><div><dt>Ubicación</dt><dd>{detail.region}</dd></div><div><dt>Modalidad</dt><dd>{mapModality(detail.modality)}</dd></div><div><dt>Salario estimado</dt><dd>{salary}</dd></div><div><dt>Publicada</dt><dd>{detail.published_at ?? "—"}</dd></div></dl></section>{recommendations.length > 0 && <section className="panel" aria-labelledby="recommendations-title"><h3 id="recommendations-title">Recomendaciones</h3><ul className="detail-list">{recommendations.map((item, i) => <li key={i}>{item}</li>)}</ul></section>}</div><aside className="panel detail-aside" aria-labelledby="match-title"><h3 id="match-title">Compatibilidad</h3><p className="muted">Coincidencia calculada con tu perfil actual.</p>{gaps.length > 0 && <><h4>Brechas detectadas</h4><ul className="detail-list">{gaps.map((gap, i) => <li key={i}>{gap}</li>)}</ul></>}<div className="detail-actions"><a className="primary-button" href={detail.application_url ?? detail.description_url} target="_blank" rel="noopener noreferrer">Aplicar<span aria-hidden="true"> ↗</span></a><a className="secondary-button" href={detail.description_url} target="_blank" rel="noopener noreferrer">Ver descripción original<span aria-hidden="true"> ↗</span></a></div></aside></div></section>;
 }
 
-function ProfileSection({ draft, cvName, setCvName, update }: { draft: ProfileDraft; cvName: string; setCvName: (name: string) => void; update: <K extends keyof ProfileDraft>(key: K, value: ProfileDraft[K]) => void }) {
+function ProfileSection({ draft, cvName, onUpload, update }: { draft: ProfileDraft; cvName: string; onUpload: (event: React.ChangeEvent<HTMLInputElement>) => void; update: <K extends keyof ProfileDraft>(key: K, value: ProfileDraft[K]) => void }) {
   return <div id="profile-panel" className="content-grid" role="tabpanel" aria-labelledby="tab-profile" tabIndex={0}>
     <section className="panel" aria-labelledby="cv-title"><div className="panel-heading"><div><p className="card-kicker">Extracción del CV</p><h2 id="cv-title">Revisa y corrige tu información</h2></div><span className="confidence-badge">92% de confianza</span></div><p className="muted">Edita cualquier campo antes de usarlo para encontrar ofertas.</p>
-      <label className="upload-zone" htmlFor="cv-upload"><span className="upload-icon" aria-hidden="true">↑</span><span><strong>{cvName}</strong><small>PDF · actualizado hoy</small></span><span className="upload-action">Cambiar archivo</span><input id="cv-upload" name="cvFile" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(event) => { const file = event.target.files?.[0]; if (file) setCvName(file.name); }} /></label>
+      <label className="upload-zone" htmlFor="cv-upload"><span className="upload-icon" aria-hidden="true">↑</span><span><strong>{cvName}</strong><small>PDF · DOCX</small></span><span className="upload-action">Cambiar archivo</span><input id="cv-upload" name="cvFile" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={onUpload} /></label>
       <div className="form-stack"><label>Nombre<input name="name" autoComplete="name" value={draft.name} onChange={(event) => update("name", event.target.value)} /></label><label>Titular profesional<input name="headline" autoComplete="organization-title" value={draft.headline} onChange={(event) => update("headline", event.target.value)} /></label><label>Habilidades clave<textarea name="skills" autoComplete="off" rows={3} value={draft.skills} onChange={(event) => update("skills", event.target.value)} /><small>Separa las habilidades con comas.</small></label><label>Experiencia profesional<textarea name="experience" autoComplete="off" rows={4} value={draft.experience} onChange={(event) => update("experience", event.target.value)} /></label><label>Idiomas y educación<textarea name="education" autoComplete="off" rows={2} value={`${draft.languages}\n${draft.education}`} onChange={(event) => { const [languages = "", education = ""] = event.target.value.split("\n"); update("languages", languages); update("education", education); }} /></label></div>
     </section>
     <aside className="panel summary-panel" aria-labelledby="summary-title"><p className="card-kicker">Resumen detectado</p><h2 id="summary-title">Así te estamos entendiendo</h2><div className="summary-item"><span className="summary-icon" aria-hidden="true">✦</span><div><strong>Perfil senior</strong><p>8 años de experiencia · Ingeniería</p></div></div><div className="summary-item"><span className="summary-icon" aria-hidden="true">◎</span><div><strong>5 habilidades principales</strong><p>Python · TypeScript · React · FastAPI · SQL</p></div></div><div className="summary-item"><span className="summary-icon" aria-hidden="true">↗</span><div><strong>Ubicación flexible</strong><p>CDMX, Guadalajara y remoto USA</p></div></div><div className="info-callout"><strong>¿Algo no coincide?</strong><p>La información editada aquí tiene prioridad sobre la extracción del documento.</p></div></aside>

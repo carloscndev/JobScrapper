@@ -16,6 +16,10 @@ export interface ApiClient {
   getJobDetail: (jobId: number) => Promise<JobDetailResponse>;
   createSource: (data: SourceCreateRequest) => Promise<SourceSummary>;
   updateSource: (sourceId: number, data: SourceUpdateRequest) => Promise<SourceSummary>;
+  getProfile: (profileId: number) => Promise<ProfileResponse>;
+  updateProfile: (profileId: number, data: ProfileUpdatePayload) => Promise<ProfileResponse>;
+  updateProfilePreferences: (profileId: number, data: PreferencePayload) => Promise<ProfileResponse>;
+  uploadProfile: (file: File) => Promise<UploadResponse>;
 }
 
 export interface OperationsHealth {
@@ -108,6 +112,61 @@ export interface PaginatedJobsResponse {
   total_pages: number;
 }
 
+export interface ProfileResponse {
+  id: number;
+  name: string;
+  cv_text: string | null;
+  cv_filename: string | null;
+  version: number;
+  seniority: string | null;
+  reevaluation_required: boolean;
+  reevaluation_reason: string | null;
+  reevaluation_metadata: Record<string, unknown>;
+  versioned_at: string | null;
+  skills: unknown[];
+  experience: unknown[];
+  education: unknown[];
+  languages: unknown[];
+  preferences: PreferenceResponse | null;
+}
+
+export interface ProfileUpdatePayload {
+  name?: string;
+  seniority?: string;
+  skills?: unknown[];
+  experience?: unknown[];
+  education?: unknown[];
+  languages?: unknown[];
+}
+
+export interface PreferencePayload {
+  target_roles?: string[];
+  locations?: string[];
+  modalities?: string[];
+  seniority?: string | null;
+  preferred_languages?: string[];
+  salary_min?: number | null;
+  salary_max?: number | null;
+  salary_currency?: string | null;
+  salary_period?: string | null;
+  employment_types?: string[];
+  work_authorization?: string[];
+  willing_to_relocate?: boolean;
+  excluded_constraints?: string[];
+  weights?: Record<string, number>;
+}
+
+export interface PreferenceResponse extends PreferencePayload {
+  id: number;
+  profile_id: number;
+  is_current: boolean;
+  created_at: string;
+}
+
+export interface UploadResponse extends ProfileResponse {
+  parsed_text_length: number;
+}
+
 export interface JobListParams {
   page?: number;
   page_size?: number;
@@ -149,5 +208,15 @@ export function createApiClient(baseUrl = ""): ApiClient {
     getJobDetail: async (jobId) => request<JobDetailResponse>(`/api/v1/jobs/${jobId}`),
     createSource: async (data) => request<SourceSummary>("/api/v1/operations/sources", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
     updateSource: async (sourceId, data) => request<SourceSummary>(`/api/v1/operations/sources/${sourceId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
+    getProfile: async (profileId) => request<ProfileResponse>(`/api/v1/profiles/${profileId}`),
+    updateProfile: async (profileId, data) => request<ProfileResponse>(`/api/v1/profiles/${profileId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
+    updateProfilePreferences: async (profileId, data) => request<ProfileResponse>(`/api/v1/profiles/${profileId}/preferences`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
+    async uploadProfile(file: File) {
+      const form = new FormData();
+      form.append("file", file);
+      const response = await fetch(`${baseUrl}/api/v1/profiles/upload`, { method: "POST", body: form });
+      if (!response.ok) throw new Error(`API request failed (${response.status})`);
+      return (await response.json()) as UploadResponse;
+    },
   };
 }

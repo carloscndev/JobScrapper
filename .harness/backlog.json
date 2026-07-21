@@ -1063,6 +1063,29 @@
         "All existing frontend tests still pass"
       ],
       "commit_hash": "032e1bc"
+    },
+    {
+      "id": "FRONTEND-007",
+      "title": "Connect profile section to API endpoints",
+      "status": "approved",
+      "depends_on": [
+        "FRONTEND-006",
+        "API-001"
+      ],
+      "commit": "feat(web): connect profile UI to live API",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Profile section loads from PATCH /api/v1/profiles/{id} on mount",
+        "Save writes fields via PATCH /api/v1/profiles/{id} and preferences via PUT /api/v1/profiles/{id}/preferences",
+        "CV upload calls POST /api/v1/profiles/upload",
+        "Profile version is shown dynamically from API response",
+        "All existing frontend tests still pass"
+      ]
     }
   ]
 }

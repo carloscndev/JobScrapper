@@ -744,3 +744,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: connect dashboard to live API, remove demo data, add source creation UI
 - Risks: requires running API server for full runtime dashboard interaction
 - Commit hash: 032e1bc
+
+### FRONTEND-007 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: profile section loads from API on mount; save writes fields/preferences via PATCH/PUT; CV upload calls POST /api/v1/profiles/upload; profile version shown dynamically; all existing frontend tests pass; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `frontend/src/api/client.ts`, `frontend/src/App.tsx`, `tests/frontend/test_frontend_profile.py`
+- Commands: 25 frontend tests, 79 backend tests, 35 harness tests; pytest -v passed for all three suites
+- Tester: PASS — 25 frontend tests pass, 79 backend tests pass, 35 harness tests pass
+- Reviewer: APPROVED — profile API types/methods are consistent with existing interfaces; App.tsx integrates with API for load, save, upload; error/saving states wired; test assertion updated for dynamic version
+- Rework: none
+- Changelog: connect profile section to live API endpoints
+- Risks: requires running API server for full runtime profile interaction; CV upload requires working backend file endpoint
+- Commit subject: feat(web): connect profile UI to live API
+- Commit hash: 8d7aab1

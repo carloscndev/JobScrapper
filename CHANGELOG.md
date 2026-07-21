@@ -598,3 +598,19 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: Docker/npm/Playwright/SQLAlchemy/credentials/tag gates require release environment
 - Commit subject: docs(release): finalize version 0.1.0 readiness
 - Commit hash: f5a6d0320fea1a324afea298aba496eba70f3830
+
+### FRONTEND-007 — Attempt 1
+
+- Profile section now loads from API via `getProfile()` on mount, saves fields via `PATCH /api/v1/profiles/{id}` and preferences via `PUT /api/v1/profiles/{id}/preferences`.
+- CV upload calls `POST /api/v1/profiles/upload` via FormData, stores `profileId` in localStorage for persistence across reloads.
+- Added profile types (`ProfileResponse`, `ProfileUpdatePayload`, `PreferencePayload`, `UploadResponse`) and four API methods to typed `client.ts`.
+- Profile version displayed dynamically from API response; save button shows saving/disabled state; error callout with role="alert".
+- Fixed test assertion to match dynamic template literal for profile version.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `frontend/src/api/client.ts`, `frontend/src/App.tsx`, `tests/frontend/test_frontend_profile.py`
+- Commands: 25 frontend tests, 79 backend tests, 35 harness tests
+- Tester: PASS — all test suites pass
+- Reviewer: APPROVED — implementation matches existing patterns, scope clean
+- Risks: requires running API server for full runtime profile and upload interaction
+- Commit subject: feat(web): connect profile UI to live API
+- Commit hash: 8d7aab1
