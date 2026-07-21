@@ -1221,7 +1221,7 @@
     {
       "id": "TEST-009",
       "title": "Add test for empty source name rejection",
-      "status": "coding",
+      "status": "committed",
       "depends_on": [
         "TEST-008"
       ],
@@ -1237,7 +1237,7 @@
         "Empty source name rejected with validation error",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "11e2a47"
     },
     {
       "id": "TEST-011",
