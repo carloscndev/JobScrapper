@@ -1134,6 +1134,31 @@
         "All existing tests still pass"
       ],
       "commit_hash": "7ebd4e8"
+    },
+    {
+      "id": "API-006",
+      "title": "Fix adapter lookup — map source kind to adapter name",
+      "status": "coding",
+      "depends_on": [
+        "API-004"
+      ],
+      "commit": "fix(api): map source kind to adapter name in pipeline and refresh",
+      "allowed_paths": [
+        "backend/**",
+        ".gitignore",
+        ".harness/backlog.json",
+        ".harness/current-task.json",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Sources with kind api/feed resolve to JsonApiFeedAdapter",
+        "Source config adapter override is respected",
+        "factory.py refresh uses same kind-to-name mapping as pipeline",
+        "All existing tests still pass"
+      ],
+      "commit_hash": "c90d7f7"
     }
   ]
 }

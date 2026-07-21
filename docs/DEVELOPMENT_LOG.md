@@ -775,6 +775,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: feat(api): add source deletion endpoint and UI button
 - Commit hash: 7ebd4e8
 
+### API-006 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: api/feed kind resolves to JsonApiFeedAdapter; config adapter override respected; factory refresh uses same mapping; all tests pass; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/pipeline.py`, `backend/app/factory.py`, `.gitignore`, `tests/backend/test_adapter_lookup.py`
+- Commands: 7 adapter lookup tests pass; 37 existing harness/pipeline tests pass; compileall clean
+- Tester: PASS — 7/7 adapter lookup tests, 37/37 existing tests
+- Reviewer: APPROVED — kind mapping consistent, scope clean, security verified
+- Rework: none
+- Changelog: fix adapter lookup — map source kind to adapter name in pipeline and refresh
+- Risks: career_page sources still require explicit `adapter` config to resolve
+- Commit subject: fix(api): map source kind to adapter name in pipeline and refresh
+- Commit hash: c90d7f7
+
 ### FRONTEND-008 — Attempt 1
 
 - Started / finished: 2026-07-20 / 2026-07-20

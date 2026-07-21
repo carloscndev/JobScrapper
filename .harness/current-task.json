@@ -2,9 +2,9 @@
   "schema_version": 1,
   "active": false,
   "task_id": null,
-  "state": null,
-  "attempt": 0,
-  "evidence": {},
+  "state": "committed",
+  "attempt": 1,
+  "evidence": {"tester": "PASS: 7/7 adapter lookup tests, 37/37 existing tests, compileall clean", "reviewer": "APPROVED"},
   "rejections": [],
-  "commit": "7ebd4e869cb58813b1b9dbf9a5dcdd616f3e8e34"
+  "commit": "c90d7f76df9ea2261fd920dc1abf8281f7f9e2e9"
 }

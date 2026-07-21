@@ -256,9 +256,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 started = datetime.now(timezone.utc)
                 source_config = SourceConfig(name=source.name, kind=SourceKind(source.kind), base_url=source.base_url,
                     terms_url=source.terms_url, terms_accepted=bool((source.config or {}).get("terms_accepted")), settings=source.config or {})
-                adapter = next((item for item in DEFAULT_ADAPTERS if item.name == (source.config or {}).get("adapter", source.name)), None)
+                _KIND_MAP = {"api": "json-api-feed", "feed": "json-api-feed"}
+                name = (source.config or {}).get("adapter", source.name)
+                adapter = next((item for item in DEFAULT_ADAPTERS if item.name == name), None)
                 if adapter is None:
-                    adapter = next((item for item in DEFAULT_ADAPTERS if item.name == source.kind), None)
+                    mapped = _KIND_MAP.get(source.kind)
+                    adapter = next((item for item in DEFAULT_ADAPTERS if item.name == (mapped or source.kind)), None)
                 result = adapter.fetch(source_config) if adapter else None
                 run = SourceRun(execution_id=execution.id, source_id=source.id, status=result.status if result else "failed",
                                 jobs_found=len(result.jobs) if result else 0, error=result.error if result else "No adapter configured",

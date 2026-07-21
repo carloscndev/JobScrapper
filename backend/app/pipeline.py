@@ -70,9 +70,17 @@ class JobPipeline:
         self.max_jobs, self.max_concurrency = max_jobs, max_concurrency
         self.adapters = {adapter.name: adapter for adapter in adapters}
 
+    _KIND_MAP = {"api": "json-api-feed", "feed": "json-api-feed"}
+
     def _adapter(self, source: Source, config: Mapping[str, Any]) -> SourceAdapter | None:
         name = str(config.get("adapter") or source.name)
-        return self.adapters.get(name) or self.adapters.get(source.kind)
+        adapter = self.adapters.get(name)
+        if adapter:
+            return adapter
+        mapped = self._KIND_MAP.get(source.kind)
+        if mapped:
+            return self.adapters.get(mapped)
+        return self.adapters.get(source.kind)
 
     @staticmethod
     def _config(source: Source) -> SourceConfig:

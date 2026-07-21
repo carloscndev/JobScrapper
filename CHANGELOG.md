@@ -16,6 +16,10 @@ All notable product changes will be documented here following Keep a Changelog a
 
 ## [Unreleased]
 
+### Fixed
+
+- Adapter lookup: source kinds `api`/`feed` now resolve to `JsonApiFeedAdapter` instead of producing "No adapter configured". Configurable `adapter` override is respected. (`API-006`)
+
 ### Added
 
 - `BOOTSTRAP-001`: repository governance for the multi-agent delivery workflow.
