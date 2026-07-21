@@ -1242,7 +1242,7 @@
     {
       "id": "TEST-011",
       "title": "Add HTTP-level large file rejection test",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "TEST-009"
       ],
@@ -1259,7 +1259,7 @@
         "Error response has cv_validation_error code",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "e385331"
     },
     {
       "id": "TEST-012",
