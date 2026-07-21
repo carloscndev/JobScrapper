@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "API-007",
-  "state": "approved",
+  "active": false,
+  "task_id": null,
+  "state": "committed",
   "attempt": 1,
-  "evidence": {"tester": "PASS: 8/8 job tests, 37/37 harness+pipeline tests, compileall clean"},
+  "evidence": {"tester": "PASS: 8/8 job tests, 37/37 harness+pipeline tests, compileall clean", "reviewer": "APPROVED"},
   "rejections": [],
-  "commit": "035c5f7cff69e704b7091887d40a77009c94fb98"
+  "commit": "122d9000cdbcb919a59763b5ec6bdc8c3f4819f7"
 }

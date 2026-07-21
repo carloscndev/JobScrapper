@@ -818,4 +818,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: fix IntegrityError on job upsert by guarding checked_at assignment
 - Risks: none
 - Commit subject: fix(api): guard checked_at assignment in job upsert
-- Commit hash: pending
+- Commit hash: 122d900

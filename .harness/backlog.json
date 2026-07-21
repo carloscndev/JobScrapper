@@ -1138,7 +1138,7 @@
     {
       "id": "API-006",
       "title": "Fix adapter lookup — map source kind to adapter name",
-      "status": "coding",
+      "status": "committed",
       "depends_on": [
         "API-004"
       ],
@@ -1159,6 +1159,29 @@
         "All existing tests still pass"
       ],
       "commit_hash": "035c5f7"
+    },
+    {
+      "id": "API-007",
+      "title": "Fix checked_at None on upsert — IntegrityError on every refresh",
+      "status": "committed",
+      "depends_on": [
+        "API-006"
+      ],
+      "commit": "fix(api): guard checked_at assignment in job upsert",
+      "allowed_paths": [
+        "backend/**",
+        ".harness/backlog.json",
+        ".harness/current-task.json",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Upsert sets checked_at to current time when job.checked_at is None",
+        "Upsert respects an explicit checked_at when provided",
+        "All existing tests still pass"
+      ],
+      "commit_hash": "122d900"
     }
   ]
 }
