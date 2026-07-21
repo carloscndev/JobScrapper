@@ -1094,7 +1094,7 @@
     {
       "id": "API-014",
       "title": "Enforce upload size limit at FastAPI level",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "API-013"
       ],
@@ -1111,7 +1111,7 @@
         "Error response has cv_validation_error code",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "bddadf2"
     },
     {
       "id": "API-015",
