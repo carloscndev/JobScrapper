@@ -104,3 +104,17 @@ class ProfileService:
 class JobIngestionService:
     def __init__(self, jobs: JobRepository) -> None: self.jobs = jobs
     def save(self, job: Job) -> Job: return self.jobs.upsert(job)
+
+class JobService:
+    def __init__(self, jobs: JobRepository) -> None: self.jobs = jobs
+
+    def update_job(self, job_id: int, **job_data: object) -> Job:
+        job = self.jobs.get(job_id)
+        if job is None:
+            raise ValueError(f"job {job_id} does not exist")
+        for key, value in job_data.items():
+            if not hasattr(job, key):
+                raise ValueError(f"unsupported job field: {key}")
+            setattr(job, key, value)
+        self.jobs.session.flush()
+        return job

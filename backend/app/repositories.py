@@ -43,6 +43,7 @@ class SourceRepository:
 
 class JobRepository:
     def __init__(self, session: Session) -> None: self.session = session
+    def get(self, job_id: int) -> Job | None: return self.session.get(Job, job_id)
     def by_canonical_url(self, canonical_url: str) -> Job | None: return self.session.scalar(select(Job).where(Job.canonical_url == canonical_url))
     def by_fingerprint(self, fingerprint: str) -> Job | None: return self.session.scalar(select(Job).where(Job.fingerprint == fingerprint))
     def upsert(self, job: Job) -> Job:
