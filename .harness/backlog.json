@@ -1087,6 +1087,26 @@
         "All existing frontend tests still pass"
       ],
       "commit_hash": "11cd080"
+    },
+    {
+      "id": "FRONTEND-008",
+      "title": "Fix CV data rendering — [object Object] in experience/education",
+      "status": "approved",
+      "depends_on": [
+        "FRONTEND-007"
+      ],
+      "commit": "fix(web): convert API objects to strings in profile fields",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Experience and education fields from API render as readable text, not [object Object]",
+        "Skills field does not show encoding artifacts",
+        "All existing frontend tests still pass"
+      ]
     }
   ]
 }

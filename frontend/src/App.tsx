@@ -95,13 +95,14 @@ function App() {
           setProfileId(p.id);
           setProfileVersion(p.version);
           setCvName(p.cv_filename || cvName);
+          const toStrings = (arr: unknown[]) => arr.map((item) => (typeof item === "object" && item !== null ? String((item as Record<string, unknown>).text ?? "") : String(item)));
           setDraft({
             name: p.name,
             headline: p.seniority || initialDraft.headline,
-            skills: Array.isArray(p.skills) ? p.skills.join(", ") : initialDraft.skills,
-            experience: Array.isArray(p.experience) ? p.experience.join("\n") : initialDraft.experience,
-            languages: Array.isArray(p.languages) ? p.languages.join("\n") : initialDraft.languages,
-            education: Array.isArray(p.education) ? p.education.join("\n") : initialDraft.education,
+            skills: Array.isArray(p.skills) ? toStrings(p.skills).join(", ") : initialDraft.skills,
+            experience: Array.isArray(p.experience) ? toStrings(p.experience).join("\n") : initialDraft.experience,
+            languages: Array.isArray(p.languages) ? toStrings(p.languages).join("\n") : initialDraft.languages,
+            education: Array.isArray(p.education) ? toStrings(p.education).join("\n") : initialDraft.education,
             locations: p.preferences?.locations?.join(", ") || initialDraft.locations,
             mode: (p.preferences?.modalities?.[0] === "remote" ? "Remoto" : p.preferences?.modalities?.[0] === "hybrid" ? "Híbrido" : p.preferences?.modalities?.[0] === "onsite" ? "Presencial" : initialDraft.mode) as WorkMode,
             authorization: p.preferences?.work_authorization?.join(", ") || initialDraft.authorization,
@@ -131,13 +132,14 @@ function App() {
       setProfileId(result.id);
       setProfileVersion(result.version);
       localStorage.setItem("profileId", result.id.toString());
+      const toStrings = (arr: unknown[]) => arr.map((item) => (typeof item === "object" && item !== null ? String((item as Record<string, unknown>).text ?? "") : String(item)));
       setDraft((current) => ({
         ...current,
         name: result.name,
-        skills: Array.isArray(result.skills) ? result.skills.join(", ") : current.skills,
-        experience: Array.isArray(result.experience) ? result.experience.join("\n") : current.experience,
-        languages: Array.isArray(result.languages) ? result.languages.join("\n") : current.languages,
-        education: Array.isArray(result.education) ? result.education.join("\n") : current.education,
+        skills: Array.isArray(result.skills) ? toStrings(result.skills).join(", ") : current.skills,
+        experience: Array.isArray(result.experience) ? toStrings(result.experience).join("\n") : current.experience,
+        languages: Array.isArray(result.languages) ? toStrings(result.languages).join("\n") : current.languages,
+        education: Array.isArray(result.education) ? toStrings(result.education).join("\n") : current.education,
       }));
       setProfileError(null);
     } catch { setProfileError("No se pudo subir el CV."); }
