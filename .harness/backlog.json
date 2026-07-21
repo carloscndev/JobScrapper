@@ -1286,7 +1286,7 @@
     {
       "id": "NOTION-004",
       "title": "Fix data_sources \u2192 databases in Notion API paths",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [],
       "commit": "fix(api): fix data_sources to databases in Notion API paths",
       "allowed_paths": [

@@ -22,9 +22,23 @@ All notable product changes will be documented here following Keep a Changelog a
 - Job upsert no longer crashes with `IntegrityError` when `checked_at` is not provided — defaults to current time. (`API-007`)
 - Profile upload returns 422 with `cv_validation_error` code when the CV parser is unavailable, instead of a 500 error. (`API-008`)
 - Adapter kind mapping extracted to shared `constants.py`, eliminating duplicate `_KIND_MAP` in `pipeline.py` and `factory.py`. (`API-009`)
+- Profile serialization now guards `skills`/`experience`/`education`/`languages` with `or []` for defensive None safety. (`API-010`)
+- IntegrityError in profile upload caught and returned as 422 with `cv_validation_error` code. (`API-011`)
+- `@app.on_event("startup")` migrated to ASGI lifespan context manager. (`API-012`)
+- Content-Type validation enforced in upload endpoint — missing or unsupported MIME types rejected as 422. (`API-013`)
+- FastAPI-level upload size limit enforced via Content-Length check. (`API-014`)
+- `JobService.update_job()` service method added with `JobRepository.get()` helper. (`API-015`)
+- `PipelineExecution.run_id` made immutable after creation via SQLAlchemy validator. (`API-016`)
+- Notion API paths fixed: `data_sources` → `databases`, `data_source_id` → `database_id`. (`NOTION-004`)
+- CORS middleware added allowing `localhost:5173` and `localhost:3000` origins. (`TEST-012`)
+- Backend dependency versions pinned in `backend/requirements.txt` for reproducible builds. (`OPS-008`)
 
 ### Added
 
+- 404 envelope contract tests for missing sources (PATCH/DELETE) and missing execution (GET). (`TEST-008`)
+- Test for empty source name rejection via Pydantic `min_length=1`. (`TEST-009`)
+- HTTP-level large file rejection test for profile upload. (`TEST-011`)
+- CORS header presence tests for GET and OPTIONS requests. (`TEST-012`)
 - `BOOTSTRAP-001`: repository governance for the multi-agent delivery workflow.
 - `SKILLS-001`: managed skill manifest with exact upstream revisions, pinned checksums, role authorization, and explicit risk metadata.
 - `HARNESS-001` / `HARNESS-002`: dependency-free lifecycle CLI with executable commit gates.
