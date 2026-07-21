@@ -848,4 +848,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: extract shared KIND_MAP to constants module
 - Risks: none
 - Commit subject: refactor(api): extract shared KIND_MAP to constants module
-- Commit hash: pending
+- Commit hash: 9ccd5b3

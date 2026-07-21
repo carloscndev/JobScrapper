@@ -549,12 +549,12 @@
     {
       "id": "API-009",
       "title": "Extract shared _KIND_MAP to constants module",
-      "status": "pending",
+      "status": "committed",
       "depends_on": ["API-008"],
       "commit": "refactor(api): extract shared _KIND_MAP to constants module",
       "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
       "acceptance": ["KIND_MAP defined once in backend/app/constants.py", "pipeline.py imports KIND_MAP from constants", "factory.py imports KIND_MAP from constants", "No local _KIND_MAP duplicates remain", "All existing tests still pass"],
-      "commit_hash": null
+      "commit_hash": "9ccd5b3"
     },
     {
       "id": "API-010",

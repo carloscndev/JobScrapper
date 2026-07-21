@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "API-009",
-  "state": "testing",
+  "active": false,
+  "task_id": null,
+  "state": "committed",
   "attempt": 1,
-  "evidence": {"tester": "PASS: 7/7 adapter lookup tests, compileall clean. 6 pre-existing failures unrelated."},
+  "evidence": {"tester": "PASS: 7/7 adapter lookup tests, compileall clean. 6 pre-existing failures unrelated.", "reviewer": "APPROVED"},
   "rejections": [],
-  "commit": "80acef647ef28240cb914a5bcc56f3590931de0a"
+  "commit": "9ccd5b3469e7061297a444a91b6824b3b5920e39"
 }
