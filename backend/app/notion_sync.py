@@ -95,7 +95,7 @@ class NotionHttpClient:
             payload: dict[str, Any] = {"page_size": 100}
             if cursor:
                 payload["start_cursor"] = cursor
-            result = self.request("POST", f"/v1/data_sources/{database_id}/query", payload)
+            result = self.request("POST", f"/v1/databases/{database_id}/query", payload)
             pages.extend(result.get("results", []))
             if not result.get("has_more"):
                 return pages
@@ -231,7 +231,7 @@ class NotionSyncService:
                 page_id = result.get("id", page["id"])
                 action = "updated"
             else:
-                result = self.client.request("POST", "/v1/pages", {"parent": {"data_source_id": database_id}, "properties": properties})
+                result = self.client.request("POST", "/v1/pages", {"parent": {"database_id": database_id}, "properties": properties})
                 page_id, action = result.get("id"), "created"
             outcome = SyncOutcome(external_id, "synced", page_id, attempts=self.client.last_attempts, reconciliation={"action": action, "fingerprint": fingerprint, "retry_statuses": list(self.client.last_retry_statuses)})
             self._persist(job, outcome)
