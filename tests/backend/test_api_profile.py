@@ -133,6 +133,15 @@ class ProfileApiHttpTests(unittest.TestCase):
         body = response.json()["error"]
         self.assertEqual(body["code"], "cv_validation_error")
 
+    def test_upload_rejects_oversized_file(self) -> None:
+        large = b"%PDF-1.7\n" + b"x" * (10 * 1024 * 1024 + 1)
+        response = self.client.post(
+            "/api/v1/profiles/upload",
+            files={"file": ("resume.pdf", large, "application/pdf")},
+        )
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.json()["error"]["code"], "cv_validation_error")
+
     def test_invalid_preference_payload_uses_validation_envelope(self) -> None:
         response = self.client.put(
             "/api/v1/profiles/999/preferences",
