@@ -2,9 +2,9 @@
   "schema_version": 1,
   "active": true,
   "task_id": "API-009",
-  "state": "coding",
+  "state": "testing",
   "attempt": 1,
-  "evidence": {},
+  "evidence": {"tester": "PASS: 7/7 adapter lookup tests, compileall clean. 6 pre-existing failures unrelated."},
   "rejections": [],
   "commit": "80acef647ef28240cb914a5bcc56f3590931de0a"
 }

@@ -834,3 +834,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: none
 - Commit subject: fix(api): catch CVParserUnavailable as 422 in upload
 - Commit hash: 19636bd
+
+### API-009 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: KIND_MAP defined once in constants.py; pipeline.py and factory.py import from constants; no local duplicates; all tests pass; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/constants.py`, `backend/app/pipeline.py`, `backend/app/factory.py`
+- Commands: 7 adapter lookup tests pass; compileall clean
+- Tester: PASS — 7/7 adapter lookup tests pass; no regression from 6 pre-existing failures
+- Reviewer: APPROVED — shared module eliminates duplication, clean imports
+- Rework: none
+- Changelog: extract shared KIND_MAP to constants module
+- Risks: none
+- Commit subject: refactor(api): extract shared KIND_MAP to constants module
+- Commit hash: pending

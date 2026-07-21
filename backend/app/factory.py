@@ -22,6 +22,7 @@ from .schemas import (JobDetailResponse, JobEvaluationResponse, JobListItem, Pag
                       SourceUpdatePayload, UploadResponse)
 from .services import ProfileService
 from .connectors import DEFAULT_ADAPTERS
+from .constants import KIND_MAP
 from .jobs import canonicalize_url, fingerprint_job
 from .sources import SourceConfig, SourceKind, SourceService
 from .notion import NotionConfig
@@ -256,11 +257,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 started = datetime.now(timezone.utc)
                 source_config = SourceConfig(name=source.name, kind=SourceKind(source.kind), base_url=source.base_url,
                     terms_url=source.terms_url, terms_accepted=bool((source.config or {}).get("terms_accepted")), settings=source.config or {})
-                _KIND_MAP = {"api": "json-api-feed", "feed": "json-api-feed"}
                 name = (source.config or {}).get("adapter", source.name)
                 adapter = next((item for item in DEFAULT_ADAPTERS if item.name == name), None)
                 if adapter is None:
-                    mapped = _KIND_MAP.get(source.kind)
+                    mapped = KIND_MAP.get(source.kind)
                     adapter = next((item for item in DEFAULT_ADAPTERS if item.name == (mapped or source.kind)), None)
                 result = adapter.fetch(source_config) if adapter else None
                 run = SourceRun(execution_id=execution.id, source_id=source.id, status=result.status if result else "failed",
