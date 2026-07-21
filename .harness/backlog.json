@@ -1138,7 +1138,7 @@
     {
       "id": "API-016",
       "title": "Make PipelineExecution.run_id immutable after creation",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "API-015"
       ],
@@ -1155,7 +1155,7 @@
         "Existing creation paths still work",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "b94fe0f"
     },
     {
       "id": "FRONTEND-009",
