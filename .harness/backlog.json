@@ -559,12 +559,12 @@
     {
       "id": "API-010",
       "title": "Add defensive None guard in profile_payload serialization",
-      "status": "pending",
+      "status": "committed",
       "depends_on": ["API-009"],
       "commit": "fix(api): add defensive None guard in profile_payload serialization",
       "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
       "acceptance": ["profile_payload handles None preferences gracefully", "List fields use or [] fallback", "All existing tests still pass"],
-      "commit_hash": null
+      "commit_hash": "8f6e7f4"
     },
     {
       "id": "API-011",

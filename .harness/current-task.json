@@ -4,7 +4,7 @@
   "task_id": null,
   "state": "committed",
   "attempt": 1,
-  "evidence": {"tester": "PASS: 7/7 adapter lookup tests, compileall clean. 6 pre-existing failures unrelated.", "reviewer": "APPROVED"},
+  "evidence": {"tester": "PASS: 9/9 profile API tests", "reviewer": "APPROVED"},
   "rejections": [],
-  "commit": "9ccd5b3469e7061297a444a91b6824b3b5920e39"
+  "commit": "8f6e7f463f6024b347e06e7eebce460c4bb24927"
 }
