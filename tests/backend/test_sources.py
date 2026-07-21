@@ -200,5 +200,17 @@ class SourceContractTests(unittest.TestCase):
             service.set_enabled("missing", True)
 
 
+    def test_empty_source_name_is_rejected(self) -> None:
+        if importlib.util.find_spec("pydantic") is None:
+            self.skipTest("pydantic not installed")
+        from pydantic import ValidationError
+        backend_path = str(BACKEND)
+        if backend_path not in sys.path:
+            sys.path.insert(0, backend_path)
+        schemas = __import__("app.schemas", fromlist=["*"])
+        with self.assertRaises(ValidationError):
+            schemas.SourceCreatePayload(name="")
+
+
 if __name__ == "__main__":
     unittest.main()
