@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from pathlib import Path
 import os
 from datetime import datetime, timezone
@@ -43,6 +45,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     runtime = settings or Settings.from_env()
     configure_logging(level=runtime.log_level, path=runtime.log_file,
                       max_bytes=runtime.log_max_bytes, backup_count=runtime.log_backup_count)
+    if runtime.database_url.startswith("sqlite:///./"):
+        Path(runtime.database_url.removeprefix("sqlite:///./")).parent.mkdir(parents=True, exist_ok=True)
+    engine = create_db_engine(runtime)
+    session_factory = create_session_factory(engine)
+
+    @asynccontextmanager
+    async def _lifespan(_app: FastAPI) -> AsyncIterator[None]:
+        Base.metadata.create_all(engine)
+        yield
+
     app = FastAPI(
         title=runtime.app_name,
         version="0.1.0",
@@ -50,11 +62,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         openapi_url="/api/v1/openapi.json",
         docs_url="/api/v1/docs",
         redoc_url="/api/v1/redoc",
+        lifespan=_lifespan,
     )
-    if runtime.database_url.startswith("sqlite:///./"):
-        Path(runtime.database_url.removeprefix("sqlite:///./")).parent.mkdir(parents=True, exist_ok=True)
-    engine = create_db_engine(runtime)
-    session_factory = create_session_factory(engine)
     # File-backed lock coordinates API requests with scheduler/manual workers
     # running in other processes, not only requests in this server process.
     refresh_lock = ProcessLock()
@@ -302,12 +311,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             return _execution_payload(_run_refresh())
         finally:
             refresh_lock.release()
-
-    @app.on_event("startup")
-    def create_tables() -> None:
-        # Migrations remain the production mechanism; this keeps a fresh local
-        # checkout usable for the profile API without a separate bootstrap step.
-        Base.metadata.create_all(engine)
 
     @app.post("/api/v1/profiles/upload", response_model=UploadResponse, status_code=status.HTTP_201_CREATED, tags=["profiles"])
     def upload_profile(file: UploadFile = File(...)) -> dict[str, Any]:
