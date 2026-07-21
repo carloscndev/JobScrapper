@@ -1091,7 +1091,7 @@
     {
       "id": "FRONTEND-008",
       "title": "Fix CV data rendering — [object Object] in experience/education",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-007"
       ],
@@ -1106,7 +1106,8 @@
         "Experience and education fields from API render as readable text, not [object Object]",
         "Skills field does not show encoding artifacts",
         "All existing frontend tests still pass"
-      ]
+      ],
+      "commit_hash": "a68b9fa"
     }
   ]
 }

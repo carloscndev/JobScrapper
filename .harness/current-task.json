@@ -1,26 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "FRONTEND-008",
-  "state": "approved",
-  "attempt": 1,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "App.tsx: toStrings helper extracts .text from API objects in experience/education; both load and upload paths fixed",
-      "attempt": 1
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "25 frontend tests pass, 114 backend+harness tests pass",
-      "attempt": 1
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "toStrings helper cubre ambos paths (load + upload); tipos manejados correctamente (objetos con .text y strings); tests pasan. APPROVED",
-      "attempt": 1
-    }
-  },
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
   "rejections": [],
-  "commit": null
+  "commit": "a68b9fa67792e5e2c680c7301d4ff5f07fe845e9"
 }
