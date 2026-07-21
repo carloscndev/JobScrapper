@@ -759,3 +759,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: requires running API server for full runtime profile interaction; CV upload requires working backend file endpoint
 - Commit subject: feat(web): connect profile UI to live API
 - Commit hash: 11cd080
+
+### FRONTEND-008 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: experience/education render as text not [object Object]; skills without encoding artifacts; all existing tests pass; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `frontend/src/App.tsx`
+- Commands: 25 frontend tests, 114 backend+harness tests
+- Tester: PASS — 25 frontend tests pass, 114 backend+harness tests pass
+- Reviewer: APPROVED — toStrings helper covers both load and upload paths, types handled correctly
+- Rework: none
+- Changelog: fix CV data rendering for API object fields
+- Risks: none
+- Commit subject: fix(web): convert API objects to strings in profile fields
+- Commit hash: a68b9fa

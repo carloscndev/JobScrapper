@@ -614,3 +614,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: requires running API server for full runtime profile and upload interaction
 - Commit subject: feat(web): connect profile UI to live API
 - Commit hash: 11cd080
+
+### FRONTEND-008 — Attempt 1
+
+- Added `toStrings` helper to convert API objects (`{"text": "..."}`) to plain strings in experience, education, skills, and languages fields on both profile load and CV upload paths.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `frontend/src/App.tsx`
+- Commands: 25 frontend tests, 114 backend+harness tests
+- Tester: PASS — all test suites pass
+- Reviewer: APPROVED — scoped fix covering both load and upload paths
+- Risks: none
+- Commit subject: fix(web): convert API objects to strings in profile fields
+- Commit hash: a68b9fa
