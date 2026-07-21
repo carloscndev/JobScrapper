@@ -760,6 +760,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: feat(web): connect profile UI to live API
 - Commit hash: 11cd080
 
+### API-005 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: DELETE /api/v1/sources/{source_id} returns 204; 404 if not found; delete button with confirm; list reloads; all tests pass; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/repositories.py`, `frontend/src/api/client.ts`, `frontend/src/App.tsx`
+- Commands: 139 tests (25 frontend + 114 backend/harness)
+- Tester: PASS — 139 tests pass
+- Reviewer: APPROVED — DELETE endpoint, repo.delete, confirm UI, scope clean
+- Rework: none
+- Changelog: source deletion endpoint and UI button added
+- Risks: none
+- Commit subject: feat(api): add source deletion endpoint and UI button
+- Commit hash: 7ebd4e8
+
 ### FRONTEND-008 — Attempt 1
 
 - Started / finished: 2026-07-20 / 2026-07-20

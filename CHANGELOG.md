@@ -626,3 +626,18 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: none
 - Commit subject: fix(web): convert API objects to strings in profile fields
 - Commit hash: a68b9fa
+
+### API-005 — Attempt 1
+
+- Added `DELETE /api/v1/sources/{source_id}` endpoint returning 204 No Content (404 if not found).
+- Added `SourceRepository.delete(source_id)` with flush.
+- Added `deleteSource` method to typed API client.
+- Added "Eliminar" button per source in OperationsDashboard with `confirm()` dialog and list auto-reload.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/repositories.py`, `frontend/src/api/client.ts`, `frontend/src/App.tsx`
+- Commands: 139 tests (25 frontend + 114 backend/harness)
+- Tester: PASS — all test suites pass
+- Reviewer: APPROVED — scoped, correct, tests pass
+- Risks: none
+- Commit subject: feat(api): add source deletion endpoint and UI button
+- Commit hash: 7ebd4e8
