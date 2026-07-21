@@ -1300,7 +1300,7 @@
         "sync_job uses parent.database_id",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "94dfe6f"
     }
   ]
 }
