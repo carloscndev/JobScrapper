@@ -99,6 +99,25 @@ class JobRepositoryTests(unittest.TestCase):
         self.assertEqual(duplicate.description, "Detailed description")
         self.assertEqual(duplicate.modality, "remote")
 
+    def test_upsert_sets_checked_at_when_incoming_is_none(self) -> None:
+        from datetime import datetime, timezone
+        from app.repositories import JobRepository
+
+        repo = JobRepository(self.session)
+        first = repo.upsert(self._job())
+        self.assertIsNotNone(first.checked_at)
+        second = repo.upsert(self._job(url="https://jobs.example/2", canonical_url="https://jobs.example/2"))
+        self.assertIsNotNone(second.checked_at)
+
+    def test_upsert_respects_explicit_checked_at(self) -> None:
+        from datetime import datetime, timezone
+        from app.repositories import JobRepository
+
+        explicit = datetime(2025, 1, 1, tzinfo=timezone.utc)
+        repo = JobRepository(self.session)
+        job = repo.upsert(self._job(checked_at=explicit, url="https://jobs.example/3", canonical_url="https://jobs.example/3"))
+        self.assertEqual(job.checked_at, explicit)
+
     def test_content_change_creates_one_previous_snapshot(self) -> None:
         from sqlalchemy import select
         from app.models import JobSnapshot
@@ -136,8 +155,8 @@ class JobRepositoryTests(unittest.TestCase):
         from app.repositories import JobRepository
 
         repo = JobRepository(self.session)
-        seen = repo.upsert(self._job(url="https://jobs.example/seen"))
-        missing = repo.upsert(self._job(url="https://jobs.example/missing", canonical_url="https://jobs.example/missing"))
+        seen = repo.upsert(self._job(url="https://jobs.example/seen", fingerprint="seen-fp"))
+        missing = repo.upsert(self._job(url="https://jobs.example/missing", fingerprint="miss-fp"))
         changed = repo.mark_missing(self.source.id, {"https://jobs.example/seen?utm_medium=email"})
         self.assertEqual(changed, 1)
         self.session.refresh(seen)

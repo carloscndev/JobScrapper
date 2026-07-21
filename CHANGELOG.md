@@ -19,6 +19,7 @@ All notable product changes will be documented here following Keep a Changelog a
 ### Fixed
 
 - Adapter lookup: source kinds `api`/`feed` now resolve to `JsonApiFeedAdapter` instead of producing "No adapter configured". Configurable `adapter` override is respected. (`API-006`)
+- Job upsert no longer crashes with `IntegrityError` when `checked_at` is not provided — defaults to current time. (`API-007`)
 
 ### Added
 

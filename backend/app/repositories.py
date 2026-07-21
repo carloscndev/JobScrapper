@@ -1,6 +1,7 @@
 """Persistence repositories with no dependency on FastAPI."""
 from __future__ import annotations
 from collections.abc import Sequence
+from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from .jobs import canonicalize_url, content_hash, fingerprint_job
@@ -71,7 +72,7 @@ class JobRepository:
         existing.metadata_json = {**(existing.metadata_json or {}), **(job.metadata_json or {})}
         if existing.source_id is None and job.source_id is not None:
             existing.source_id = job.source_id
-        existing.checked_at = job.checked_at
+        existing.checked_at = job.checked_at or datetime.now(timezone.utc)
         self.session.flush(); return existing
 
     def mark_missing(self, source_id: int, seen_canonical_urls: set[str]) -> int:

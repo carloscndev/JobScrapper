@@ -804,3 +804,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: none
 - Commit subject: fix(web): convert API objects to strings in profile fields
 - Commit hash: a68b9fa
+
+### API-007 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: upsert sets checked_at to current time when None; explicit checked_at respected; all tests pass; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/repositories.py`, `tests/backend/test_jobs.py`
+- Commands: 8/8 job tests (2 new), 37/37 harness+pipeline tests, compileall clean
+- Tester: PASS — 8/8 job tests, 37/37 suite tests
+- Reviewer: APPROVED — guard against None, tests cover both paths, scope clean
+- Rework: none
+- Changelog: fix IntegrityError on job upsert by guarding checked_at assignment
+- Risks: none
+- Commit subject: fix(api): guard checked_at assignment in job upsert
+- Commit hash: pending
