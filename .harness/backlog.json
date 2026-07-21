@@ -1160,7 +1160,7 @@
     {
       "id": "FRONTEND-009",
       "title": "Add Notion status badge to dashboard",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-008"
       ],
@@ -1176,12 +1176,12 @@
         "No credentials exposed to frontend",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "n/a"
     },
     {
       "id": "OPS-008",
       "title": "Pin dependency versions for reproducible builds",
-      "status": "coding",
+      "status": "committed",
       "depends_on": [],
       "commit": "chore(ops): pin dependency versions for reproducible builds",
       "allowed_paths": [
@@ -1196,7 +1196,7 @@
         "No loose version ranges in pinned output",
         "Build is reproducible"
       ],
-      "commit_hash": null
+      "commit_hash": "4426859"
     },
     {
       "id": "TEST-008",

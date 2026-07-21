@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "active": true,
-  "task_id": "TEST-012",
+  "task_id": "OPS-008",
   "state": "coding",
   "attempt": 1,
   "evidence": {},
   "rejections": [],
-  "commit": "22215bfbdd7f149f2c2a9316e5e48d758b50a6b5"
+  "commit": "3b041fee0a29e5233d4e217e1e8ab21e65066cba"
 }
