@@ -1181,7 +1181,7 @@
     {
       "id": "OPS-008",
       "title": "Pin dependency versions for reproducible builds",
-      "status": "pending",
+      "status": "coding",
       "depends_on": [],
       "commit": "chore(ops): pin dependency versions for reproducible builds",
       "allowed_paths": [
@@ -1264,7 +1264,7 @@
     {
       "id": "TEST-012",
       "title": "Add CORS middleware and tests",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "TEST-011"
       ],
@@ -1281,7 +1281,7 @@
         "OPTIONS request returns correct headers",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "74fb417"
     },
     {
       "id": "NOTION-004",
