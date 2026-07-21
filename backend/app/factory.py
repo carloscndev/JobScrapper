@@ -314,7 +314,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             refresh_lock.release()
 
     @app.post("/api/v1/profiles/upload", response_model=UploadResponse, status_code=status.HTTP_201_CREATED, tags=["profiles"])
-    def upload_profile(file: UploadFile = File(...)) -> dict[str, Any]:
+    def upload_profile(request: Request, file: UploadFile = File(...)) -> dict[str, Any]:
+        content_length = request.headers.get("content-length")
+        if content_length and int(content_length) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=422, detail={"error": {"code": "cv_validation_error", "message": "File too large", "fields": [{"field": "file", "message": "File exceeds maximum size of 10 MB", "type": "value_error"}]}})
         ext = Path(file.filename or "").suffix.lower()
         if not file.content_type or file.content_type.split(";", 1)[0].strip().lower() not in SUPPORTED_MIME_TYPES.get(ext, set()):
             raise HTTPException(status_code=422, detail={"error": {"code": "cv_validation_error", "message": f"Unsupported content type: {file.content_type}", "fields": [{"field": "file", "message": f"Unsupported content type: {file.content_type}", "type": "value_error"}]}})
