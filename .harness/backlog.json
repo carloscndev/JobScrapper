@@ -1116,7 +1116,7 @@
     {
       "id": "API-015",
       "title": "Add JobService.update_job method in services layer",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "API-014"
       ],
@@ -1133,7 +1133,7 @@
         "Partial updates supported",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "4ec73f9"
     },
     {
       "id": "API-016",
