@@ -32,6 +32,7 @@ from .process_lock import ProcessLock
 
 from .config import Settings
 from .observability import configure_logging
+from .cv_profile import SUPPORTED_MIME_TYPES
 from sqlalchemy.exc import IntegrityError
 
 
@@ -314,6 +315,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.post("/api/v1/profiles/upload", response_model=UploadResponse, status_code=status.HTTP_201_CREATED, tags=["profiles"])
     def upload_profile(file: UploadFile = File(...)) -> dict[str, Any]:
+        ext = Path(file.filename or "").suffix.lower()
+        if not file.content_type or file.content_type.split(";", 1)[0].strip().lower() not in SUPPORTED_MIME_TYPES.get(ext, set()):
+            raise HTTPException(status_code=422, detail={"error": {"code": "cv_validation_error", "message": f"Unsupported content type: {file.content_type}", "fields": [{"field": "file", "message": f"Unsupported content type: {file.content_type}", "type": "value_error"}]}})
         with session_factory() as db:
             try:
                 profile, parsed = ProfileService(ProfileRepository(db)).ingest_cv(file.file, file.filename or "", file.content_type)
