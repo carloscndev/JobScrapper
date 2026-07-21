@@ -1,26 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "API-005",
-  "state": "approved",
-  "attempt": 1,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "SourceRepository.delete + DELETE endpoint + client.ts deleteSource + delete button in UI",
-      "attempt": 1
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "139 tests pass (25 frontend + 114 backend/harness); 1 e2e skip (requires Vite preview server on :4173, unrelated)",
-      "attempt": 1
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "DELETE endpoint returns 204/404; repo.delete flushes; frontend confirm+delete+reload. APPROVED",
-      "attempt": 1
-    }
-  },
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
   "rejections": [],
-  "commit": null
+  "commit": "7ebd4e869cb58813b1b9dbf9a5dcdd616f3e8e34"
 }

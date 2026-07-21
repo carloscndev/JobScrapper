@@ -1112,7 +1112,7 @@
     {
       "id": "API-005",
       "title": "Add DELETE /api/v1/sources/{source_id} endpoint and delete button in UI",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "API-004",
         "FRONTEND-008"
@@ -1132,7 +1132,8 @@
         "Frontend shows a delete button per source with confirmation",
         "Deleted source disappears from the list without page reload",
         "All existing tests still pass"
-      ]
+      ],
+      "commit_hash": "7ebd4e8"
     }
   ]
 }
