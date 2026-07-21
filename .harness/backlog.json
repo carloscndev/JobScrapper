@@ -1049,7 +1049,7 @@
     {
       "id": "API-012",
       "title": "Migrate on_event startup to ASGI lifespan",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "API-011"
       ],
@@ -1066,7 +1066,7 @@
         "Base.metadata.create_all runs via lifespan",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "277fe04"
     },
     {
       "id": "API-013",
