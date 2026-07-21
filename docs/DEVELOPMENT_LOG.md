@@ -715,3 +715,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: runtime fallback test requires SQLAlchemy installation
 - Commit subject: test(match): cover scoring and local model fallback
 - Commit hash: 4cf7ff545a9b6b1615f9bba7f7cdbadd8fbc2da8
+
+### API-004 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: source creation via POST; enable/disable via PATCH; consistent error contract; existing GET endpoints unaffected; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/schemas.py`, `backend/app/repositories.py`, `tests/backend/test_api_operations.py`
+- Commands: 140 backend tests (61 skipped), 35 harness tests, 25 frontend tests; check-skills; py_compile; harness validate
+- Tester: PASS — 7 contract tests for API-004 (routes, payloads, service usage, repository method); all existing suites pass
+- Reviewer: APPROVED — requirements match, scope clean, security via _safe_source_config, no changes requested
+- Rework: none
+- Changelog: source registration and enable/disable endpoints added
+- Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
+- Commit subject: feat(api): add source registration and enable/disable endpoints
+- Commit hash: pending

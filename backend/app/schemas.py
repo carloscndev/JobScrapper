@@ -108,6 +108,23 @@ class JobDetailResponse(JobListItem):
     evaluation_history: list[JobEvaluationResponse] = Field(default_factory=list)
 
 
+class SourceCreatePayload(BaseModel):
+    name: str = Field(..., min_length=1, max_length=120)
+    kind: str = Field(default="career_page", pattern=r"^(api|feed|career_page)$")
+    base_url: str | None = Field(default=None, max_length=2048)
+    terms_url: str | None = Field(default=None, max_length=2048)
+    enabled: bool = True
+    config: dict[str, Any] = Field(default_factory=dict)
+    terms_accepted: bool = False
+
+
+class SourceUpdatePayload(BaseModel):
+    enabled: bool | None = None
+    name: str | None = Field(default=None, min_length=1, max_length=120)
+    base_url: str | None = Field(default=None, max_length=2048)
+    config: dict[str, Any] | None = None
+
+
 class PaginatedJobsResponse(BaseModel):
     items: list[JobListItem]
     total: int

@@ -16,13 +16,14 @@ from fastapi.responses import JSONResponse
 from .database import create_db_engine, create_session_factory
 from .models import Base, Evaluation, Job, Profile, PipelineExecution, Source, SourceRun
 from sqlalchemy import asc, desc, func, or_, select
-from .repositories import ProfileRepository, JobRepository
+from .repositories import ProfileRepository, JobRepository, SourceRepository
 from .schemas import (JobDetailResponse, JobEvaluationResponse, JobListItem, PaginatedJobsResponse,
-                      PreferencePayload, ProfileResponse, ProfileUpdatePayload, UploadResponse)
+                      PreferencePayload, ProfileResponse, ProfileUpdatePayload, SourceCreatePayload,
+                      SourceUpdatePayload, UploadResponse)
 from .services import ProfileService
 from .connectors import DEFAULT_ADAPTERS
 from .jobs import canonicalize_url, fingerprint_job
-from .sources import SourceConfig, SourceKind
+from .sources import SourceConfig, SourceKind, SourceService
 from .notion import NotionConfig
 from .process_lock import ProcessLock
 
@@ -164,6 +165,43 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 query = query.where(Source.enabled.is_(enabled))
             items = db.scalars(query).all()
             return {"items": [_safe_source_config(item) for item in items], "total": len(items)}
+
+    @app.post("/api/v1/sources", status_code=status.HTTP_201_CREATED, tags=["operations"])
+    @app.post("/api/v1/operations/sources", status_code=status.HTTP_201_CREATED, tags=["operations"])
+    def create_source(payload: SourceCreatePayload) -> dict[str, Any]:
+        with session_factory() as db:
+            config = SourceConfig(
+                name=payload.name,
+                kind=SourceKind(payload.kind),
+                base_url=payload.base_url,
+                terms_url=payload.terms_url,
+                enabled=payload.enabled,
+                terms_accepted=payload.terms_accepted,
+                settings=payload.config,
+            )
+            source = SourceService(SourceRepository(db)).configure(config)
+            db.commit()
+            return _safe_source_config(source)
+
+    @app.patch("/api/v1/sources/{source_id}", tags=["operations"])
+    @app.patch("/api/v1/operations/sources/{source_id}", tags=["operations"])
+    def update_source(source_id: int, payload: SourceUpdatePayload) -> dict[str, Any]:
+        with session_factory() as db:
+            source = SourceRepository(db).get_by_id(source_id)
+            if source is None:
+                raise HTTPException(status_code=404, detail={"error": {"code": "source_not_found", "message": f"Source {source_id} does not exist", "fields": []}})
+            if payload.enabled is not None:
+                source.enabled = payload.enabled
+            if payload.name is not None:
+                source.name = payload.name
+            if payload.base_url is not None:
+                source.base_url = payload.base_url
+            if payload.config is not None:
+                merged = {**(source.config or {}), **payload.config}
+                source.config = merged
+            db.commit()
+            db.refresh(source)
+            return _safe_source_config(source)
 
     @app.get("/api/v1/operations/executions", tags=["operations"])
     @app.get("/api/v1/executions", tags=["operations"])

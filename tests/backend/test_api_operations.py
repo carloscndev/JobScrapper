@@ -1,4 +1,4 @@
-"""Contract tests for API-003 operational endpoints.
+"""Contract tests for API-003/API-004 operational endpoints.
 
 The repository's lightweight test environment may not have the HTTP stack
 installed.  Static contract assertions therefore always run, while FastAPI
@@ -7,6 +7,7 @@ tests are explicitly skipped until the optional runtime dependencies exist.
 
 from __future__ import annotations
 
+import ast
 import importlib.util
 import sys
 import unittest
@@ -16,6 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 BACKEND = ROOT / "backend"
 FACTORY = BACKEND / "app" / "factory.py"
+REPOSITORIES = BACKEND / "app" / "repositories.py"
 
 
 def _import_backend(module_name: str):
@@ -31,14 +33,30 @@ class OperationsContractTests(unittest.TestCase):
 
     def test_operations_routes_and_tags_are_declared(self) -> None:
         expected = (
-            '"/api/v1/sources"', '"/api/v1/executions"',
-            '"/api/v1/executions/{run_id}"', '"/api/v1/metrics"',
-            '"/api/v1/operations/health"', '"/api/v1/health"',
-            '"/api/v1/operations/refresh"',
+            '"/api/v1/sources"', '"/api/v1/sources/{source_id}"',
+            '"/api/v1/executions"', '"/api/v1/executions/{run_id}"',
+            '"/api/v1/metrics"', '"/api/v1/operations/health"',
+            '"/api/v1/health"', '"/api/v1/operations/refresh"',
         )
         for path in expected:
             self.assertIn(path, self.source)
-        self.assertGreaterEqual(self.source.count('tags=["operations"]'), 7)
+        self.assertGreaterEqual(self.source.count('tags=["operations"]'), 9)
+
+    def test_source_create_and_update_payloads_have_required_fields(self) -> None:
+        for field in ('"name"', '"kind"', '"base_url"', '"enabled"'):
+            self.assertIn(field, self.source)
+        self.assertIn("SourceCreatePayload", self.source)
+        self.assertIn("SourceUpdatePayload", self.source)
+
+    def test_source_endpoints_use_source_service_and_repository(self) -> None:
+        self.assertIn("SourceService(SourceRepository(db)).configure(config)", self.source)
+        self.assertIn("SourceRepository(db).get_by_id(source_id)", self.source)
+        self.assertIn("source_not_found", self.source)
+
+    def test_source_repository_has_get_by_id_method(self) -> None:
+        source = REPOSITORIES.read_text()
+        self.assertIn("def get_by_id(self, source_id: int)", source)
+        self.assertIn("return self.session.get(Source, source_id)", source)
 
     def test_refresh_lock_returns_structured_conflict(self) -> None:
         self.assertIn("refresh_lock.acquire(blocking=False)", self.source)

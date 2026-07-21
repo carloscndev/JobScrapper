@@ -547,6 +547,18 @@ All notable product changes will be documented here following Keep a Changelog a
 - Commit subject: test(integration): cover source and Notion synchronization
 - Commit hash: 7b61bce5825108d29ae37fb8cbbb308b0abe6dd6
 
+### API-004 — Attempt 1
+
+- Added `POST /api/v1/sources` for source registration and `PATCH /api/v1/sources/{source_id}` for enable/disable/update, backed by `SourceService` and `SourceRepository.get_by_id`.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/schemas.py`, `backend/app/repositories.py`, `tests/backend/test_api_operations.py`
+- Commands: 140 backend tests (61 skipped), 35 harness tests, 25 frontend tests; check-skills; py_compile; harness validate
+- Tester: PASS — 7 contract tests, all existing suites pass
+- Reviewer: APPROVED — requirements match, scope clean, security verified
+- Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
+- Commit subject: feat(api): add source registration and enable/disable endpoints
+- Commit hash: pending
+
 ### TEST-002 — Attempt 1
 
 - Added tests for bounded/reproducible compatibility scores, Ollama retries and deterministic fallback when the local model is unavailable.
