@@ -13,7 +13,7 @@ from uuid import uuid4
 
 from sqlalchemy import Date, DateTime, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.dialects.sqlite import JSON
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, validates
 
 
 class Base(DeclarativeBase):
@@ -159,6 +159,12 @@ class PipelineExecution(TimestampMixin, Base):
     __tablename__ = "pipeline_executions"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     run_id: Mapped[str] = mapped_column(String(36), default=lambda: str(uuid4()), nullable=False, unique=True)
+
+    @validates("run_id")
+    def validate_run_id(self, key: str, value: str) -> str:
+        if self.id is not None:
+            raise ValueError("run_id is immutable after creation")
+        return value
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="running")
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
