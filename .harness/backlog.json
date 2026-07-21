@@ -1071,7 +1071,7 @@
     {
       "id": "API-013",
       "title": "Add content-type validation in upload endpoint",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [
         "API-012"
       ],
@@ -1089,7 +1089,7 @@
         "Valid content-type passes through",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "cca710a"
     },
     {
       "id": "API-014",
