@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 from typing import Any
 
 from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
@@ -64,6 +65,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         docs_url="/api/v1/docs",
         redoc_url="/api/v1/redoc",
         lifespan=_lifespan,
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173", "http://localhost:3000"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
     # File-backed lock coordinates API requests with scheduler/manual workers
     # running in other processes, not only requests in this server process.

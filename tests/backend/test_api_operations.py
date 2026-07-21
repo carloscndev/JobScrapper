@@ -145,5 +145,30 @@ class OperationsNotFoundHttpTests(unittest.TestCase):
         self.assertEqual(response.json()["error"]["code"], "execution_not_found")
 
 
+@unittest.skipUnless(HTTP_AVAILABLE, "FastAPI/SQLAlchemy dependencies are not installed")
+class CorsHttpTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.db_path = ROOT / ".tmp-api-cors-test.db"
+        self.db_path.unlink(missing_ok=True)
+        settings = Settings(database_url=f"sqlite:///{self.db_path}", environment="test")
+        self.client = TestClient(create_app(settings))
+        self.client.__enter__()
+
+    def tearDown(self) -> None:
+        self.client.__exit__(None, None, None)
+        self.client.close()
+        self.db_path.unlink(missing_ok=True)
+
+    def test_cors_headers_on_options_request(self) -> None:
+        response = self.client.options("/api/v1/health", headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "GET"})
+        self.assertIn("access-control-allow-origin", response.headers)
+        self.assertEqual(response.headers["access-control-allow-origin"], "http://localhost:5173")
+
+    def test_cors_headers_on_get_request(self) -> None:
+        response = self.client.get("/api/v1/health", headers={"Origin": "http://localhost:5173"})
+        self.assertIn("access-control-allow-origin", response.headers)
+        self.assertEqual(response.headers["access-control-allow-origin"], "http://localhost:5173")
+
+
 if __name__ == "__main__":
     unittest.main()
