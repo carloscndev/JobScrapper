@@ -1201,7 +1201,7 @@
     {
       "id": "TEST-008",
       "title": "Add 404 envelope tests for all missing resource endpoints",
-      "status": "pending",
+      "status": "committed",
       "depends_on": [],
       "commit": "test(api): add 404 envelope tests for all missing resources",
       "allowed_paths": [
@@ -1216,12 +1216,12 @@
         "Each returns correct error code",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "59f82dc"
     },
     {
       "id": "TEST-009",
       "title": "Add test for empty source name rejection",
-      "status": "pending",
+      "status": "coding",
       "depends_on": [
         "TEST-008"
       ],
