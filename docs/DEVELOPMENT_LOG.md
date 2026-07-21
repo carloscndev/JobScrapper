@@ -833,4 +833,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: catch CVParserUnavailable as 422 in profile upload
 - Risks: none
 - Commit subject: fix(api): catch CVParserUnavailable as 422 in upload
-- Commit hash: pending
+- Commit hash: 19636bd

@@ -1186,7 +1186,7 @@
     {
       "id": "API-008",
       "title": "Catch CVParserUnavailable → 422 in upload endpoint",
-      "status": "coding",
+      "status": "committed",
       "depends_on": [
         "API-007"
       ],
@@ -1203,7 +1203,7 @@
         "ValueError still returns 422",
         "All existing tests still pass"
       ],
-      "commit_hash": null
+      "commit_hash": "19636bd"
     }
   ]
 }

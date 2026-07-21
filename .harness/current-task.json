@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "API-008",
-  "state": "testing",
+  "active": false,
+  "task_id": null,
+  "state": "committed",
   "attempt": 1,
-  "evidence": {},
+  "evidence": {"tester": "PASS: 9/9 profile API tests (1 new); TestClient lifespan fix unblocks 2 pre-existing tests", "reviewer": "APPROVED"},
   "rejections": [],
-  "commit": "7a379355f45e36dd0190046b710a4c5d1c7b70ae"
+  "commit": "19636bdbb5bddae7a68c807f2ed2c61da02abfed"
 }
