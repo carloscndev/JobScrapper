@@ -613,4 +613,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — implementation matches existing patterns, scope clean
 - Risks: requires running API server for full runtime profile and upload interaction
 - Commit subject: feat(web): connect profile UI to live API
-- Commit hash: 8d7aab1
+- Commit hash: 11cd080

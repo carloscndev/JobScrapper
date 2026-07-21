@@ -758,4 +758,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: connect profile section to live API endpoints
 - Risks: requires running API server for full runtime profile interaction; CV upload requires working backend file endpoint
 - Commit subject: feat(web): connect profile UI to live API
-- Commit hash: 8d7aab1
+- Commit hash: 11cd080

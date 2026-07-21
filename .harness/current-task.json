@@ -1,25 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "FRONTEND-007",
-  "state": "approved",
-  "attempt": 1,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "client.ts: profile types + methods; App.tsx: wired profile API, CV upload, save async, error/saving states",
-      "attempt": 1
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "25 frontend tests pass, 79 backend tests pass, 35 harness tests pass",
-      "attempt": 1
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "Código consistente con interfaces existentes, patrones seguidos, todos los tests pasan. APPROVED.",
-      "attempt": 1
-    }
-  },
-  "rejections": []
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
+  "rejections": [],
+  "commit": "11cd080c73cabf9e25173f5bc86b4eb3564e5a75"
 }

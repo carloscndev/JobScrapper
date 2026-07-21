@@ -1067,7 +1067,7 @@
     {
       "id": "FRONTEND-007",
       "title": "Connect profile section to API endpoints",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-006",
         "API-001"
@@ -1085,7 +1085,8 @@
         "CV upload calls POST /api/v1/profiles/upload",
         "Profile version is shown dynamically from API response",
         "All existing frontend tests still pass"
-      ]
+      ],
+      "commit_hash": "11cd080"
     }
   ]
 }
