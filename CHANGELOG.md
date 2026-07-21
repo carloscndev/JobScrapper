@@ -20,6 +20,7 @@ All notable product changes will be documented here following Keep a Changelog a
 
 - Adapter lookup: source kinds `api`/`feed` now resolve to `JsonApiFeedAdapter` instead of producing "No adapter configured". Configurable `adapter` override is respected. (`API-006`)
 - Job upsert no longer crashes with `IntegrityError` when `checked_at` is not provided — defaults to current time. (`API-007`)
+- Profile upload returns 422 with `cv_validation_error` code when the CV parser is unavailable, instead of a 500 error. (`API-008`)
 
 ### Added
 

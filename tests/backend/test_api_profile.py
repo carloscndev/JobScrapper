@@ -84,8 +84,10 @@ class ProfileApiHttpTests(unittest.TestCase):
             self.db_path.unlink()
         settings = Settings(database_url=f"sqlite:///{self.db_path}", environment="test")
         self.client = TestClient(create_app(settings))
+        self.client.__enter__()
 
     def tearDown(self) -> None:
+        self.client.__exit__(None, None, None)
         self.client.close()
         if self.db_path.exists():
             self.db_path.unlink()
@@ -117,6 +119,19 @@ class ProfileApiHttpTests(unittest.TestCase):
         body = response.json()["error"]
         self.assertEqual(body["code"], "cv_validation_error")
         self.assertEqual(body["fields"][0]["field"], "file")
+
+    def test_upload_returns_422_when_parser_unavailable(self) -> None:
+        from unittest.mock import patch
+        from app.cv_profile import CVParserUnavailable
+
+        with patch("app.factory.ProfileService.ingest_cv", side_effect=CVParserUnavailable("no parser")):
+            response = self.client.post(
+                "/api/v1/profiles/upload",
+                files={"file": ("resume.pdf", b"%PDF-1.4 junk", "application/pdf")},
+            )
+        self.assertEqual(response.status_code, 422)
+        body = response.json()["error"]
+        self.assertEqual(body["code"], "cv_validation_error")
 
     def test_invalid_preference_payload_uses_validation_envelope(self) -> None:
         response = self.client.put(

@@ -819,3 +819,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: none
 - Commit subject: fix(api): guard checked_at assignment in job upsert
 - Commit hash: 122d900
+
+### API-008 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: CVParserUnavailable returns 422 with cv_validation_error code, not 500; ValueError still returns 422; all existing tests pass; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `tests/backend/test_api_profile.py`
+- Commands: 9/9 profile API tests pass; compileall clean
+- Tester: PASS — 9/9 profile API tests (1 new), all pre-existing tests pass after TestClient lifespan fix
+- Reviewer: APPROVED — catch pattern covers ValueError and RuntimeError, test verifies 422 path, scope clean
+- Rework: none
+- Changelog: catch CVParserUnavailable as 422 in profile upload
+- Risks: none
+- Commit subject: fix(api): catch CVParserUnavailable as 422 in upload
+- Commit hash: pending

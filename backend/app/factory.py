@@ -315,7 +315,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 result = profile_payload(profile)
                 result["parsed_text_length"] = len(parsed.text)
                 return result
-            except ValueError as exc:
+            except (ValueError, RuntimeError) as exc:
                 db.rollback()
                 raise HTTPException(status_code=422, detail={"error": {"code": "cv_validation_error", "message": str(exc), "fields": [{"field": "file", "message": str(exc), "type": "value_error"}]}}) from exc
 

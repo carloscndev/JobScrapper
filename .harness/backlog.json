@@ -1182,6 +1182,28 @@
         "All existing tests still pass"
       ],
       "commit_hash": "122d900"
+    },
+    {
+      "id": "API-008",
+      "title": "Catch CVParserUnavailable → 422 in upload endpoint",
+      "status": "coding",
+      "depends_on": [
+        "API-007"
+      ],
+      "commit": "fix(api): catch CVParserUnavailable as 422 in upload",
+      "allowed_paths": [
+        "backend/**",
+        ".harness/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "CVParserUnavailable returns 422 with cv_validation_error code, not 500",
+        "ValueError still returns 422",
+        "All existing tests still pass"
+      ],
+      "commit_hash": null
     }
   ]
 }
