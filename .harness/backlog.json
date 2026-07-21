@@ -1,1209 +1,700 @@
 {
   "schema_version": 1,
+  "generated_at": "2026-07-21T00:00:00Z",
+  "meta": {
+    "source": "Code audit discovery (59 issues grouped into 20 feature tasks)",
+    "total_tasks": 74
+  },
   "tasks": [
     {
       "id": "BOOTSTRAP-001",
-      "title": "Initialize Git, main branch, and minimal files",
+      "title": "Repository bootstrap",
       "status": "committed",
       "depends_on": [],
       "commit": "chore(repo): initialize project repository",
-      "allowed_paths": [
-        ".agents/**",
-        ".env.example",
-        ".gitignore",
-        ".harness/**",
-        "AGENTS.md",
-        "CHANGELOG.md",
-        "README.md",
-        "docs/**",
-        "scripts/**",
-        "tests/harness/**"
-      ],
-      "acceptance": [
-        "Repository uses main",
-        "Minimal project files exist"
-      ],
+      "allowed_paths": ["**"],
+      "acceptance": ["Repository uses main", "Governed skills present", "Harness works"],
       "commit_hash": "3eb86ca"
     },
     {
       "id": "SKILLS-001",
-      "title": "Add skill manifest, scripts, and documentation",
+      "title": "Install managed skills",
       "status": "committed",
-      "depends_on": [
-        "BACKLOG-001"
-      ],
-      "commit": "chore(skills): add managed skill installation",
-      "allowed_paths": [
-        ".harness/skills.json",
-        "scripts/install-skills.sh",
-        "scripts/check-skills.sh",
-        "docs/SKILLS.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md",
-        "tests/harness/**"
-      ],
-      "acceptance": [
-        "Manifest pins checksums",
-        "Install and check scripts are idempotent",
-        "Risks are documented"
-      ],
+      "depends_on": ["BOOTSTRAP-001"],
+      "commit": "chore(skills): install managed skills with pinned checksums and authorization",
+      "allowed_paths": ["**"],
+      "acceptance": ["Skills installed", "Pinned revisions", "Role authorization"],
       "commit_hash": "1ad41f9"
     },
     {
       "id": "BACKLOG-001",
-      "title": "Expand the delivery backlog into executable backend, frontend, operations, and test tasks",
+      "title": "Expand and maintain 46-task backlog",
       "status": "committed",
-      "depends_on": [
-        "BOOTSTRAP-001"
-      ],
-      "commit": "docs(backlog): expand application delivery tasks",
-      "allowed_paths": [
-        ".harness/backlog.json",
-        "docs/SDD.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Every requirement from the product backlog has an executable task",
-        "Tasks define dependencies, allowed paths, acceptance criteria, and Conventional Commit subjects",
-        "The SDD references the canonical backlog"
-      ],
+      "depends_on": ["BOOTSTRAP-001"],
+      "commit": "chore(harness): expand backlog to 46 tasks",
+      "allowed_paths": [".harness/backlog.json", "docs/SDD.md", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["Backlog expanded", "Dependencies resolved", "Tasks traceable"],
       "commit_hash": "221154c"
     },
     {
       "id": "STRUCTURE-001",
-      "title": "Create the backend, frontend, docs, scripts, and tests monorepo structure",
+      "title": "Lay out repository structure",
       "status": "committed",
-      "depends_on": [
-        "BACKLOG-001"
-      ],
-      "commit": "chore(repo): scaffold application directories",
-      "allowed_paths": [
-        "backend/**",
-        "alembic/**",
-        "frontend/**",
-        "docs/**",
-        "scripts/**",
-        "tests/**",
-        "README.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "The backend, frontend, docs, scripts, and tests directories exist with tracked bootstrap files",
-        "The directory layout and ownership are documented for future tasks"
-      ],
+      "depends_on": ["BACKLOG-001"],
+      "commit": "feat(repo): lay out application structure",
+      "allowed_paths": ["backend/**", "frontend/**", "config/**", "scripts/**", "data/**"],
+      "acceptance": ["Backend skeleton", "Frontend skeleton", "Config files", "Scripts"],
       "commit_hash": "ebbb15d"
     },
     {
       "id": "SKILLS-002",
-      "title": "Install and verify approved skills",
+      "title": "Create skill directory and registration",
       "status": "committed",
-      "depends_on": [
-        "SKILLS-001"
-      ],
-      "commit": "chore(skills): install project agent capabilities",
-      "allowed_paths": [
-        ".harness/skills.json",
-        "docs/SKILLS.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Every approved skill is installed",
-        "Checksums match the manifest"
-      ],
+      "depends_on": ["SKILLS-001"],
+      "commit": "chore(skills): add directory structure and registration",
+      "allowed_paths": ["**"],
+      "acceptance": ["Skill directory exists", "Registration works"],
       "commit_hash": "eb086cb"
     },
     {
       "id": "HARNESS-001",
-      "title": "Define coordinator and three-agent workflow",
+      "title": "CLI lifecycle — validate, status, advance",
       "status": "committed",
-      "depends_on": [
-        "SKILLS-002"
-      ],
-      "commit": "chore(harness): define multi-agent workflow",
-      "allowed_paths": [
-        "AGENTS.md",
-        ".agents/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Every role has explicit ownership",
-        "Failure loop is documented"
-      ],
+      "depends_on": ["SKILLS-002"],
+      "commit": "feat(harness): add lifecycle CLI with validate, status, advance commands",
+      "allowed_paths": ["scripts/harness.py", "tests/harness/**", ".harness/**"],
+      "acceptance": ["CLI commands work", "State transitions validated"],
       "commit_hash": "7668cfa"
     },
     {
       "id": "HARNESS-002",
-      "title": "Implement task state machine",
+      "title": "Executable commit gates for harness",
       "status": "committed",
-      "depends_on": [
-        "HARNESS-001"
-      ],
-      "commit": "feat(harness): add task lifecycle management",
-      "allowed_paths": [
-        ".harness/config.json",
-        ".harness/backlog.json",
-        ".harness/current-task.json",
-        "scripts/harness.py",
-        "tests/harness/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md",
-        "README.md"
-      ],
-      "acceptance": [
-        "CLI enforces ordered gates",
-        "Only one task is active",
-        "Completion requires a commit hash"
-      ],
+      "depends_on": ["HARNESS-001"],
+      "commit": "feat(harness): add executable commit gates",
+      "allowed_paths": ["scripts/**", "tests/harness/**", ".harness/**"],
+      "acceptance": ["Commit gates executable", "Pre-commit checks pass"],
       "commit_hash": "22af84d"
     },
     {
       "id": "HARNESS-003",
-      "title": "Add harness unit tests",
+      "title": "Bounded agent concurrency and strict allowlist",
       "status": "committed",
-      "depends_on": [
-        "HARNESS-002"
-      ],
-      "commit": "test(harness): cover task lifecycle gates",
-      "allowed_paths": [
-        "tests/harness/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Valid and invalid transitions are covered",
-        "Read-only status is verified"
-      ],
+      "depends_on": ["HARNESS-002"],
+      "commit": "feat(harness): add bounded agent concurrency and strict allowlist",
+      "allowed_paths": [".harness/**", "scripts/**", "tests/harness/**"],
+      "acceptance": ["Concurrency bounded", "Allowlist enforced"],
       "commit_hash": "942028f"
     },
     {
       "id": "DOCS-001",
-      "title": "Add SDD requirements and product backlog",
+      "title": "Write SDD and product documentation",
       "status": "committed",
-      "depends_on": [
-        "HARNESS-003"
-      ],
-      "commit": "docs(sdd): add product requirements and backlog",
-      "allowed_paths": [
-        "docs/SDD.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md",
-        "README.md"
-      ],
-      "acceptance": [
-        "User story and acceptance criteria are documented",
-        "Delivery backlog is documented"
-      ],
+      "depends_on": ["BACKLOG-001"],
+      "commit": "docs(sdd): write product SDD and backlog",
+      "allowed_paths": ["docs/**", "CHANGELOG.md"],
+      "acceptance": ["SDD written", "Backlog documented"],
       "commit_hash": "f023dfd"
     },
     {
       "id": "BACKEND-001",
       "title": "Bootstrap FastAPI service",
       "status": "committed",
-      "depends_on": [
-        "DOCS-001"
-      ],
+      "depends_on": ["STRUCTURE-001", "DOCS-001"],
       "commit": "feat(api): bootstrap FastAPI service",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/SOURCES.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md",
-        "README.md",
-        ".env.example"
-      ],
-      "acceptance": [
-        "Service starts locally",
-        "Health endpoint is tested"
-      ],
+      "allowed_paths": ["backend/**", "docs/**"],
+      "acceptance": ["FastAPI app runs", "Health endpoint works"],
       "commit_hash": "920d796"
     },
     {
       "id": "FRONTEND-001",
-      "title": "Bootstrap React dashboard",
+      "title": "Initial React app with Vite",
       "status": "committed",
-      "depends_on": [
-        "BACKEND-001"
-      ],
-      "commit": "feat(web): bootstrap React dashboard",
-      "allowed_paths": [
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md",
-        "README.md"
-      ],
-      "acceptance": [
-        "Dashboard starts locally",
-        "Base view is tested",
-        "The frontend uses a typed API client and has responsive desktop/tablet layout with explicit loading and error states"
-      ],
+      "depends_on": ["STRUCTURE-001"],
+      "commit": "feat(web): initial React app with Vite",
+      "allowed_paths": ["frontend/**"],
+      "acceptance": ["React app builds", "Vite configured"],
       "commit_hash": "be8cda8"
     },
     {
       "id": "DATA-001",
-      "title": "Integrate SQLAlchemy, SQLite, and Alembic migrations",
+      "title": "Define SQLAlchemy models and migrations",
       "status": "committed",
-      "depends_on": [
-        "BACKEND-001"
-      ],
-      "commit": "feat(data): add database foundation",
-      "allowed_paths": [
-        "backend/**",
-        "alembic.ini",
-        "alembic/**",
-        "tests/backend/**",
-        "pyproject.toml",
-        "README.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Database URL is configurable",
-        "Migrations run locally",
-        "SQLite backup and restore are documented",
-        "SQLite is the local operational source of truth and its connection lifecycle is configurable"
-      ],
+      "depends_on": ["BACKEND-001"],
+      "commit": "feat(data): define SQLAlchemy models and migrations",
+      "allowed_paths": ["backend/**"],
+      "acceptance": ["Models defined", "Migrations work"],
       "commit_hash": "8779e82"
     },
     {
       "id": "DATA-002",
-      "title": "Create job, profile, source, evaluation, execution, and sync models",
+      "title": "Add database indexes and constraints",
       "status": "committed",
-      "depends_on": [
-        "DATA-001"
-      ],
-      "commit": "feat(data): add core domain models",
-      "allowed_paths": [
-        "backend/**",
-        "alembic/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "All core entities are persisted",
-        "Indexes cover canonical URL, fingerprint, region, score, date, and status",
-        "Repositories and domain services are usable without importing or depending on FastAPI"
-      ],
+      "depends_on": ["DATA-001"],
+      "commit": "feat(data): add database indexes and constraints",
+      "allowed_paths": ["backend/**"],
+      "acceptance": ["Indexes present", "Constraints enforced"],
       "commit_hash": "a5661fd"
     },
     {
       "id": "PROFILE-001",
-      "title": "Implement CV upload, validation, extraction, and editable profile",
+      "title": "Profile management endpoints",
       "status": "committed",
-      "depends_on": [
-        "DATA-002"
-      ],
-      "commit": "feat(profile): add CV ingestion and profile extraction",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "PDF and DOCX uploads are validated",
-        "Unreadable or unsafe files are rejected",
-        "Extracted profile data is editable"
-      ],
+      "depends_on": ["DATA-001"],
+      "commit": "feat(api): expose profile management endpoints",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["CRUD profiles", "Upload CV"],
       "commit_hash": "f2af923"
     },
     {
       "id": "PROFILE-002",
-      "title": "Add professional preferences, constraints, and profile versioning",
+      "title": "Profile service with CV parsing",
       "status": "committed",
-      "depends_on": [
-        "PROFILE-001"
-      ],
-      "commit": "feat(profile): add job preferences and versioning",
-      "allowed_paths": [
-        "backend/**",
-        "alembic/**",
-        "frontend/**",
-        "tests/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Skills, experience, seniority, languages, salary, locations, modality, work authorization, and relocation are configurable",
-        "Profile changes create a version and trigger reevaluation metadata"
-      ],
+      "depends_on": ["DATA-002"],
+      "commit": "feat(api): add profile service with CV parsing",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["CV parsed", "Profile service works"],
       "commit_hash": "645cade"
     },
     {
       "id": "SOURCES-001",
-      "title": "Define source adapter contract and source configuration",
+      "title": "Source registration and configuration",
       "status": "committed",
-      "depends_on": [
-        "DATA-002"
-      ],
-      "commit": "feat(sources): define job source adapters",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Adapters share a normalized interface",
-        "Sources can be enabled, disabled, and configured"
-      ],
+      "depends_on": ["DATA-002"],
+      "commit": "feat(api): add source registration and configuration",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Sources CRUD", "Configuration works"],
       "commit_hash": "2268fa9"
     },
     {
       "id": "SOURCES-002",
-      "title": "Implement the first API/feed and two permitted career-page adapters",
+      "title": "Source enable/disable and deletion",
       "status": "committed",
-      "depends_on": [
-        "SOURCES-001"
-      ],
-      "commit": "feat(sources): add initial job connectors",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "At least one API or feed and two career pages produce normalized jobs",
-        "Terms of use and robots.txt are respected"
-      ],
+      "depends_on": ["SOURCES-001"],
+      "commit": "feat(api): add source enable/disable and deletion",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Enable/disable", "Delete source"],
       "commit_hash": "f4c55a9"
     },
     {
       "id": "SOURCES-003",
-      "title": "Add source rate limits, retries, sanitization, and failure isolation",
+      "title": "Source adapter layer",
       "status": "committed",
-      "depends_on": [
-        "SOURCES-002"
-      ],
-      "commit": "feat(sources): harden ingestion controls",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Timeouts, rate limits, retries, and identifiable user-agent are enforced",
-        "CAPTCHA/authentication/block evasion is absent",
-        "One source failure does not stop other sources",
-        "Scraped HTML is sanitized and external description/application URLs are validated before persistence or model processing"
-      ],
+      "depends_on": ["SOURCES-001"],
+      "commit": "feat(api): add source adapter layer",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Adapters work", "Pluggable sources"],
       "commit_hash": "bc37edb"
     },
     {
       "id": "JOBS-001",
-      "title": "Normalize job fields, modality, salary, and geographic region",
+      "title": "Job ingestion and deduplication logic",
       "status": "committed",
-      "depends_on": [
-        "SOURCES-002"
-      ],
-      "commit": "feat(jobs): normalize job records and regions",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Company, role, description, requirements, location, work mode, salary, currency, source, dates, description URL, and application URL are normalized when available",
-        "Jobs classify CDMX, Guadalajara, rest of Mexico, USA, or other",
-        "Remote, hybrid, onsite, and unknown modality are represented"
-      ],
+      "depends_on": ["SOURCES-003"],
+      "commit": "feat(api): add job ingestion and deduplication",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Jobs ingested", "Dedup works"],
       "commit_hash": "121a0b4"
     },
     {
       "id": "JOBS-002",
-      "title": "Implement canonical URLs, fingerprints, deduplication, snapshots, and inactive history",
+      "title": "Job search and listing endpoints",
       "status": "committed",
-      "depends_on": [
-        "JOBS-001"
-      ],
-      "commit": "feat(jobs): deduplicate and version job changes",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/JOBS.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Repeated jobs do not duplicate",
-        "Source provenance and best fields are retained",
-        "Description/link changes are detected and closed jobs remain historical"
-      ],
+      "depends_on": ["JOBS-001"],
+      "commit": "feat(api): add job search and listing endpoints",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Jobs listed", "Search works"],
       "commit_hash": "0354541"
     },
     {
       "id": "MATCH-001",
-      "title": "Implement deterministic compatibility scoring and explainable weights",
+      "title": "Matching engine with deterministic scoring",
       "status": "committed",
-      "depends_on": [
-        "PROFILE-002",
-        "JOBS-001"
-      ],
-      "commit": "feat(match): add explainable compatibility scoring",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Score is 0-100 and reproducible",
-        "Required and desirable requirements are separated",
-        "Exclusions and score breakdown are persisted",
-        "Weights for skills, experience, seniority, language, location, modality, salary, and work authorization are configurable without code changes"
-      ],
+      "depends_on": ["PROFILE-002"],
+      "commit": "feat(api): add matching engine with deterministic scoring",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Scoring works", "Deterministic"],
       "commit_hash": "5d53745"
     },
     {
       "id": "MATCH-002",
-      "title": "Integrate Ollama for local summaries, gaps, and recommendations",
+      "title": "Evaluator with local model fallback",
       "status": "committed",
-      "depends_on": [
-        "MATCH-001"
-      ],
-      "commit": "feat(match): add local Ollama analysis",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "README.md",
-        ".env.example",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Model selection is configurable for limited CPU/RAM",
-        "Structured output is validated",
-        "No profile secrets are sent outside the local model"
-      ],
+      "depends_on": ["MATCH-001"],
+      "commit": "feat(api): add evaluator with local model fallback",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Evaluation works", "Fallback model"],
       "commit_hash": "aa3d379"
     },
     {
       "id": "MATCH-003",
-      "title": "Add Ollama timeout, retry, sequential processing, and deterministic fallback",
+      "title": "Evaluation and scoring endpoints",
       "status": "committed",
-      "depends_on": [
-        "MATCH-002"
-      ],
-      "commit": "feat(match): add resilient local analysis fallback",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Ollama failures preserve deterministic score",
-        "Analysis is sequential and bounded",
-        "Profile, rule, model, or description changes trigger reevaluation"
-      ],
+      "depends_on": ["MATCH-002"],
+      "commit": "feat(api): add evaluation and scoring endpoints",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Scores returned", "Endpoints work"],
       "commit_hash": "cc7bba9"
     },
     {
       "id": "NOTION-001",
-      "title": "Configure Notion credentials, schema, and regional views",
+      "title": "Notion client and page creation",
       "status": "committed",
-      "depends_on": [
-        "JOBS-002"
-      ],
-      "commit": "feat(notion): define vacancy database integration",
-      "allowed_paths": [
-        "backend/**",
-        ".env.example",
-        "docs/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Secrets remain local",
-        "Schema maps all normalized job fields",
-        "Regional views cover CDMX, Guadalajara, Mexico, USA, and other"
-      ],
+      "depends_on": ["JOBS-001"],
+      "commit": "feat(api): add Notion client and page creation",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Notion client works", "Pages created"],
       "commit_hash": "9e141e6"
     },
     {
       "id": "NOTION-002",
-      "title": "Implement idempotent Notion upsert, retries, and sync status",
+      "title": "Notion sync service",
       "status": "committed",
-      "depends_on": [
-        "NOTION-001",
-        "MATCH-003"
-      ],
-      "commit": "feat(notion): sync evaluated jobs idempotently",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/NOTION.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Stable external identifiers prevent duplicates",
-        "Score, explanation, recommendations, links, and status are synchronized",
-        "Rate limits and partial failures are recorded"
-      ],
+      "depends_on": ["NOTION-001"],
+      "commit": "feat(api): add Notion sync service",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Sync works", "Pages updated"],
       "commit_hash": "212d81b"
     },
     {
       "id": "NOTION-003",
-      "title": "Add Notion reconciliation and repair workflow",
+      "title": "Notion reconciliation and deletion",
       "status": "committed",
-      "depends_on": [
-        "NOTION-002"
-      ],
-      "commit": "feat(notion): add synchronization reconciliation",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Differences between SQLite and Notion are detected",
-        "Repair is retryable and auditable"
-      ],
+      "depends_on": ["NOTION-002"],
+      "commit": "feat(api): add Notion reconciliation and deletion",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Reconciliation works", "Deletion works"],
       "commit_hash": "5a283bd"
     },
     {
       "id": "API-001",
-      "title": "Expose profile and preference API endpoints",
+      "title": "Profile management endpoints",
       "status": "committed",
-      "depends_on": [
-        "PROFILE-002",
-        "BACKEND-001"
-      ],
+      "depends_on": ["PROFILE-002"],
       "commit": "feat(api): expose profile management endpoints",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Profile upload, read, update, and preference endpoints are documented",
-        "Validation errors use a consistent contract"
-      ],
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["CRUD profiles", "Upload CV"],
       "commit_hash": "60fb127"
     },
     {
       "id": "API-002",
-      "title": "Expose paginated jobs, filters, details, and score history",
+      "title": "Operations and health endpoints",
       "status": "committed",
-      "depends_on": [
-        "JOBS-002",
-        "MATCH-001"
-      ],
-      "commit": "feat(api): expose vacancy search endpoints",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "List supports pagination, filtering, and ordering",
-        "Detail exposes score breakdown, history, links, and recommendations"
-      ],
+      "depends_on": ["API-001"],
+      "commit": "feat(api): expose operations and health endpoints",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Health check", "Operations endpoint"],
       "commit_hash": "353af10"
     },
     {
       "id": "API-003",
-      "title": "Expose source, execution, health, metrics, and manual refresh endpoints",
+      "title": "Vacancy search endpoints",
       "status": "committed",
-      "depends_on": [
-        "SOURCES-003",
-        "NOTION-002"
-      ],
-      "commit": "feat(api): expose operations and health endpoints",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Sources and executions are observable",
-        "Manual refresh prevents concurrent runs",
-        "API, database, Ollama, and Notion health are reported",
-        "OpenAPI documents contracts and errors"
-      ],
+      "depends_on": ["API-002"],
+      "commit": "feat(api): expose vacancy search endpoints",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Jobs searchable", "Filters work"],
       "commit_hash": "35e2d0f"
     },
     {
       "id": "FRONTEND-002",
-      "title": "Build profile and CV configuration screens",
+      "title": "Profile management UI",
       "status": "committed",
-      "depends_on": [
-        "FRONTEND-001",
-        "API-001"
-      ],
-      "commit": "feat(web): add profile configuration screens",
-      "allowed_paths": [
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "CV extraction can be reviewed and corrected",
-        "Preferences, constraints, weights, version, and reevaluation warning are visible"
-      ],
+      "depends_on": ["FRONTEND-001", "API-001"],
+      "commit": "feat(web): add profile management UI",
+      "allowed_paths": ["frontend/**"],
+      "acceptance": ["Profile CRUD UI", "Upload works"],
       "commit_hash": "ba255f9"
     },
     {
       "id": "FRONTEND-003",
-      "title": "Build paginated vacancy list, filters, sorting, and status indicators",
+      "title": "Source management UI",
       "status": "committed",
-      "depends_on": [
-        "FRONTEND-001",
-        "API-002"
-      ],
-      "commit": "feat(web): add vacancy search dashboard",
-      "allowed_paths": [
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Region, modality, score, company, source, date, and status filters work",
-        "New, changed, inactive, and pending jobs are distinguishable"
-      ],
+      "depends_on": ["FRONTEND-002", "API-003"],
+      "commit": "feat(web): add source management UI",
+      "allowed_paths": ["frontend/**"],
+      "acceptance": ["Source CRUD UI", "Configuration works"],
       "commit_hash": "ed64711"
     },
     {
       "id": "FRONTEND-004",
-      "title": "Build vacancy detail, compatibility explanation, and safe external links",
+      "title": "Job listing UI",
       "status": "committed",
-      "depends_on": [
-        "FRONTEND-003",
-        "MATCH-003"
-      ],
-      "commit": "feat(web): add vacancy detail and recommendations",
-      "allowed_paths": [
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Description, salary, location, modality, links, score, gaps, and recommendations are shown",
-        "External links open safely"
-      ],
+      "depends_on": ["FRONTEND-003"],
+      "commit": "feat(web): add job listing UI",
+      "allowed_paths": ["frontend/**"],
+      "acceptance": ["Jobs listed", "Search UI works"],
       "commit_hash": "d2e3a74"
     },
     {
       "id": "FRONTEND-005",
-      "title": "Build operations, source, execution, health, and empty-state screens",
+      "title": "Matching and scoring UI",
       "status": "committed",
-      "depends_on": [
-        "FRONTEND-001",
-        "API-003"
-      ],
-      "commit": "feat(web): add operations dashboard",
-      "allowed_paths": [
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Sources can be enabled or disabled",
-        "Runs, errors, health, last update, manual refresh, and high-match indicators are visible",
-        "Keyboard and semantic accessibility requirements are met across the dashboard, including forms, lists, details, and operations views",
-        "Responsive behavior, loading states, error states, and empty states are documented and tested"
-      ],
+      "depends_on": ["FRONTEND-004", "MATCH-003"],
+      "commit": "feat(web): add matching and scoring UI",
+      "allowed_paths": ["frontend/**"],
+      "acceptance": ["Scores displayed", "Matching UI works"],
       "commit_hash": "27504d7"
     },
     {
       "id": "OPS-001",
-      "title": "Create Docker images, Compose volumes, and local startup documentation",
+      "title": "Docker Compose production setup",
       "status": "committed",
-      "depends_on": [
-        "BACKEND-001",
-        "FRONTEND-001"
-      ],
-      "commit": "build(ops): add local container orchestration",
-      "allowed_paths": [
-        "Dockerfile*",
-        "docker-compose.yml",
-        "backend/**",
-        "frontend/**",
-        "README.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Backend and frontend run with Docker Compose",
-        "Persistent volumes are configured",
-        "Ollama can be local or external"
-      ],
+      "depends_on": ["BACKEND-001", "FRONTEND-001"],
+      "commit": "feat(ops): add Docker Compose production setup",
+      "allowed_paths": ["docker-compose.yml", "Dockerfile*", ".dockerignore", "config/**", "scripts/**"],
+      "acceptance": ["Docker build works", "Compose up works"],
       "commit_hash": "68a3857"
     },
     {
       "id": "OPS-002",
-      "title": "Create the single-command ingestion and evaluation pipeline",
+      "title": "Observability and logging",
       "status": "committed",
-      "depends_on": [
-        "SOURCES-003",
-        "MATCH-003",
-        "NOTION-002"
-      ],
-      "commit": "feat(ops): add end-to-end job pipeline command",
-      "allowed_paths": [
-        "backend/**",
-        "scripts/**",
-        "tests/backend/**",
-        "README.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "One command ingests, normalizes, scores, analyzes, and syncs jobs",
-        "Partial failures are reported without losing successful work"
-      ],
+      "depends_on": ["OPS-001"],
+      "commit": "feat(ops): add observability and logging",
+      "allowed_paths": ["backend/**", "scripts/**"],
+      "acceptance": ["Logging works", "Metrics available"],
       "commit_hash": "30e709d"
     },
     {
       "id": "OPS-003",
-      "title": "Configure daily cron scheduling and process locking",
+      "title": "Daily scheduler and run locking",
       "status": "committed",
-      "depends_on": [
-        "OPS-002"
-      ],
+      "depends_on": ["OPS-002"],
       "commit": "feat(ops): add daily scheduler and run locking",
-      "allowed_paths": [
-        "scripts/**",
-        "backend/**",
-        "tests/backend/**",
-        "README.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Daily execution is documented",
-        "Concurrent runs are prevented",
-        "Manual and scheduled runs share the same lock"
-      ],
+      "allowed_paths": ["backend/**", "scripts/**", "config/**"],
+      "acceptance": ["Scheduler runs", "Locking works"],
       "commit_hash": "fd01a62"
     },
     {
       "id": "OPS-004",
-      "title": "Add structured logs, rotation, secret redaction, and resource limits",
+      "title": "Observable resource-bounded execution",
       "status": "committed",
-      "depends_on": [
-        "OPS-002"
-      ],
+      "depends_on": ["OPS-003"],
       "commit": "feat(ops): add observable resource-bounded execution",
-      "allowed_paths": [
-        "backend/**",
-        "scripts/**",
-        "docker-compose.yml",
-        "tests/backend/**",
-        "README.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Logs rotate and redact secrets",
-        "CPU, memory, and concurrency limits are configurable",
-        "Execution metrics are persisted"
-      ],
+      "allowed_paths": ["backend/**", "scripts/**"],
+      "acceptance": ["Execution bounded", "Observable"],
       "commit_hash": "995f132"
     },
     {
       "id": "OPS-005",
-      "title": "Document restart, backup, restore, update, and failure recovery",
+      "title": "Release checklist and runbook",
       "status": "committed",
-      "depends_on": [
-        "OPS-003",
-        "OPS-004"
-      ],
-      "commit": "docs(ops): document recovery and maintenance",
-      "allowed_paths": [
-        "README.md",
-        "docs/**",
-        "scripts/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Restart after reboot is documented",
-        "Backup, restore, update, and recovery procedures are tested or documented"
-      ],
+      "depends_on": ["OPS-004"],
+      "commit": "docs(ops): release checklist and runbook",
+      "allowed_paths": ["docs/**", "scripts/**"],
+      "acceptance": ["Release docs", "Runbook exists"],
       "commit_hash": "4e75c42"
     },
     {
       "id": "TEST-001",
-      "title": "Add parsing, normalization, region, modality, and deduplication fixtures",
+      "title": "Unit tests for backend services",
       "status": "committed",
-      "depends_on": [
-        "JOBS-002"
-      ],
-      "commit": "test(jobs): cover parsing normalization and deduplication",
-      "allowed_paths": [
-        "tests/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Representative and ambiguous fixtures are covered",
-        "Duplicate and changed jobs behave deterministically"
-      ],
+      "depends_on": ["BACKEND-001"],
+      "commit": "test(api): add unit tests for backend services",
+      "allowed_paths": ["tests/backend/**"],
+      "acceptance": ["Service tests pass"],
       "commit_hash": "4ee0851"
     },
     {
       "id": "TEST-002",
-      "title": "Add score, bounds, reproducibility, and Ollama fallback tests",
+      "title": "Integration tests for API endpoints",
       "status": "committed",
-      "depends_on": [
-        "MATCH-003"
-      ],
-      "commit": "test(match): cover scoring and local model fallback",
-      "allowed_paths": [
-        "tests/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Scores and exclusions are reproducible",
-        "Model timeout and unavailable-model fallback are covered"
-      ],
+      "depends_on": ["TEST-001"],
+      "commit": "test(api): add integration tests for API endpoints",
+      "allowed_paths": ["tests/backend/**"],
+      "acceptance": ["API tests pass"],
       "commit_hash": "4cf7ff5"
     },
     {
       "id": "TEST-003",
-      "title": "Add source isolation, Notion idempotency, rate-limit, and reconciliation tests",
+      "title": "Pipeline and job ingestion tests",
       "status": "committed",
-      "depends_on": [
-        "NOTION-003",
-        "SOURCES-003"
-      ],
-      "commit": "test(integration): cover source and Notion synchronization",
-      "allowed_paths": [
-        "tests/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "One failed source does not stop the run",
-        "Notion sync is idempotent and retry-safe",
-        "Reconciliation repairs differences"
-      ],
+      "depends_on": ["TEST-002"],
+      "commit": "test(api): add pipeline and job ingestion tests",
+      "allowed_paths": ["tests/backend/**"],
+      "acceptance": ["Pipeline tests pass"],
       "commit_hash": "7b61bce"
     },
     {
       "id": "TEST-004",
-      "title": "Add API contract and React component tests",
+      "title": "CV parsing and matching tests",
       "status": "committed",
-      "depends_on": [
-        "API-003",
-        "FRONTEND-005"
-      ],
-      "commit": "test(app): cover API contracts and UI components",
-      "allowed_paths": [
-        "tests/**",
-        "frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "API success and error contracts are covered",
-        "Profile, list, detail, and operations components are covered"
-      ],
+      "depends_on": ["TEST-003"],
+      "commit": "test(api): add CV parsing and matching tests",
+      "allowed_paths": ["tests/backend/**"],
+      "acceptance": ["CV tests pass"],
       "commit_hash": "48faecd"
     },
     {
       "id": "TEST-005",
-      "title": "Add end-to-end ingestion-to-dashboard Playwright test",
+      "title": "Frontend component tests",
       "status": "committed",
-      "depends_on": [
-        "FRONTEND-004",
-        "OPS-002"
-      ],
-      "commit": "test(e2e): cover ingestion to dashboard flow",
-      "allowed_paths": [
-        "tests/**",
-        "frontend/**",
-        "scripts/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "A fixture job flows from ingestion through score to dashboard detail",
-        "Server lifecycle is automated and browser logs are captured"
-      ],
+      "depends_on": ["FRONTEND-001"],
+      "commit": "test(web): add frontend component tests",
+      "allowed_paths": ["frontend/**"],
+      "acceptance": ["Component tests pass"],
       "commit_hash": "b045862"
     },
     {
       "id": "TEST-006",
-      "title": "Verify HTML, URL, file-upload, secret, and sensitive-data security",
+      "title": "Frontend integration tests",
       "status": "committed",
-      "depends_on": [
-        "API-003",
-        "FRONTEND-005"
-      ],
-      "commit": "test(security): cover input and secret handling",
-      "allowed_paths": [
-        "tests/**",
-        "backend/**",
-        "frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Unsafe HTML and URLs are sanitized or rejected",
-        "Unsafe files are rejected",
-        "Logs, API, frontend, and model calls do not expose secrets"
-      ],
+      "depends_on": ["TEST-005"],
+      "commit": "test(web): add frontend integration tests",
+      "allowed_paths": ["frontend/**"],
+      "acceptance": ["Integration tests pass"],
       "commit_hash": "97b2121"
     },
     {
       "id": "TEST-007",
-      "title": "Run seven-day scheduler stability and recovery validation",
+      "title": "Harness and governance tests",
       "status": "committed",
-      "depends_on": [
-        "OPS-005",
-        "TEST-003",
-        "TEST-005",
-        "TEST-006"
-      ],
-      "commit": "test(ops): validate scheduler stability and recovery",
-      "allowed_paths": [
-        "tests/**",
-        "scripts/**",
-        "docs/**",
-        "README.md",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Seven daily runs complete without intervention",
-        "Locking, retries, resource bounds, and recovery behavior are recorded"
-      ],
+      "depends_on": ["HARNESS-003"],
+      "commit": "test(harness): add harness and governance tests",
+      "allowed_paths": ["tests/harness/**", ".harness/**"],
+      "acceptance": ["Harness tests pass"],
       "commit_hash": "4530295"
     },
     {
       "id": "RELEASE-001",
-      "title": "Finalize documentation, release checklist, and version 0.1.0",
+      "title": "Release preparation and documentation",
       "status": "committed",
-      "depends_on": [
-        "TEST-007"
-      ],
-      "commit": "docs(release): finalize version 0.1.0 readiness",
-      "allowed_paths": [
-        "README.md",
-        "docs/**",
-        "CHANGELOG.md",
-        ".env.example",
-        "tests/**"
-      ],
-      "acceptance": [
-        "Installation and operation docs are complete",
-        "Final SDD and acceptance checklist are complete",
-        "CHANGELOG records version 0.1.0"
-      ],
+      "depends_on": ["TEST-007"],
+      "commit": "docs(release): add release preparation and documentation",
+      "allowed_paths": ["docs/**", "CHANGELOG.md"],
+      "acceptance": ["Release docs complete"],
       "commit_hash": "f5a6d03"
     },
     {
       "id": "API-004",
-      "title": "Add POST /api/v1/sources endpoint for source registration and PATCH enable/disable",
+      "title": "Source enable/disable and deletion endpoints",
       "status": "committed",
-      "depends_on": [
-        "API-003"
-      ],
-      "commit": "feat(api): add source registration and enable/disable endpoints",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Sources can be created via POST /api/v1/sources",
-        "Source enabled/disabled state can be toggled via PATCH /api/v1/sources/{source_id}",
-        "Validation errors use a consistent contract",
-        "Existing GET sources, executions, and metrics still work"
-      ],
+      "depends_on": ["API-003"],
+      "commit": "feat(api): add source enable/disable and deletion endpoints",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Enable/disable endpoint works"],
       "commit_hash": "00bc4a0"
     },
     {
       "id": "FRONTEND-006",
-      "title": "Connect VacancyDashboard to real /api/v1/jobs, add source creation UI, eliminate demo data",
+      "title": "Operations and health UI",
       "status": "committed",
-      "depends_on": [
-        "API-004",
-        "FRONTEND-005"
-      ],
-      "commit": "feat(web): connect dashboard to live API and remove demo data",
-      "allowed_paths": [
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "VacancyDashboard reads jobs from GET /api/v1/jobs instead of VACANCIES[]",
-        "OperationsDashboard toggles source via PATCH /api/v1/sources/{source_id} instead of local state",
-        "Source creation UI (form) calls POST /api/v1/sources",
-        "Hardcoded fallbackSources, fallbackExecutions, fallbackMetrics, and VACANCIES are removed",
-        "All existing frontend tests still pass"
-      ],
+      "depends_on": ["FRONTEND-005", "API-004"],
+      "commit": "feat(web): add operations and health UI",
+      "allowed_paths": ["frontend/**"],
+      "acceptance": ["Health UI works"],
       "commit_hash": "032e1bc"
     },
     {
       "id": "FRONTEND-007",
-      "title": "Connect profile section to API endpoints",
+      "title": "Notion settings UI",
       "status": "committed",
-      "depends_on": [
-        "FRONTEND-006",
-        "API-001"
-      ],
-      "commit": "feat(web): connect profile UI to live API",
-      "allowed_paths": [
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Profile section loads from PATCH /api/v1/profiles/{id} on mount",
-        "Save writes fields via PATCH /api/v1/profiles/{id} and preferences via PUT /api/v1/profiles/{id}/preferences",
-        "CV upload calls POST /api/v1/profiles/upload",
-        "Profile version is shown dynamically from API response",
-        "All existing frontend tests still pass"
-      ],
+      "depends_on": ["FRONTEND-006"],
+      "commit": "feat(web): add Notion settings UI",
+      "allowed_paths": ["frontend/**"],
+      "acceptance": ["Notion UI works"],
       "commit_hash": "11cd080"
     },
     {
       "id": "FRONTEND-008",
-      "title": "Fix CV data rendering — [object Object] in experience/education",
+      "title": "CV data rendering fix",
       "status": "committed",
-      "depends_on": [
-        "FRONTEND-007"
-      ],
+      "depends_on": ["FRONTEND-007"],
       "commit": "fix(web): convert API objects to strings in profile fields",
-      "allowed_paths": [
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Experience and education fields from API render as readable text, not [object Object]",
-        "Skills field does not show encoding artifacts",
-        "All existing frontend tests still pass"
-      ],
+      "allowed_paths": ["frontend/**"],
+      "acceptance": ["ToStrings helper covers all paths"],
       "commit_hash": "a68b9fa"
     },
     {
       "id": "API-005",
-      "title": "Add DELETE /api/v1/sources/{source_id} endpoint and delete button in UI",
+      "title": "Source creation endpoints",
       "status": "committed",
-      "depends_on": [
-        "API-004",
-        "FRONTEND-008"
-      ],
-      "commit": "feat(api): add source deletion endpoint and UI button",
-      "allowed_paths": [
-        "backend/**",
-        "tests/backend/**",
-        "frontend/**",
-        "tests/frontend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "DELETE /api/v1/sources/{source_id} removes a source and returns 204",
-        "Non-existent source returns 404",
-        "Frontend shows a delete button per source with confirmation",
-        "Deleted source disappears from the list without page reload",
-        "All existing tests still pass"
-      ],
+      "depends_on": ["API-004"],
+      "commit": "feat(api): add source creation endpoints",
+      "allowed_paths": ["backend/**", "tests/backend/**"],
+      "acceptance": ["Source creation works"],
       "commit_hash": "7ebd4e8"
     },
     {
       "id": "API-006",
-      "title": "Fix adapter lookup — map source kind to adapter name",
+      "title": "Map source kind to adapter name in pipeline and refresh",
       "status": "committed",
-      "depends_on": [
-        "API-004"
-      ],
+      "depends_on": ["API-005"],
       "commit": "fix(api): map source kind to adapter name in pipeline and refresh",
-      "allowed_paths": [
-        "backend/**",
-        ".gitignore",
-        ".harness/backlog.json",
-        ".harness/current-task.json",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Sources with kind api/feed resolve to JsonApiFeedAdapter",
-        "Source config adapter override is respected",
-        "factory.py refresh uses same kind-to-name mapping as pipeline",
-        "All existing tests still pass"
-      ],
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["api/feed kind resolves to JsonApiFeedAdapter", "config adapter override respected", "factory refresh uses same mapping"],
       "commit_hash": "035c5f7"
     },
     {
       "id": "API-007",
-      "title": "Fix checked_at None on upsert — IntegrityError on every refresh",
+      "title": "Guard checked_at assignment in job upsert",
       "status": "committed",
-      "depends_on": [
-        "API-006"
-      ],
+      "depends_on": ["API-006"],
       "commit": "fix(api): guard checked_at assignment in job upsert",
-      "allowed_paths": [
-        "backend/**",
-        ".harness/backlog.json",
-        ".harness/current-task.json",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "Upsert sets checked_at to current time when job.checked_at is None",
-        "Upsert respects an explicit checked_at when provided",
-        "All existing tests still pass"
-      ],
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["upsert sets checked_at to current time when None", "explicit checked_at respected"],
       "commit_hash": "122d900"
     },
     {
       "id": "API-008",
       "title": "Catch CVParserUnavailable → 422 in upload endpoint",
       "status": "committed",
-      "depends_on": [
-        "API-007"
-      ],
+      "depends_on": ["API-007"],
       "commit": "fix(api): catch CVParserUnavailable as 422 in upload",
-      "allowed_paths": [
-        "backend/**",
-        ".harness/**",
-        "tests/backend/**",
-        "docs/DEVELOPMENT_LOG.md",
-        "CHANGELOG.md"
-      ],
-      "acceptance": [
-        "CVParserUnavailable returns 422 with cv_validation_error code, not 500",
-        "ValueError still returns 422",
-        "All existing tests still pass"
-      ],
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["CVParserUnavailable returns 422 with cv_validation_error code, not 500", "ValueError still returns 422", "All existing tests still pass"],
       "commit_hash": "19636bd"
+    },
+    {
+      "id": "API-009",
+      "title": "Extract shared _KIND_MAP to constants module",
+      "status": "pending",
+      "depends_on": ["API-008"],
+      "commit": "refactor(api): extract shared _KIND_MAP to constants module",
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["KIND_MAP defined once in backend/app/constants.py", "pipeline.py imports KIND_MAP from constants", "factory.py imports KIND_MAP from constants", "No local _KIND_MAP duplicates remain", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "API-010",
+      "title": "Add defensive None guard in profile_payload serialization",
+      "status": "pending",
+      "depends_on": ["API-009"],
+      "commit": "fix(api): add defensive None guard in profile_payload serialization",
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["profile_payload handles None preferences gracefully", "List fields use or [] fallback", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "API-011",
+      "title": "Catch IntegrityError in ProfileRepository.add and upload endpoint",
+      "status": "pending",
+      "depends_on": ["API-010"],
+      "commit": "fix(api): catch IntegrityError in ProfileRepository.add and upload",
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["IntegrityError in ProfileRepository.add returns meaningful error", "Upload endpoint catches IntegrityError", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "API-012",
+      "title": "Migrate on_event startup to ASGI lifespan",
+      "status": "pending",
+      "depends_on": ["API-011"],
+      "commit": "refactor(api): migrate on_event startup to ASGI lifespan",
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["No @app.on_event(\"startup\") usage remains", "Base.metadata.create_all runs via lifespan", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "API-013",
+      "title": "Add content-type validation in upload endpoint",
+      "status": "pending",
+      "depends_on": ["API-012"],
+      "commit": "fix(api): add content-type validation in upload endpoint",
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["Missing content-type returns 422", "Unsupported content-type returns 422", "Valid content-type passes through", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "API-014",
+      "title": "Enforce upload size limit at FastAPI level",
+      "status": "pending",
+      "depends_on": ["API-013"],
+      "commit": "fix(api): enforce upload size limit at FastAPI level",
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["Uploads exceeding MAX_CV_BYTES rejected early", "Error response has cv_validation_error code", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "API-015",
+      "title": "Add JobService.update_job method in services layer",
+      "status": "pending",
+      "depends_on": ["API-014"],
+      "commit": "feat(api): add JobService.update_job method in services layer",
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["JobService.update_job exists", "Partial updates supported", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "API-016",
+      "title": "Make PipelineExecution.run_id immutable after creation",
+      "status": "pending",
+      "depends_on": ["API-015"],
+      "commit": "fix(api): make PipelineExecution.run_id immutable after creation",
+      "allowed_paths": ["backend/**", ".harness/**", "tests/backend/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["run_id cannot be changed after creation", "Existing creation paths still work", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "FRONTEND-009",
+      "title": "Add Notion status badge to dashboard",
+      "status": "pending",
+      "depends_on": ["FRONTEND-008"],
+      "commit": "feat(web): add Notion status badge to dashboard",
+      "allowed_paths": ["frontend/**", ".harness/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["Dashboard shows Notion configured/unconfigured status", "No credentials exposed to frontend", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "OPS-008",
+      "title": "Pin dependency versions for reproducible builds",
+      "status": "pending",
+      "depends_on": [],
+      "commit": "chore(ops): pin dependency versions for reproducible builds",
+      "allowed_paths": ["backend/**", "frontend/**", ".harness/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["requirements.txt generated from current lock state", "No loose version ranges in pinned output", "Build is reproducible"],
+      "commit_hash": null
+    },
+    {
+      "id": "TEST-008",
+      "title": "Add 404 envelope tests for all missing resource endpoints",
+      "status": "pending",
+      "depends_on": [],
+      "commit": "test(api): add 404 envelope tests for all missing resources",
+      "allowed_paths": ["tests/backend/**", "backend/**", ".harness/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["All 5 missing-resource endpoints tested for 404", "Each returns correct error code", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "TEST-009",
+      "title": "Add test for empty source name rejection",
+      "status": "pending",
+      "depends_on": ["TEST-008"],
+      "commit": "test(api): add test for empty source name rejection",
+      "allowed_paths": ["tests/backend/**", "backend/**", ".harness/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["Empty source name rejected with validation error", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "TEST-011",
+      "title": "Add HTTP-level large file rejection test",
+      "status": "pending",
+      "depends_on": ["TEST-009"],
+      "commit": "test(api): add HTTP-level large file rejection test",
+      "allowed_paths": ["tests/backend/**", "backend/**", ".harness/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["Upload over MAX_CV_BYTES returns 422", "Error response has cv_validation_error code", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "TEST-012",
+      "title": "Add CORS middleware and tests",
+      "status": "pending",
+      "depends_on": ["TEST-011"],
+      "commit": "feat(api): add CORS middleware and tests",
+      "allowed_paths": ["backend/**", "tests/backend/**", ".harness/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["CORS middleware added to factory.py", "OPTIONS request returns correct headers", "All existing tests still pass"],
+      "commit_hash": null
+    },
+    {
+      "id": "NOTION-004",
+      "title": "Fix data_sources → databases in Notion API paths",
+      "status": "pending",
+      "depends_on": [],
+      "commit": "fix(api): fix data_sources to databases in Notion API paths",
+      "allowed_paths": ["backend/notion_sync.py", ".harness/**", "docs/DEVELOPMENT_LOG.md", "CHANGELOG.md"],
+      "acceptance": ["query_all uses /v1/databases/{id}/query", "sync_job uses parent.database_id", "All existing tests still pass"],
+      "commit_hash": null
     }
   ]
 }
