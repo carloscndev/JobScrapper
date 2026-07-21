@@ -246,6 +246,12 @@ function OperationsDashboard() {
     } catch { setError("No se pudo crear la fuente."); }
   };
 
+  const deleteSource = async (id: number, name: string) => {
+    if (!confirm(`¿Eliminar la fuente "${name}"?`)) return;
+    try { await apiClient.deleteSource(id); void load(); }
+    catch { setError("No se pudo eliminar la fuente."); }
+  };
+
   const healthy = operationsHealth?.status === "ok";
   const totalJobs = metrics?.jobs.active ?? 0;
   const totalJobsRegistered = metrics?.jobs.total ?? 0;
@@ -261,7 +267,7 @@ function OperationsDashboard() {
         <section className="panel" aria-labelledby="sources-title">
           <div className="panel-heading"><div><p className="card-kicker">Ingesta</p><h3 id="sources-title">Fuentes conectadas</h3></div><span className="source-count">{sources.filter((s) => s.enabled).length}/{sources.length} activas</span></div>
           <p className="muted">Activa o pausa una fuente sin perder su configuración.</p>
-          {sources.length ? <ul className="source-list">{sources.map((source) => <li key={source.id}><div><strong>{source.name}</strong><span>{source.kind} · {source.base_url}</span></div><button type="button" className={`toggle ${source.enabled ? "on" : ""}`} aria-pressed={source.enabled} onClick={() => toggleSource(source.id, source.enabled)}><span aria-hidden="true" />{source.enabled ? "Activa" : "Pausada"}</button></li>)}</ul> : <div className="empty-state"><strong>No hay fuentes configuradas.</strong><span>Agrega una fuente para iniciar la búsqueda.</span></div>}
+          {sources.length ? <ul className="source-list">{sources.map((source) => <li key={source.id}><div><strong>{source.name}</strong><span>{source.kind} · {source.base_url}</span></div><div className="source-actions"><button type="button" className={`toggle ${source.enabled ? "on" : ""}`} aria-pressed={source.enabled} onClick={() => toggleSource(source.id, source.enabled)}><span aria-hidden="true" />{source.enabled ? "Activa" : "Pausada"}</button><button type="button" className="secondary-button compact" onClick={() => deleteSource(source.id, source.name)} style={{ marginLeft: "0.5rem" }}>Eliminar</button></div></li>)}</ul> : <div className="empty-state"><strong>No hay fuentes configuradas.</strong><span>Agrega una fuente para iniciar la búsqueda.</span></div>}
           <button type="button" className="secondary-button compact" style={{ marginTop: "0.75rem" }} onClick={() => setShowForm(!showForm)}>{showForm ? "Cancelar" : "Agregar fuente"}</button>
           {showForm && <form onSubmit={createSource} style={{ marginTop: "0.75rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
             <label>Nombre<input value={formName} onChange={(e) => setFormName(e.target.value)} required placeholder="Ej: MiFeed" /></label>

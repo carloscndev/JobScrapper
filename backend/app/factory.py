@@ -203,6 +203,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             db.refresh(source)
             return _safe_source_config(source)
 
+    @app.delete("/api/v1/sources/{source_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["operations"])
+    @app.delete("/api/v1/operations/sources/{source_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["operations"])
+    def delete_source(source_id: int) -> None:
+        with session_factory() as db:
+            if not SourceRepository(db).delete(source_id):
+                raise HTTPException(status_code=404, detail={"error": {"code": "source_not_found", "message": f"Source {source_id} does not exist", "fields": []}})
+            db.commit()
+
     @app.get("/api/v1/operations/executions", tags=["operations"])
     @app.get("/api/v1/executions", tags=["operations"])
     def list_executions(page: int = Query(1, ge=1), page_size: int = Query(20, ge=1, le=100), status_filter: str | None = Query(None, alias="status")) -> dict[str, Any]:

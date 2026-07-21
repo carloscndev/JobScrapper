@@ -1108,6 +1108,31 @@
         "All existing frontend tests still pass"
       ],
       "commit_hash": "a68b9fa"
+    },
+    {
+      "id": "API-005",
+      "title": "Add DELETE /api/v1/sources/{source_id} endpoint and delete button in UI",
+      "status": "approved",
+      "depends_on": [
+        "API-004",
+        "FRONTEND-008"
+      ],
+      "commit": "feat(api): add source deletion endpoint and UI button",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "DELETE /api/v1/sources/{source_id} removes a source and returns 204",
+        "Non-existent source returns 404",
+        "Frontend shows a delete button per source with confirmation",
+        "Deleted source disappears from the list without page reload",
+        "All existing tests still pass"
+      ]
     }
   ]
 }

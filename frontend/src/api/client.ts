@@ -16,6 +16,7 @@ export interface ApiClient {
   getJobDetail: (jobId: number) => Promise<JobDetailResponse>;
   createSource: (data: SourceCreateRequest) => Promise<SourceSummary>;
   updateSource: (sourceId: number, data: SourceUpdateRequest) => Promise<SourceSummary>;
+  deleteSource: (sourceId: number) => Promise<void>;
   getProfile: (profileId: number) => Promise<ProfileResponse>;
   updateProfile: (profileId: number, data: ProfileUpdatePayload) => Promise<ProfileResponse>;
   updateProfilePreferences: (profileId: number, data: PreferencePayload) => Promise<ProfileResponse>;
@@ -208,6 +209,7 @@ export function createApiClient(baseUrl = ""): ApiClient {
     getJobDetail: async (jobId) => request<JobDetailResponse>(`/api/v1/jobs/${jobId}`),
     createSource: async (data) => request<SourceSummary>("/api/v1/operations/sources", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
     updateSource: async (sourceId, data) => request<SourceSummary>(`/api/v1/operations/sources/${sourceId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
+    deleteSource: async (sourceId) => { const r = await fetch(`${baseUrl}/api/v1/operations/sources/${sourceId}`, { method: "DELETE" }); if (!r.ok && r.status !== 404) throw new Error(`API request failed (${r.status})`); },
     getProfile: async (profileId) => request<ProfileResponse>(`/api/v1/profiles/${profileId}`),
     updateProfile: async (profileId, data) => request<ProfileResponse>(`/api/v1/profiles/${profileId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
     updateProfilePreferences: async (profileId, data) => request<ProfileResponse>(`/api/v1/profiles/${profileId}/preferences`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),

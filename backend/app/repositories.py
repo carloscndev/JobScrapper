@@ -27,6 +27,13 @@ class SourceRepository:
     def enabled(self) -> Sequence[Source]: return self.session.scalars(select(Source).where(Source.enabled.is_(True)).order_by(Source.name)).all()
     def get(self, name: str) -> Source | None: return self.session.scalar(select(Source).where(Source.name == name))
     def get_by_id(self, source_id: int) -> Source | None: return self.session.get(Source, source_id)
+    def delete(self, source_id: int) -> bool:
+        source = self.get_by_id(source_id)
+        if source is None:
+            return False
+        self.session.delete(source)
+        self.session.flush()
+        return True
     def get_or_create(self, name: str, **values: object) -> Source:
         source = self.get(name)
         if source is None:
