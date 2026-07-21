@@ -788,7 +788,7 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: fix adapter lookup — map source kind to adapter name in pipeline and refresh
 - Risks: career_page sources still require explicit `adapter` config to resolve
 - Commit subject: fix(api): map source kind to adapter name in pipeline and refresh
-- Commit hash: c90d7f7
+- Commit hash: 035c5f7
 
 ### FRONTEND-008 — Attempt 1
 

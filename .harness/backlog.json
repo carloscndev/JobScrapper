@@ -1158,7 +1158,7 @@
         "factory.py refresh uses same kind-to-name mapping as pipeline",
         "All existing tests still pass"
       ],
-      "commit_hash": "c90d7f7"
+      "commit_hash": "035c5f7"
     }
   ]
 }
