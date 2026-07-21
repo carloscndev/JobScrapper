@@ -83,6 +83,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def profile_payload(profile: Profile) -> dict[str, Any]:
         current = next((item for item in profile.preferences if item.is_current), None)
         data = {key: getattr(profile, key) for key in ("id", "name", "cv_text", "cv_filename", "version", "seniority", "reevaluation_required", "reevaluation_reason", "reevaluation_metadata", "versioned_at", "skills", "experience", "education", "languages")}
+        for key in ("skills", "experience", "education", "languages"):
+            data[key] = data[key] or []
         data["preferences"] = current
         return data
 
