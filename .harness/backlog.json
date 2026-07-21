@@ -1017,6 +1017,52 @@
         "CHANGELOG records version 0.1.0"
       ],
       "commit_hash": "f5a6d03"
+    },
+    {
+      "id": "API-004",
+      "title": "Add POST /api/v1/sources endpoint for source registration and PATCH enable/disable",
+      "status": "committed",
+      "depends_on": [
+        "API-003"
+      ],
+      "commit": "feat(api): add source registration and enable/disable endpoints",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Sources can be created via POST /api/v1/sources",
+        "Source enabled/disabled state can be toggled via PATCH /api/v1/sources/{source_id}",
+        "Validation errors use a consistent contract",
+        "Existing GET sources, executions, and metrics still work"
+      ],
+      "commit_hash": "00bc4a0"
+    },
+    {
+      "id": "FRONTEND-006",
+      "title": "Connect VacancyDashboard to real /api/v1/jobs, add source creation UI, eliminate demo data",
+      "status": "committed",
+      "depends_on": [
+        "API-004",
+        "FRONTEND-005"
+      ],
+      "commit": "feat(web): connect dashboard to live API and remove demo data",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "VacancyDashboard reads jobs from GET /api/v1/jobs instead of VACANCIES[]",
+        "OperationsDashboard toggles source via PATCH /api/v1/sources/{source_id} instead of local state",
+        "Source creation UI (form) calls POST /api/v1/sources",
+        "Hardcoded fallbackSources, fallbackExecutions, fallbackMetrics, and VACANCIES are removed",
+        "All existing frontend tests still pass"
+      ],
+      "commit_hash": "b4c6696"
     }
   ]
 }

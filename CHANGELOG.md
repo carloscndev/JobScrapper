@@ -557,7 +557,23 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — requirements match, scope clean, security verified
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): add source registration and enable/disable endpoints
-- Commit hash: pending
+- Commit hash: 00bc4a0
+
+### FRONTEND-006 — Attempt 1
+
+- VacancyDashboard now reads jobs from `GET /api/v1/jobs` instead of hardcoded `VACANCIES[]`, with server-side pagination and filters.
+- OperationsDashboard toggles source enable/disable via `PATCH /api/v1/sources/{source_id}` and creates sources via `POST /api/v1/sources`.
+- Removed all hardcoded demo data: `VACANCIES[]`, `fallbackSources`, `fallbackExecutions`, `fallbackMetrics`.
+- Added source creation form (name, kind, URL) inline in OperationsDashboard.
+- Updated frontend contract tests to match the new API-driven component structure.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `tests/frontend/test_frontend_bootstrap.py`, `tests/frontend/test_frontend_dashboard.py`, `tests/frontend/test_frontend_detail.py`, `tests/frontend/test_frontend_operations.py`, `tests/frontend/test_frontend_profile.py`
+- Commands: 25 frontend tests, 79 backend tests
+- Tester: PASS — 25 frontend tests pass, all existing backend suites unaffected
+- Reviewer: APPROVED — test assertions correctly reflect API-driven components
+- Risks: requires running API server for full runtime dashboard interaction
+- Commit subject: feat(web): connect dashboard to live API and remove demo data
+- Commit hash: b4c6696
 
 ### TEST-002 — Attempt 1
 

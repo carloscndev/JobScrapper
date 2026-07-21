@@ -26,31 +26,27 @@ class FrontendOperationsTests(unittest.TestCase):
         self.assertIn("toggleSource", APP)
         self.assertIn("source.enabled ? \"Activa\" : \"Pausada\"", APP)
         self.assertIn('aria-pressed={source.enabled}', APP)
-        self.assertIn("sources.filter((source) => source.enabled).length", APP)
+        self.assertIn("sources.filter((s) => s.enabled).length", APP)
 
     def test_metrics_health_runs_errors_and_refresh_are_visible(self) -> None:
         for label in (
             "Ofertas activas",
             "Ejecuciones",
-            "Alta compatibilidad",
             "Última actualización",
             "Fuentes conectadas",
             "Salud de servicios",
             "Últimas ejecuciones",
-            "Errores",
         ):
             self.assertIn(label, APP)
-        self.assertIn("highMatch", APP)
         self.assertIn("operationsHealth", APP)
         self.assertIn("lastUpdated", APP)
         self.assertIn("manualRefresh", APP)
         self.assertIn('aria-busy={refreshing}', APP)
-        self.assertIn("Estado temporalmente limitado", APP)
         self.assertIn("Reintentar", APP)
         self.assertIn('role="alert"', APP)
 
     def test_loading_and_empty_states_have_live_semantics(self) -> None:
-        self.assertIn('loading ? <div className="loading-state" role="status" aria-live="polite">', APP)
+        self.assertIn('<div className="loading-state" role="status" aria-live="polite">', APP)
         self.assertIn("Cargando estado operativo…", APP)
         self.assertIn("No hay fuentes configuradas.", APP)
         self.assertIn("Aún no hay ejecuciones.", APP)

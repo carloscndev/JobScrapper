@@ -5,7 +5,6 @@ export interface HealthResponse {
   service?: string;
 }
 
-/** Typed API boundary. Feature-specific endpoints will be added with the backend tasks. */
 export interface ApiClient {
   getHealth: () => Promise<HealthResponse>;
   getOperationsHealth: () => Promise<OperationsHealth>;
@@ -13,6 +12,10 @@ export interface ApiClient {
   getExecutions: () => Promise<ExecutionSummary[]>;
   getMetrics: () => Promise<OperationsMetrics>;
   refresh: () => Promise<ExecutionSummary>;
+  listJobs: (params?: JobListParams) => Promise<PaginatedJobsResponse>;
+  getJobDetail: (jobId: number) => Promise<JobDetailResponse>;
+  createSource: (data: SourceCreateRequest) => Promise<SourceSummary>;
+  updateSource: (sourceId: number, data: SourceUpdateRequest) => Promise<SourceSummary>;
 }
 
 export interface OperationsHealth {
@@ -28,6 +31,20 @@ export interface SourceSummary {
   base_url: string;
   enabled: boolean;
   robots_checked_at?: string | null;
+}
+
+export interface SourceCreateRequest {
+  name: string;
+  kind?: string;
+  base_url?: string;
+  enabled?: boolean;
+  config?: Record<string, unknown>;
+}
+
+export interface SourceUpdateRequest {
+  enabled?: boolean;
+  name?: string;
+  base_url?: string;
 }
 
 export interface ExecutionSummary {
@@ -47,12 +64,76 @@ export interface OperationsMetrics {
   generated_at?: string;
 }
 
+export interface JobSummary {
+  id: number;
+  title: string;
+  company: string;
+  region: string;
+  modality: string;
+  status: string;
+  description_url: string;
+  application_url: string | null;
+  published_at: string | null;
+  score: number | null;
+}
+
+export interface JobDetailResponse extends JobSummary {
+  description: string;
+  canonical_url: string;
+  salary_min: number | null;
+  salary_max: number | null;
+  salary_currency: string | null;
+  score_breakdown: Record<string, unknown>;
+  recommendations: string[];
+  evaluation: JobEvaluation | null;
+}
+
+export interface JobEvaluation {
+  id: number;
+  profile_id: number;
+  score: number;
+  score_breakdown: Record<string, unknown>;
+  matches: unknown[];
+  gaps: unknown[];
+  recommendations: unknown[];
+  status: string;
+  evaluated_at: string | null;
+}
+
+export interface PaginatedJobsResponse {
+  items: JobSummary[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
+export interface JobListParams {
+  page?: number;
+  page_size?: number;
+  region?: string;
+  modality?: string;
+  status?: string;
+  company?: string;
+  min_score?: number;
+  order?: string;
+  direction?: string;
+}
+
 export function createApiClient(baseUrl = ""): ApiClient {
   async function request<T>(path: string, init?: RequestInit): Promise<T> {
     const response = await fetch(`${baseUrl}${path}`, init);
     if (!response.ok) throw new Error(`API request failed (${response.status})`);
     return (await response.json()) as T;
   }
+
+  function buildQuery(params?: Record<string, string | number | undefined>): string {
+    if (!params) return "";
+    const entries = Object.entries(params).filter(([, v]) => v !== undefined && v !== "");
+    if (entries.length === 0) return "";
+    return "?" + entries.map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`).join("&");
+  }
+
   return {
     async getHealth() {
       const response = await fetch(`${baseUrl}/health`);
@@ -64,5 +145,9 @@ export function createApiClient(baseUrl = ""): ApiClient {
     getExecutions: async () => (await request<{ items: ExecutionSummary[] }>("/api/v1/operations/executions?page_size=10")).items,
     getMetrics: async () => request<OperationsMetrics>("/api/v1/operations/metrics"),
     refresh: async () => request<ExecutionSummary>("/api/v1/operations/refresh", { method: "POST" }),
+    listJobs: async (params) => request<PaginatedJobsResponse>(`/api/v1/jobs${buildQuery(params as Record<string, string | number | undefined>)}`),
+    getJobDetail: async (jobId) => request<JobDetailResponse>(`/api/v1/jobs/${jobId}`),
+    createSource: async (data) => request<SourceSummary>("/api/v1/operations/sources", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
+    updateSource: async (sourceId, data) => request<SourceSummary>(`/api/v1/operations/sources/${sourceId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }),
   };
 }

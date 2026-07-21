@@ -729,4 +729,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: source registration and enable/disable endpoints added
 - Risks: full HTTP runtime coverage requires FastAPI/SQLAlchemy dependencies
 - Commit subject: feat(api): add source registration and enable/disable endpoints
-- Commit hash: pending
+- Commit hash: 00bc4a0
+
+### FRONTEND-006 — Attempt 1
+
+- Started / finished: 2026-07-20 / 2026-07-20
+- Acceptance criteria: VacancyDashboard reads from GET /api/v1/jobs; OperationsDashboard toggles source via PATCH /api/v1/sources/{source_id}; source creation form calls POST /api/v1/sources; hardcoded fallbackSources, fallbackExecutions, fallbackMetrics, VACANCIES removed; all existing frontend tests pass; PASS
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `tests/frontend/test_frontend_bootstrap.py`, `tests/frontend/test_frontend_dashboard.py`, `tests/frontend/test_frontend_detail.py`, `tests/frontend/test_frontend_operations.py`, `tests/frontend/test_frontend_profile.py`
+- Commands: 25 frontend tests, 79 backend tests; pytest -v passed
+- Tester: PASS — 25 frontend tests pass; all existing backend suites unaffected
+- Reviewer: APPROVED — test assertions correctly reflect API-driven components
+- Rework: none
+- Changelog: connect dashboard to live API, remove demo data, add source creation UI
+- Risks: requires running API server for full runtime dashboard interaction
+- Commit hash: b4c6696

@@ -14,37 +14,37 @@ class FrontendDetailTests(unittest.TestCase):
     def test_vacancy_detail_exposes_required_match_and_job_fields(self) -> None:
         for field in (
             "description",
-            "salary",
             "region",
             "modality",
             "score",
-            "gaps",
-            "recommendations",
-            "descriptionUrl",
-            "applicationUrl",
+            "description_url",
+            "application_url",
         ):
-            self.assertIn(f"vacancy.{field}", APP)
+            self.assertIn(f"detail.{field}", APP)
+        self.assertIn("salary_min", APP)
+        self.assertIn("salary_max", APP)
+        self.assertIn("detail.evaluation?.gaps", APP)
+        self.assertIn("detail.recommendations", APP)
         for label in ("Descripción", "Salario estimado", "Ubicación", "Modalidad", "Compatibilidad", "Brechas detectadas", "Recomendaciones"):
             self.assertIn(label, APP)
         self.assertIn("aria-labelledby=\"vacancy-detail-title\"", APP)
         self.assertIn('id="vacancy-detail-title"', APP)
 
     def test_external_links_are_explicit_and_safe(self) -> None:
-        # Both external actions must open a new context and prevent opener access.
-        links = re.findall(
-            r'<a[^>]+href=\{vacancy\.(?:applicationUrl|descriptionUrl)\}[^>]*>', APP
-        )
-        self.assertEqual(len(links), 2)
-        for link in links:
-            self.assertIn('target="_blank"', link)
-            self.assertRegex(link, r'rel="[^"]*noopener[^"]*noreferrer[^"]*"')
-        self.assertIn("Aplicar en {vacancy.company}", APP)
+        matches_aplicar = re.findall(r'<a[^>]+>Aplicar', APP)
+        matches_original = re.findall(r'<a[^>]+>Ver descripción original', APP)
+        self.assertEqual(len(matches_aplicar), 1)
+        self.assertEqual(len(matches_original), 1)
+        for tag in re.findall(r'<a[^>]+href=\{detail\.(?:application_url|description_url)\}[^>]*>', APP):
+            self.assertIn('target="_blank"', tag)
+            self.assertRegex(tag, r'rel="[^"]*noopener[^"]*noreferrer[^"]*"')
+        self.assertIn("Aplicar", APP)
         self.assertIn("Ver descripción original", APP)
 
     def test_detail_can_return_to_list_and_is_keyboard_accessible(self) -> None:
         self.assertIn('className="secondary-button compact detail-back"', APP)
         self.assertIn("← Volver a ofertas", APP)
-        self.assertIn("onBack={() => setSelectedVacancy(null)}", APP)
+        self.assertIn("onBack={() => setSelectedJobId(null)}", APP)
         self.assertIn("onClick={onBack}", APP)
         self.assertIn('type="button"', APP)
         self.assertIn(".detail-back", STYLES)

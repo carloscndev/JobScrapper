@@ -1,10 +1,13 @@
 {
   "schema_version": 1,
   "active": false,
-  "task_id": null,
-  "state": null,
-  "attempt": 0,
-  "evidence": {},
+  "task_id": "FRONTEND-006",
+  "state": "committed",
+  "attempt": 1,
+  "evidence": {
+    "tester": "25 frontend tests pass, 79 backend tests pass, 35 harness tests pass",
+    "reviewer": "APPROVED"
+  },
   "rejections": [],
-  "commit": "f5a6d0320fea1a324afea298aba496eba70f3830"
+  "commit": "b4c6696"
 }

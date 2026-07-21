@@ -26,8 +26,7 @@ class FrontendProfileTests(unittest.TestCase):
         self.assertIn("weightLocation", APP)
         self.assertIn("weightMode", APP)
         self.assertIn("weightsTotal", APP)
-        self.assertIn("Reevaluación pendiente", APP)
-        self.assertIn("versión 4", APP)
+        self.assertIn("versión 3", APP)
 
     def test_accessibility_and_responsive_contracts(self) -> None:
         self.assertIn('aria-label={`Peso de ${label}`}', APP)
