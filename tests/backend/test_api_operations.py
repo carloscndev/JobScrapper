@@ -105,5 +105,45 @@ class OperationsContractTests(unittest.TestCase):
             lock.release()
 
 
+try:
+    from fastapi.testclient import TestClient
+    from app.config import Settings
+    from app.factory import create_app
+
+    HTTP_AVAILABLE = True
+except ImportError:
+    HTTP_AVAILABLE = False
+
+
+@unittest.skipUnless(HTTP_AVAILABLE, "FastAPI/SQLAlchemy dependencies are not installed")
+class OperationsNotFoundHttpTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.db_path = ROOT / ".tmp-api-operations-test.db"
+        self.db_path.unlink(missing_ok=True)
+        settings = Settings(database_url=f"sqlite:///{self.db_path}", environment="test")
+        self.client = TestClient(create_app(settings))
+        self.client.__enter__()
+
+    def tearDown(self) -> None:
+        self.client.__exit__(None, None, None)
+        self.client.close()
+        self.db_path.unlink(missing_ok=True)
+
+    def test_missing_source_returns_source_not_found_on_update(self) -> None:
+        response = self.client.patch("/api/v1/sources/999", json={"name": "Updated"})
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"]["code"], "source_not_found")
+
+    def test_missing_source_returns_source_not_found_on_delete(self) -> None:
+        response = self.client.delete("/api/v1/sources/999")
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"]["code"], "source_not_found")
+
+    def test_missing_execution_returns_execution_not_found(self) -> None:
+        response = self.client.get("/api/v1/executions/00000000-0000-0000-0000-000000000000")
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"]["code"], "execution_not_found")
+
+
 if __name__ == "__main__":
     unittest.main()

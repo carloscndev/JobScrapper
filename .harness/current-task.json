@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "active": true,
-  "task_id": "API-016",
+  "task_id": "TEST-008",
   "state": "coding",
   "attempt": 1,
   "evidence": {},
   "rejections": [],
-  "commit": "d8e143313faa52a3e316e7c75081c0fbc0d1db59"
+  "commit": "17ad280b1dfd7e2af6a9e89a8f2af23784e33759"
 }
