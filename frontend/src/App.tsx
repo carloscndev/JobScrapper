@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { createApiClient, type ExecutionSummary, type HealthStatus, type JobDetailResponse, type JobSummary, type OperationsHealth, type OperationsMetrics, type ProfileResponse, type SourceSummary } from "./api/client";
+import { createApiClient, type ExecutionSummary, type HealthStatus, type JobDetailResponse, type JobSummary, type OperationsHealth, type OperationsMetrics, type SourceSummary } from "./api/client";
 import "./styles.css";
 
 type Section = "profile" | "preferences" | "vacancies" | "operations";
