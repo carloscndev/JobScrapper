@@ -30,6 +30,7 @@ from .process_lock import ProcessLock
 
 from .config import Settings
 from .observability import configure_logging
+from sqlalchemy.exc import IntegrityError
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -317,8 +318,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 result = profile_payload(profile)
                 result["parsed_text_length"] = len(parsed.text)
                 return result
-            except (ValueError, RuntimeError) as exc:
+            except (ValueError, RuntimeError, IntegrityError) as exc:
                 db.rollback()
+                if isinstance(exc, IntegrityError):
+                    raise HTTPException(status_code=422, detail={"error": {"code": "cv_validation_error", "message": "Profile already exists with this data", "fields": [{"field": "file", "message": "Duplicate profile data", "type": "value_error"}]}}) from exc
                 raise HTTPException(status_code=422, detail={"error": {"code": "cv_validation_error", "message": str(exc), "fields": [{"field": "file", "message": str(exc), "type": "value_error"}]}}) from exc
 
     @app.get("/api/v1/profiles/{profile_id}", response_model=ProfileResponse, tags=["profiles"])
