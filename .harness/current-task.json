@@ -1,26 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "FRONTEND-010",
-  "state": "approved",
-  "attempt": 1,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "frontend/src/App.tsx; pnpm build; pnpm exec tsc -b; frontend operations tests 15/15; git diff-check",
-      "attempt": 1
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "python3 -m unittest tests.frontend.test_frontend_source_activation tests.frontend.test_frontend_operations -v (9/9); pnpm build and tsc pass",
-      "attempt": 1
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "APPROVED: explicit terms confirmation, cancel without request, PATCH config terms_accepted, visible API fields, accessibility; frontend tests 9/9; pnpm build and tsc pass",
-      "attempt": 1
-    }
-  },
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
   "rejections": [],
-  "commit": null
+  "commit": "fe55ee51d76a8000d534dde4a6d99c04611f6aca"
 }

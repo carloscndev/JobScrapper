@@ -1509,7 +1509,7 @@
     {
       "id": "FRONTEND-010",
       "title": "Allow explicit source terms acceptance when enabling",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "SOURCES-008"
       ],
@@ -1526,7 +1526,8 @@
         "Cancelling confirmation leaves the source paused without an API request",
         "API validation errors are shown with an actionable message",
         "Frontend regression tests and pnpm build pass"
-      ]
+      ],
+      "commit_hash": "fe55ee5"
     }
   ]
 }
