@@ -1528,6 +1528,30 @@
         "Frontend regression tests and pnpm build pass"
       ],
       "commit_hash": "fe55ee5"
+    },
+    {
+      "id": "FRONTEND-011",
+      "title": "Add integrated source activation dialog",
+      "status": "approved",
+      "depends_on": [
+        "FRONTEND-010"
+      ],
+      "commit": "fix(web): add source terms activation dialog",
+      "allowed_paths": [
+        "frontend/src/App.tsx",
+        "frontend/src/styles.css",
+        "tests/frontend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Activation opens an in-panel dialog with source name, terms link and required checkbox",
+        "Cancel closes the dialog without a PATCH and activation remains paused",
+        "Confirm sends terms_accepted=true only after checkbox acceptance",
+        "Dialog has accessible labeling, focus-visible controls and inline errors",
+        "Frontend tests, typecheck and production build pass"
+      ]
     }
   ]
 }

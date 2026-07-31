@@ -310,6 +310,9 @@ function OperationsDashboard() {
   const [formTermsAccepted, setFormTermsAccepted] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [formErrorFields, setFormErrorFields] = useState<Array<{ field?: string; message?: string }>>([]);
+  const [sourcePendingActivation, setSourcePendingActivation] = useState<SourceSummary | null>(null);
+  const [termsChecked, setTermsChecked] = useState(false);
+  const [activationError, setActivationError] = useState<string | null>(null);
 
   const setOperationError = (caught: unknown, fallback: string) => {
     setError(caught instanceof ApiRequestError ? caught.message : fallback);
@@ -336,14 +339,38 @@ function OperationsDashboard() {
   const toggleSource = async (id: number, current: boolean) => {
     const source = sources.find((item) => item.id === id);
     if (!current && source?.config?.terms_accepted !== true) {
-      const termsUrl = source?.terms_url || "no configurada";
-      const accepted = window.confirm(`Antes de activar esta fuente, revisa sus términos de uso: ${termsUrl}. ¿Confirmas que los revisaste y aceptas?`);
-      if (!accepted) return;
+      if (!source) return;
+      setSourcePendingActivation(source);
+      setTermsChecked(false);
+      setActivationError(null);
+      return;
     }
     try {
       await apiClient.updateSource(id, current ? { enabled: false } : { enabled: true, config: { terms_accepted: true } });
       void load();
     } catch (caught) { setOperationError(caught, "No se pudo cambiar el estado de la fuente."); }
+  };
+
+  const cancelActivation = () => {
+    setSourcePendingActivation(null);
+    setTermsChecked(false);
+    setActivationError(null);
+  };
+
+  const activatePendingSource = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!sourcePendingActivation || !termsChecked) return;
+    setActivationError(null);
+    try {
+      await apiClient.updateSource(sourcePendingActivation.id, { enabled: true, config: { terms_accepted: true } });
+      cancelActivation();
+      void load();
+    } catch (caught) {
+      const detail = caught instanceof ApiRequestError
+        ? [caught.message, ...caught.fields.map((field) => `${field.field ?? "Campo"}: ${field.message ?? "revisa este valor"}`)].join(" ")
+        : "No se pudo activar la fuente. Revisa la configuración e inténtalo de nuevo.";
+      setActivationError(detail);
+    }
   };
 
   const createSource = async (e: React.FormEvent) => {
@@ -401,6 +428,7 @@ function OperationsDashboard() {
   return <section id="operations-panel" className="operations-dashboard" role="tabpanel" aria-labelledby="tab-operations" tabIndex={0}>
     <div className="dashboard-heading"><div><p className="eyebrow">Centro de operaciones</p><h2>Estado de la búsqueda</h2><p className="hero-copy">Supervisa fuentes, ejecuciones y la salud de tus integraciones locales.</p></div><button type="button" className="primary-button" onClick={manualRefresh} disabled={refreshing} aria-busy={refreshing}>{refreshing ? "Actualizando…" : "Actualizar ofertas"}</button></div>
     {error && <div className="error-callout" role="alert"><strong>Error</strong><span>{error}</span>{errorFields.length > 0 && <ul className="form-error-list">{errorFields.map((field, index) => <li key={`${field.field ?? "error"}-${index}`}><strong>{field.field ?? "Revisa este campo"}:</strong> {field.message ?? "Corrige este valor y vuelve a intentar."}</li>)}</ul>}<button type="button" className="secondary-button compact" onClick={() => void load()}>Reintentar</button></div>}
+    {sourcePendingActivation && <div className="activation-dialog-backdrop"><form className="activation-dialog" role="dialog" aria-modal="true" aria-labelledby="activation-dialog-title" aria-describedby="activation-dialog-description" onSubmit={activatePendingSource}><h3 id="activation-dialog-title">Confirma la activación</h3><p id="activation-dialog-description">Revisa los términos antes de activar <strong>{sourcePendingActivation.name}</strong>.</p>{sourcePendingActivation.terms_url ? <a className="activation-terms-link" href={sourcePendingActivation.terms_url} target="_blank" rel="noopener noreferrer">Abrir términos de uso<span aria-hidden="true"> ↗</span></a> : <p className="activation-no-terms">Esta fuente no tiene una URL de términos registrada.</p>}<label className="checkbox-row activation-check" htmlFor="activation-terms-check"><input id="activation-terms-check" type="checkbox" checked={termsChecked} onChange={(event) => setTermsChecked(event.target.checked)} required autoFocus />Confirmo que revisé y acepto los términos de uso.</label>{activationError && <div className="error-callout activation-error" role="alert">{activationError}</div>}<div className="activation-actions"><button type="button" className="secondary-button" onClick={cancelActivation}>Cancelar</button><button type="submit" className="primary-button" disabled={!termsChecked}>Activar fuente</button></div></form></div>}
     {loading ? <div className="loading-state" role="status" aria-live="polite"><span className="loading-spinner" aria-hidden="true" />Cargando estado operativo…</div> : <>
       <div className="ops-metrics" aria-label="Métricas de operación"><Metric label="Ofertas activas" value={totalJobs} hint={`${totalJobsRegistered} registradas`} /><Metric label="Ejecuciones" value={totalExecutions} hint={`${runningExecutions} en curso`} /><Metric label="Fuentes activas" value={sources.filter((s) => s.enabled).length} hint={`${sources.length} configuradas`} /><Metric label="Última actualización" value={lastUpdated ? new Date(lastUpdated).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) : "—"} hint="hora local" /></div>
       <div className="operations-grid">

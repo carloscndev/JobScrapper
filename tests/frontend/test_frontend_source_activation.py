@@ -8,9 +8,9 @@ APP = (Path(__file__).resolve().parents[2] / "frontend/src/App.tsx").read_text()
 class FrontendSourceActivationTests(unittest.TestCase):
     def test_activation_requires_explicit_terms_confirmation(self):
         self.assertIn("source?.config?.terms_accepted !== true", APP)
-        self.assertIn("window.confirm", APP)
-        self.assertIn("source?.terms_url", APP)
-        self.assertIn("if (!accepted) return", APP)
+        self.assertIn("sourcePendingActivation", APP)
+        self.assertIn("sourcePendingActivation.terms_url", APP)
+        self.assertIn("setSourcePendingActivation(source)", APP)
 
     def test_activation_persists_terms_acceptance_and_pause_does_not(self):
         self.assertIn("config: { terms_accepted: true }", APP)

@@ -835,6 +835,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: fix(web): explain and confirm source activation
 - Commit hash: pending
 
+### FRONTEND-011 — Attempt 2
+
+- Started / finished: 2026-07-31 / 2026-07-31
+- Acceptance criteria: diálogo integrado para términos, checkbox obligatorio, cancelación sin PATCH, errores inline y aislamiento de scroll; PASS
+- Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `frontend/src/styles.css`, `tests/frontend/test_frontend_activation_dialog.py`, `tests/frontend/test_frontend_source_activation.py`
+- Commands: `python3 -m unittest tests.frontend.test_frontend_activation_dialog tests.frontend.test_frontend_source_activation tests.frontend.test_frontend_operations -v` (12/12); `cd frontend && pnpm build`; `cd frontend && pnpm exec tsc -b`; `git diff --check`
+- Tester: PASS — diálogo, payload, cancelación, errores y responsive
+- Reviewer: APPROVED — `overscroll-behavior: contain` añadido tras rework
+- Reprocesos: intento 1 rechazado por aislamiento de scroll del modal; intento 2 resuelto
+- Changelog: added
+- Risks: el foco inicial depende del comportamiento nativo del navegador; el diálogo mantiene navegación accesible por teclado
+- Commit subject: fix(web): add source terms activation dialog
+- Commit hash: pending
+
 ### TEST-013 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30
