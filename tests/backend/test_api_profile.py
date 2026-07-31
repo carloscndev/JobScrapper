@@ -69,7 +69,9 @@ class ApiSourceContractTests(unittest.TestCase):
 try:  # Keep collection usable when optional backend dependencies are absent.
     from fastapi.testclient import TestClient
     from app.config import Settings
+    from app.database import create_db_engine, create_session_factory
     from app.factory import create_app
+    from app.models import Base, Profile
 
     HTTP_AVAILABLE = True
 except ImportError:
@@ -83,12 +85,29 @@ class ProfileApiHttpTests(unittest.TestCase):
         if self.db_path.exists():
             self.db_path.unlink()
         settings = Settings(database_url=f"sqlite:///{self.db_path}", environment="test")
+        self.engine = create_db_engine(settings)
+        Base.metadata.create_all(self.engine)
+        self.session_factory = create_session_factory(self.engine)
+        with self.session_factory() as db:
+            profile = Profile(
+                name="Ada Lovelace",
+                cv_text="Python engineer",
+                cv_filename="resume.txt",
+                skills=["Python"],
+                experience=[{"title": "Engineer"}],
+                education=[{"degree": "BSc"}],
+                languages=["English"],
+            )
+            db.add(profile)
+            db.commit()
+            self.profile_id = profile.id
         self.client = TestClient(create_app(settings))
         self.client.__enter__()
 
     def tearDown(self) -> None:
         self.client.__exit__(None, None, None)
         self.client.close()
+        self.engine.dispose()
         if self.db_path.exists():
             self.db_path.unlink()
 
@@ -149,6 +168,27 @@ class ProfileApiHttpTests(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 422)
         self.assertEqual(response.json()["error"]["code"], "validation_error")
+
+    def test_preferences_put_then_get_preserves_constraints_relocation_and_weights(self) -> None:
+        payload = {
+            "target_roles": ["Backend Engineer"],
+            "locations": ["CDMX"],
+            "modalities": ["remote"],
+            "salary_min": 100000,
+            "willing_to_relocate": True,
+            "excluded_constraints": ["no_salary", "unverified_company", "relocation_required"],
+            "weights": {"skills": 2.5, "experience": 1.25},
+        }
+
+        saved = self.client.put(f"/api/v1/profiles/{self.profile_id}/preferences", json=payload)
+        self.assertEqual(saved.status_code, 200)
+
+        loaded = self.client.get(f"/api/v1/profiles/{self.profile_id}")
+        self.assertEqual(loaded.status_code, 200)
+        preferences = loaded.json()["preferences"]
+        self.assertEqual(preferences["excluded_constraints"], payload["excluded_constraints"])
+        self.assertTrue(preferences["willing_to_relocate"])
+        self.assertEqual(preferences["weights"], payload["weights"])
 
 
 if __name__ == "__main__":

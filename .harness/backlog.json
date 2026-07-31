@@ -1373,7 +1373,7 @@
     {
       "id": "SOURCES-005",
       "title": "Add executable source configuration and diagnostics to dashboard",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "SOURCES-004"
       ],
@@ -1390,12 +1390,12 @@
         "Source list exposes last run status and actionable errors",
         "Source creation rejects incomplete runnable configuration"
       ],
-      "commit_hash": "n/a"
+      "commit_hash": "592d4ce"
     },
     {
       "id": "PROFILE-003",
       "title": "Persist restrictions and preference controls",
-      "status": "blocked",
+      "status": "approved",
       "depends_on": [
         "SOURCES-005"
       ],

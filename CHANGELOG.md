@@ -80,6 +80,7 @@ All notable product changes will be documented here following Keep a Changelog a
 - Notion API paths fixed: `data_sources` → `databases`, `data_source_id` → `database_id`. (`NOTION-004`)
 - CORS middleware added allowing `localhost:5173` and `localhost:3000` origins. (`TEST-012`)
 - Backend dependency versions pinned in `backend/requirements.txt` for reproducible builds. (`OPS-008`)
+- Vite dev server proxies `/api` and `/health` to backend at `127.0.0.1:8000`, enabling frontend-backend communication in development. (`WEB-001`)
 
 ### Added
 
@@ -683,6 +684,17 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: requires running API server for full runtime profile and upload interaction
 - Commit subject: feat(web): connect profile UI to live API
 - Commit hash: 11cd080
+
+### PROFILE-003 — Attempt 2
+
+- Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_profile.py`, `tests/backend/test_api_profile.py`
+- Commands: backend profile 11/11; frontend 39/39; `cd frontend && pnpm build`; `git diff --check`
+- Tester: PASS — persistencia HTTP PUT→GET de restricciones, reubicación y pesos
+- Reviewer: APPROVED — controles accesibles y estado rehidratado desde API
+- Risks: fallos preexistentes fuera de alcance permanecen documentados
+- Commit subject: fix(web): persist profile restrictions and preferences
+- Commit hash: pending
 
 ### FRONTEND-008 — Attempt 1
 

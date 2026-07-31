@@ -21,7 +21,15 @@ interface ProfileDraft {
   weightExperience: number;
   weightLocation: number;
   weightMode: number;
+  excludeNoSalary: boolean;
+  excludeUnverified: boolean;
+  allowRelocation: boolean;
 }
+
+/** Constraint tokens consumed by backend/app/matching.py. */
+const CONSTRAINT_NO_SALARY = "no_salary";
+const CONSTRAINT_UNVERIFIED_COMPANY = "unverified_company";
+const CONSTRAINT_RELOCATION_REQUIRED = "relocation_required";
 
 const MODALITY_MAP: Record<string, string> = { remote: "Remoto", hybrid: "Híbrido", onsite: "Presencial", unknown: "No especificada" };
 
@@ -56,6 +64,9 @@ const initialDraft: ProfileDraft = {
   weightExperience: 30,
   weightLocation: 20,
   weightMode: 10,
+  excludeNoSalary: true,
+  excludeUnverified: true,
+  allowRelocation: false,
 };
 
 const apiClient = createApiClient();
@@ -157,6 +168,9 @@ function App() {
             weightExperience: (p.preferences?.weights as Record<string, number>)?.experience ?? initialDraft.weightExperience,
             weightLocation: (p.preferences?.weights as Record<string, number>)?.location ?? initialDraft.weightLocation,
             weightMode: (p.preferences?.weights as Record<string, number>)?.modality ?? initialDraft.weightMode,
+            excludeNoSalary: p.preferences?.excluded_constraints?.includes(CONSTRAINT_NO_SALARY) ?? initialDraft.excludeNoSalary,
+            excludeUnverified: p.preferences?.excluded_constraints?.includes(CONSTRAINT_UNVERIFIED_COMPANY) ?? initialDraft.excludeUnverified,
+            allowRelocation: p.preferences?.willing_to_relocate ?? !(p.preferences?.excluded_constraints?.includes(CONSTRAINT_RELOCATION_REQUIRED) ?? !initialDraft.allowRelocation),
           });
         }).catch(() => localStorage.removeItem("profileId"));
       }
@@ -218,14 +232,30 @@ function App() {
         });
         setProfileVersion(updated.version);
       } else {
-        await apiClient.updateProfilePreferences(profileId, {
+        const updated = await apiClient.updateProfilePreferences(profileId, {
           locations: draft.locations.split(",").map((s) => s.trim()).filter(Boolean),
           modalities: [draft.mode === "Remoto" ? "remote" : draft.mode === "Híbrido" ? "hybrid" : "onsite"],
           salary_min: parseInt(draft.minSalary) || undefined,
           salary_max: parseInt(draft.maxSalary) || undefined,
           work_authorization: draft.authorization ? [draft.authorization] : undefined,
+          willing_to_relocate: draft.allowRelocation,
+          excluded_constraints: [
+            ...(draft.excludeNoSalary ? [CONSTRAINT_NO_SALARY] : []),
+            ...(draft.excludeUnverified ? [CONSTRAINT_UNVERIFIED_COMPANY] : []),
+            ...(!draft.allowRelocation ? [CONSTRAINT_RELOCATION_REQUIRED] : []),
+          ],
           weights: { skills: draft.weightSkills, experience: draft.weightExperience, location: draft.weightLocation, modality: draft.weightMode },
         });
+        setProfileVersion(updated.version);
+        if (updated.preferences) {
+          const persistedConstraints = updated.preferences.excluded_constraints ?? [];
+          setDraft((current) => ({
+            ...current,
+            excludeNoSalary: persistedConstraints.includes(CONSTRAINT_NO_SALARY),
+            excludeUnverified: persistedConstraints.includes(CONSTRAINT_UNVERIFIED_COMPANY),
+            allowRelocation: updated.preferences?.willing_to_relocate ?? !persistedConstraints.includes(CONSTRAINT_RELOCATION_REQUIRED),
+          }));
+        }
       }
       setSaved(true);
     } catch { setProfileError("No se pudieron guardar los cambios."); }
@@ -472,7 +502,7 @@ function ProfileSection({ draft, cvName, onUpload, update }: { draft: ProfileDra
 
 function PreferencesSection({ draft, update }: { draft: ProfileDraft; update: <K extends keyof ProfileDraft>(key: K, value: ProfileDraft[K]) => void }) {
   const weightsTotal = draft.weightSkills + draft.weightExperience + draft.weightLocation + draft.weightMode;
-  return <div id="preferences-panel" className="content-grid preferences-grid" role="tabpanel" aria-labelledby="tab-preferences" tabIndex={0}><section className="panel" aria-labelledby="preferences-title"><p className="card-kicker">Criterios de búsqueda</p><h2 id="preferences-title">Qué oportunidades quieres ver</h2><div className="form-grid"><label>Ubicaciones<input name="locations" autoComplete="address-level2" value={draft.locations} onChange={(event) => update("locations", event.target.value)} /><small>Usa comas para agregar varias.</small></label><label>Modalidad<select name="workMode" value={draft.mode} onChange={(event) => update("mode", event.target.value as WorkMode)}><option>Remoto</option><option>Híbrido</option><option>Presencial</option></select></label><label>Salario mínimo (MXN)<input name="minSalary" type="number" min="0" step="1000" value={draft.minSalary} onChange={(event) => update("minSalary", event.target.value)} /></label><label>Salario máximo (MXN)<input name="maxSalary" type="number" min="0" step="1000" value={draft.maxSalary} onChange={(event) => update("maxSalary", event.target.value)} /></label><label className="wide">Autorización de trabajo<textarea name="authorization" autoComplete="off" rows={2} value={draft.authorization} onChange={(event) => update("authorization", event.target.value)} /></label></div><fieldset className="constraints"><legend>Restricciones</legend><label className="checkbox-row"><input name="excludeNoSalary" type="checkbox" defaultChecked />Excluir ofertas sin rango salarial</label><label className="checkbox-row"><input name="excludeUnverified" type="checkbox" defaultChecked />Excluir empresas sin información verificable</label><label className="checkbox-row"><input name="allowRelocation" type="checkbox" />Mostrar ofertas que requieren reubicación</label></fieldset></section><section className="panel weights-panel" aria-labelledby="weights-title"><div className="panel-heading"><div><p className="card-kicker">Compatibilidad</p><h3 id="weights-title">Pesos de evaluación</h3></div><span>{weightsTotal}% asignado</span></div><p className="muted">Ajusta cómo ponderamos cada dimensión al calcular tu compatibilidad.</p><div className="weights-stack"><Weight label="Habilidades" name="weightSkills" value={draft.weightSkills} onChange={(v) => update("weightSkills", v)} /><Weight label="Experiencia" name="weightExperience" value={draft.weightExperience} onChange={(v) => update("weightExperience", v)} /><Weight label="Ubicación" name="weightLocation" value={draft.weightLocation} onChange={(v) => update("weightLocation", v)} /><Weight label="Modalidad" name="weightMode" value={draft.weightMode} onChange={(v) => update("weightMode", v)} /></div><div className="info-callout"><strong>Pesos asignados: {weightsTotal}%</strong><p>{weightsTotal !== 100 ? "Los pesos deberían sumar 100% para una evaluación balanceada." : "Distribución balanceada."}</p></div></section></div>;
+  return <div id="preferences-panel" className="content-grid preferences-grid" role="tabpanel" aria-labelledby="tab-preferences" tabIndex={0}><section className="panel" aria-labelledby="preferences-title"><p className="card-kicker">Criterios de búsqueda</p><h2 id="preferences-title">Qué oportunidades quieres ver</h2><div className="form-grid"><label>Ubicaciones<input name="locations" autoComplete="address-level2" value={draft.locations} onChange={(event) => update("locations", event.target.value)} /><small>Usa comas para agregar varias.</small></label><label>Modalidad<select name="workMode" value={draft.mode} onChange={(event) => update("mode", event.target.value as WorkMode)}><option>Remoto</option><option>Híbrido</option><option>Presencial</option></select></label><label>Salario mínimo (MXN)<input name="minSalary" type="number" min="0" step="1000" value={draft.minSalary} onChange={(event) => update("minSalary", event.target.value)} /></label><label>Salario máximo (MXN)<input name="maxSalary" type="number" min="0" step="1000" value={draft.maxSalary} onChange={(event) => update("maxSalary", event.target.value)} /></label><label className="wide">Autorización de trabajo<textarea name="authorization" autoComplete="off" rows={2} value={draft.authorization} onChange={(event) => update("authorization", event.target.value)} /></label></div><fieldset className="constraints"><legend>Restricciones</legend><label className="checkbox-row"><input name="excludeNoSalary" type="checkbox" autoComplete="off" checked={draft.excludeNoSalary} onChange={(event) => update("excludeNoSalary", event.target.checked)} />Excluir ofertas sin rango salarial</label><label className="checkbox-row"><input name="excludeUnverified" type="checkbox" autoComplete="off" checked={draft.excludeUnverified} onChange={(event) => update("excludeUnverified", event.target.checked)} />Excluir empresas sin información verificable</label><label className="checkbox-row"><input name="allowRelocation" type="checkbox" autoComplete="off" checked={draft.allowRelocation} onChange={(event) => update("allowRelocation", event.target.checked)} />Mostrar ofertas que requieren reubicación</label></fieldset></section><section className="panel weights-panel" aria-labelledby="weights-title"><div className="panel-heading"><div><p className="card-kicker">Compatibilidad</p><h3 id="weights-title">Pesos de evaluación</h3></div><span>{weightsTotal}% asignado</span></div><p className="muted">Ajusta cómo ponderamos cada dimensión al calcular tu compatibilidad.</p><div className="weights-stack"><Weight label="Habilidades" name="weightSkills" value={draft.weightSkills} onChange={(v) => update("weightSkills", v)} /><Weight label="Experiencia" name="weightExperience" value={draft.weightExperience} onChange={(v) => update("weightExperience", v)} /><Weight label="Ubicación" name="weightLocation" value={draft.weightLocation} onChange={(v) => update("weightLocation", v)} /><Weight label="Modalidad" name="weightMode" value={draft.weightMode} onChange={(v) => update("weightMode", v)} /></div><div className="info-callout"><strong>Pesos asignados: {weightsTotal}%</strong><p>{weightsTotal !== 100 ? "Los pesos deberían sumar 100% para una evaluación balanceada." : "Distribución balanceada."}</p></div></section></div>;
 }
 
 function Weight({ label, name, value, onChange }: { label: string; name: string; value: number; onChange: (value: number) => void }) {

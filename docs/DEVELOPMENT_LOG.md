@@ -850,6 +850,231 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: refactor(api): extract shared KIND_MAP to constants module
 - Commit hash: 9ccd5b3
 
+### API-010 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: profile_payload guards None in skills/experience/education/languages with `or []`; all tests pass; PASS
+- Skills: none
+- Files: `backend/app/factory.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — defensive guard, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: fix(api): add defensive None guard in profile_payload serialization
+- Commit hash: 8f6e7f4
+
+### API-011 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: IntegrityError in profile upload caught and returned as 422 with cv_validation_error code; all tests pass; PASS
+- Skills: none
+- Files: `backend/app/factory.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — IntegrityError caught as 422, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: fix(api): catch IntegrityError as 422 in profile upload
+- Commit hash: 80a2b57
+
+### API-012 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: @app.on_event("startup") migrated to ASGI lifespan context manager; deprecation warning eliminated; all tests pass; PASS
+- Skills: none
+- Files: `backend/app/factory.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — lifespan context manager replaces on_event, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: refactor(api): migrate on_event startup to ASGI lifespan
+- Commit hash: 277fe04
+
+### API-013 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: unsupported/missing Content-Type rejected as 422 in upload endpoint; all tests pass; PASS
+- Skills: none
+- Files: `backend/app/factory.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — content-type validated at route level, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: fix(api): add content-type validation in upload endpoint
+- Commit hash: cca710a
+
+### API-014 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: upload size > 10MB rejected at FastAPI level with 422; all tests pass; PASS
+- Skills: none
+- Files: `backend/app/factory.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — Content-Length check at route level, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: fix(api): enforce upload size limit at FastAPI level
+- Commit hash: bddadf2
+
+### API-015 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: JobService.update_job() method added; JobRepository.get() added; all tests pass; PASS
+- Skills: none
+- Files: `backend/app/services.py`, `backend/app/repositories.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — service and repository method added, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: feat(api): add JobService.update_job method with repository get helper
+- Commit hash: 4ec73f9
+
+### API-016 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: PipelineExecution.run_id immutable after creation via @validates; all tests pass; PASS
+- Skills: none
+- Files: `backend/app/models.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — SQLAlchemy validator enforces immutability, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: fix(api): make PipelineExecution.run_id immutable after creation
+- Commit hash: b94fe0f
+
+### NOTION-004 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: data_sources → databases and data_source_id → database_id in Notion API paths; all tests pass; PASS
+- Skills: none
+- Files: `backend/app/notion_sync.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — API path fix, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: fix(api): fix data_sources to databases in Notion API paths
+- Commit hash: 94dfe6f
+
+### TEST-008 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: 404 envelope for missing source (PATCH/DELETE) and missing execution (GET); data/ added to gitignore; all tests pass; PASS
+- Skills: none
+- Files: `tests/backend/test_api_operations.py`, `.gitignore`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — 404 envelope tests added, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: test(api): add 404 envelope tests for missing sources and execution
+- Commit hash: 59f82dc
+
+### TEST-009 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: empty source name rejected via Pydantic min_length=1; all tests pass; PASS
+- Skills: none
+- Files: `tests/backend/test_api_operations.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — empty name rejection test, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: test(api): add test for empty source name rejection
+- Commit hash: 11e2a47
+
+### TEST-011 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: HTTP-level large file rejection test; all tests pass; PASS
+- Skills: none
+- Files: `tests/backend/test_api_profile.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — large file rejection test, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: test(api): add HTTP-level large file rejection test
+- Commit hash: e385331
+
+### TEST-012 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: CORS middleware allows localhost:5173 and localhost:3000; GET and OPTIONS header tests; all tests pass; PASS
+- Skills: none
+- Files: `backend/app/factory.py`, `tests/backend/test_api_operations.py`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — CORS middleware and header tests, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: feat(api): add CORS middleware and tests
+- Commit hash: 74fb417
+
+### OPS-008 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: backend requirements.txt pins exact dependency versions; all tests pass; PASS
+- Skills: none
+- Files: `backend/requirements.txt`
+- Commands: compileall; existing test suites
+- Tester: PASS — all pre-existing tests pass
+- Reviewer: APPROVED — pinned deps for reproducible builds, scope clean
+- Rework: none
+- Changelog: added
+- Risks: none
+- Commit subject: chore(ops): pin dependency versions for reproducible builds
+- Commit hash: 4426859
+
+### FRONTEND-009 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: n/a — backend manages secrets; Notion status visible via health endpoint; no frontend change needed; PASS
+- Skills: none
+- Files: none
+- Commands: none
+- Tester: PASS — no change needed
+- Reviewer: APPROVED — backend handles secrets, health endpoint exposes status
+- Rework: none
+- Changelog: not applicable
+- Risks: none
+- Commit subject: n/a (marked n/a in backlog)
+- Commit hash: none
+
+### WEB-001 — Attempt 1
+
+- Started / finished: 2026-07-21 / 2026-07-21
+- Acceptance criteria: Vite dev server proxies /api and /health to backend at 127.0.0.1:8000; all tests pass; PASS
+- Skills: none
+- Files: `frontend/vite.config.ts`
+- Commands: `npx vite --version`; TypeScript syntax check
+- Tester: PASS — vite config valid, existing test suites pass
+- Reviewer: APPROVED — proxy config unblocks frontend-backend communication in dev
+- Rework: none
+- Changelog: added
+- Risks: requires backend running on port 8000 for full dev workflow
+- Commit subject: fix(web): add proxy to Vite config for backend API requests
+- Commit hash: 310a6f5
+
 ### HARNESS-004 — Attempt 1
 
 - Started / finished: 2026-07-30 / 2026-07-30
@@ -865,19 +1090,62 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: fix(harness): repair inactive current task state
 - Commit hash: pending
 
-### SOURCES-004 — Attempt 2
+### SOURCES-004 — Attempt 1
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: todos los hallazgos corregidos; PASS
+- Acceptance criteria: configuración ejecutable, resolver común, errores accionables y zero-jobs no saludable; rework requerido por revisión
 - Skills: coder none; tester none; reviewer none
 - Files: `backend/app/factory.py`, `backend/app/sources.py`, `backend/app/pipeline.py`, `tests/backend/test_sources_004.py`
-- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_sources_004 -v`; related suites; `compileall`; `git diff --check`
-- Tester: PASS — 10/10 target; fallos restantes preexistentes aislados
-- Reviewer: APPROVED — alcance y requisitos completos
-- Rework: resolved
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_sources_004 -v`; related backend suites; compileall
+- Tester: PASS — primer intento 7/7; revisión posterior 10/10 con guard y casos de rework
+- Reviewer: CHANGES_REQUESTED — cron zero-jobs, URLs inválidas y allow_network requerían corrección
+- Rework: intento 2 corrigió pipeline, validación 422, tipos booleanos y guard de import
 - Changelog: added
-- Risks: fallos preexistentes fuera de alcance permanecen documentados
+- Risks: fuentes reales siguen sujetas a robots, rate limits y compatibilidad de cada proveedor
 - Commit subject: fix(api): make source refresh configuration executable
+- Commit hash: pending
+
+### PROFILE-003 — Attempt 2 (traceability)
+
+- Started / finished: 2026-07-30 / 2026-07-30
+- Acceptance criteria: restricciones controladas y persistentes; pesos y restricciones conservados tras PUT→GET; PASS
+- Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_profile.py`, `tests/backend/test_api_profile.py`
+- Commands: backend profile 11/11; frontend 39/39; `cd frontend && pnpm build`; `git diff --check`
+- Tester: PASS — persistencia HTTP PUT→GET y suites relacionadas OK
+- Reviewer: APPROVED — controles accesibles, estado rehidratado y alcance revisados
+- Risks: fallos preexistentes de la suite backend completa permanecen fuera de alcance
+- Commit subject: fix(web): persist profile restrictions and preferences
+- Commit hash: pending
+
+### PROFILE-003 — Attempt 2
+
+- Started / finished: 2026-07-30 / 2026-07-30
+- Acceptance criteria: restricciones controladas y persistentes; pesos y restricciones conservados tras PUT→GET; PASS
+- Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_profile.py`, `tests/backend/test_api_profile.py`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_profile -v` (11/11); `python3 -m unittest discover -s tests/frontend -p 'test_*.py' -v` (39/39); `cd frontend && pnpm build`; `git diff --check`
+- Tester: PASS — prueba HTTP PUT→GET valida `excluded_constraints`, `willing_to_relocate` y `weights`; suite frontend y build OK
+- Reviewer: APPROVED — checkboxes controlados con `autocomplete`, persistencia y alcance revisados; `backend/app/schemas.py` preexistente excluido del stage
+- Rework: intento 1 rechazado por falta de prueba HTTP, autocomplete y alcance; intento 2 resuelto
+- Changelog: added
+- Risks: suite backend completa mantiene fallos preexistentes fuera de alcance; persistencia requiere API y base de datos disponibles
+- Commit subject: fix(web): persist profile restrictions and preferences
+- Commit hash: pending
+
+### SOURCES-005 — Attempt 3
+
+- Started / finished: 2026-07-30 / 2026-07-30
+- Acceptance criteria: configuración ejecutable, diagnóstico por fuente y accesibilidad; PASS
+- Skills: coder `vercel-react-best-practices`; reviewer `web-design-guidelines` + `vercel-react-best-practices`; tester `webapp-testing`
+- Files: `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `frontend/src/styles.css`, `tests/frontend/test_sources_005.py`
+- Commands: `python3 -m unittest tests.frontend.test_sources_005 -v`; frontend suite; `pnpm build`; `tsc -b`; `git diff --check`
+- Tester: PASS — 9/9 target, 34/34 frontend suite, build/tsc OK; Playwright bloqueado por sandbox Chromium
+- Reviewer: APPROVED — fixtures, errores 422, tabs y controles accesibles revisados
+- Rework: intentos 1 y 2 corregidos; intento 3 aprobado
+- Changelog: added
+- Risks: E2E browser requiere entorno con Chromium y permisos de sandbox
+- Commit subject: feat(web): add source configuration diagnostics
 - Commit hash: pending
 
 ### JOBS-003 — Attempt 2
@@ -895,17 +1163,30 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: fix(api): normalize job source links
 - Commit hash: pending
 
-### SOURCES-005 — Attempt 3
+### SOURCES-004 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: configuración ejecutable, diagnóstico por fuente y accesibilidad; PASS
-- Skills: coder `vercel-react-best-practices`; reviewer `web-design-guidelines` + `vercel-react-best-practices`; tester `webapp-testing`
-- Files: `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `frontend/src/styles.css`, `tests/frontend/test_sources_005.py`
-- Commands: `python3 -m unittest tests.frontend.test_sources_005 -v`; frontend suite; `pnpm build`; `tsc -b`; `git diff --check`
-- Tester: PASS — 9/9 target, 34/34 frontend suite, build/tsc OK; Playwright bloqueado por sandbox Chromium
-- Reviewer: APPROVED — fixtures, errores 422, tabs y controles accesibles revisados
-- Rework: intentos 1 y 2 corregidos; intento 3 aprobado
+- Acceptance criteria: todos los hallazgos corregidos; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/sources.py`, `backend/app/pipeline.py`, `tests/backend/test_sources_004.py`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_sources_004 -v`; related suites; `compileall`; `git diff --check`
+- Tester: PASS — 10/10 target; fallos restantes preexistentes aislados
+- Reviewer: APPROVED — alcance y requisitos completos
+- Rework: resolved
 - Changelog: added
-- Risks: E2E browser requiere entorno con Chromium y permisos de sandbox
-- Commit subject: feat(web): add source configuration diagnostics
+- Risks: fallos preexistentes fuera de alcance permanecen documentados
+- Commit subject: fix(api): make source refresh configuration executable
+- Commit hash: pending
+
+### PROFILE-003 — Attempt 2 (final traceability)
+
+- Started / finished: 2026-07-30 / 2026-07-30
+- Acceptance criteria: restricciones controladas y persistentes; pesos y restricciones conservados tras PUT→GET; PASS
+- Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_profile.py`, `tests/backend/test_api_profile.py`
+- Commands: backend profile 11/11; frontend 39/39; `cd frontend && pnpm build`; `git diff --check`
+- Tester: PASS — persistencia HTTP PUT→GET y suites relacionadas OK
+- Reviewer: APPROVED — controles accesibles, estado rehidratado y alcance revisados
+- Risks: fallos preexistentes de la suite backend completa permanecen fuera de alcance
+- Commit subject: fix(web): persist profile restrictions and preferences
 - Commit hash: pending

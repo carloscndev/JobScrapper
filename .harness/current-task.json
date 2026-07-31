@@ -1,36 +1,31 @@
 {
   "schema_version": 1,
   "active": true,
-  "task_id": "SOURCES-005",
+  "task_id": "PROFILE-003",
   "state": "approved",
-  "attempt": 3,
+  "attempt": 2,
   "evidence": {
     "coder": {
       "result": "pass",
-      "evidence": "Rework intento 2: fixture JSON/HTML shape validation, ApiRequestError fields rendered, source controls name/autocomplete, tab Arrow/Home/End + roving tabindex; npm run build OK; source tests 5 OK; diff check OK",
-      "attempt": 3
+      "evidence": "PROFILE-003 intento 2: App.tsx añade autoComplete=off a los tres checkboxes; cd frontend && pnpm build (tsc + vite build) OK; sin cambios fuera de frontend",
+      "attempt": 2
     },
     "tester": {
       "result": "pass",
-      "evidence": "Intento 3: test_sources_005 9/9; suite frontend 34/34; pnpm build y tsc -b OK; E2E Playwright bloqueado por sandbox Chromium MachPort permission, sin assertions ejecutadas; cambios solo tests/frontend",
-      "attempt": 3
+      "evidence": "Intento 2: backend/.venv/bin/python -m unittest tests.backend.test_api_profile -v = 11/11; frontend suite = 39/39; cd frontend && pnpm build (tsc + vite) OK; git diff --check OK; prueba HTTP PUT→GET de restricciones y pesos añadida",
+      "attempt": 2
     },
     "reviewer": {
       "result": "pass",
-      "evidence": "APPROVED intento 3: UI guidelines/React review; fixtures, 422 fields, tab keyboard, names/autocomplete y diagnostics resueltos; 9/9 tests, build/tsc/diff-check OK; schemas.py fuera de stage",
-      "attempt": 3
+      "evidence": "APPROVED intento 2: App.tsx checkboxes controlled + autocomplete=off; HTTP PUT→GET persistence test; backend profile 11/11; frontend 39/39; pnpm build; diff check; schemas.py preexisting excluded from stage",
+      "attempt": 2
     }
   },
   "rejections": [
     {
-      "by": "tester",
-      "reason": "CHANGES_REQUESTED: test_sources_005 falla porque client.ts solo lee body.detail.error; backend devuelve top-level body.error. Build/tsc pasan; Playwright bloqueado por falta de módulo/EPERM bind, sin modificar producción.",
-      "attempt": 1
-    },
-    {
       "by": "reviewer",
-      "reason": "CHANGES_REQUESTED: excluir schemas.py fuera de scope; validar fixture JSON {}/[] y HTML sin cards/links; mostrar fields de 422 junto al mensaje; mejorar accesibilidad del formulario/tablist según UI guidelines (teclado y nombres/autocomplete).",
-      "attempt": 2
+      "reason": "CHANGES_REQUESTED: excluir backend/app/schemas.py del stage; agregar prueba HTTP PUT/GET para restricciones y pesos; añadir autocomplete=off a los tres checkboxes; revisión React/UI pendiente",
+      "attempt": 1
     }
   ],
   "commit": null
