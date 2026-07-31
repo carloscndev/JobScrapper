@@ -1487,7 +1487,7 @@
     {
       "id": "SOURCES-008",
       "title": "Harden ATS feed metadata and company labeling",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "SOURCES-007"
       ],
@@ -1503,7 +1503,8 @@
         "Greenhouse metadata arrays do not discard valid jobs or fail the source",
         "Configured company labels are applied when a provider omits company",
         "Existing URL validation and connector regression tests remain green"
-      ]
+      ],
+      "commit_hash": "78d14ab"
     }
   ]
 }
