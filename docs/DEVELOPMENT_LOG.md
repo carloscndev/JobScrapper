@@ -820,6 +820,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: fix(api): harden ats feed normalization
 - Commit hash: pending
 
+### FRONTEND-010 — Attempt 1
+
+- Started / finished: 2026-07-31 / 2026-07-31
+- Acceptance criteria: activación con aceptación explícita de términos; cancelación sin PATCH; errores API accionables; PASS
+- Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_source_activation.py`
+- Commands: `python3 -m unittest tests.frontend.test_frontend_source_activation tests.frontend.test_frontend_operations -v` (9/9); `cd frontend && pnpm build`; `cd frontend && pnpm exec tsc -b`; `git diff --check`
+- Tester: PASS — confirmación, cancelación, payload de activación y detalles de error
+- Reviewer: APPROVED — accesibilidad y flujo revisados
+- Reprocesos: none
+- Changelog: added
+- Risks: la confirmación usa el diálogo nativo del navegador y requiere que el usuario revise el enlace de términos mostrado
+- Commit subject: fix(web): explain and confirm source activation
+- Commit hash: pending
+
 ### TEST-013 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30

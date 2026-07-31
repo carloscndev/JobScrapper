@@ -1505,6 +1505,28 @@
         "Existing URL validation and connector regression tests remain green"
       ],
       "commit_hash": "78d14ab"
+    },
+    {
+      "id": "FRONTEND-010",
+      "title": "Allow explicit source terms acceptance when enabling",
+      "status": "approved",
+      "depends_on": [
+        "SOURCES-008"
+      ],
+      "commit": "fix(web): explain and confirm source activation",
+      "allowed_paths": [
+        "frontend/src/App.tsx",
+        "tests/frontend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Enabling a source with unaccepted terms asks for explicit confirmation and sends terms_accepted=true",
+        "Cancelling confirmation leaves the source paused without an API request",
+        "API validation errors are shown with an actionable message",
+        "Frontend regression tests and pnpm build pass"
+      ]
     }
   ]
 }

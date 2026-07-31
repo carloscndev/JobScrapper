@@ -298,6 +298,7 @@ function OperationsDashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorFields, setErrorFields] = useState<Array<{ field?: string; message?: string }>>([]);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formName, setFormName] = useState("");
@@ -310,26 +311,39 @@ function OperationsDashboard() {
   const [formError, setFormError] = useState<string | null>(null);
   const [formErrorFields, setFormErrorFields] = useState<Array<{ field?: string; message?: string }>>([]);
 
+  const setOperationError = (caught: unknown, fallback: string) => {
+    setError(caught instanceof ApiRequestError ? caught.message : fallback);
+    setErrorFields(caught instanceof ApiRequestError ? caught.fields : []);
+  };
+
   const load = async () => {
-    setLoading(true); setError(null);
+    setLoading(true); setError(null); setErrorFields([]);
     try {
       const [nextSources, nextExecutions, nextMetrics, nextHealth] = await Promise.all([apiClient.getSources(), apiClient.getExecutions(), apiClient.getMetrics(), apiClient.getOperationsHealth()]);
       setSources(nextSources); setExecutions(nextExecutions); setMetrics(nextMetrics); setOperationsHealth(nextHealth); setLastUpdated(new Date().toISOString());
-    } catch { setError("No pudimos consultar la API."); }
+    } catch (caught) { setOperationError(caught, "No pudimos consultar la API."); }
     finally { setLoading(false); }
   };
   useEffect(() => { void load(); }, []);
 
   const manualRefresh = async () => {
-    setRefreshing(true); setError(null);
+    setRefreshing(true); setError(null); setErrorFields([]);
     try { const run = await apiClient.refresh(); setExecutions((current) => [run, ...current].slice(0, 10)); setLastUpdated(new Date().toISOString()); }
-    catch { setError("La actualización no pudo iniciarse. Revisa si ya existe una ejecución en curso."); }
+    catch (caught) { setOperationError(caught, "La actualización no pudo iniciarse. Revisa si ya existe una ejecución en curso."); }
     finally { setRefreshing(false); }
   };
 
   const toggleSource = async (id: number, current: boolean) => {
-    try { await apiClient.updateSource(id, { enabled: !current }); void load(); }
-    catch { setError("No se pudo cambiar el estado de la fuente."); }
+    const source = sources.find((item) => item.id === id);
+    if (!current && source?.config?.terms_accepted !== true) {
+      const termsUrl = source?.terms_url || "no configurada";
+      const accepted = window.confirm(`Antes de activar esta fuente, revisa sus términos de uso: ${termsUrl}. ¿Confirmas que los revisaste y aceptas?`);
+      if (!accepted) return;
+    }
+    try {
+      await apiClient.updateSource(id, current ? { enabled: false } : { enabled: true, config: { terms_accepted: true } });
+      void load();
+    } catch (caught) { setOperationError(caught, "No se pudo cambiar el estado de la fuente."); }
   };
 
   const createSource = async (e: React.FormEvent) => {
@@ -368,7 +382,7 @@ function OperationsDashboard() {
   const deleteSource = async (id: number, name: string) => {
     if (!confirm(`¿Eliminar la fuente "${name}"?`)) return;
     try { await apiClient.deleteSource(id); void load(); }
-    catch { setError("No se pudo eliminar la fuente."); }
+    catch (caught) { setOperationError(caught, "No se pudo eliminar la fuente."); }
   };
 
   const healthy = operationsHealth?.status === "ok";
@@ -386,7 +400,7 @@ function OperationsDashboard() {
 
   return <section id="operations-panel" className="operations-dashboard" role="tabpanel" aria-labelledby="tab-operations" tabIndex={0}>
     <div className="dashboard-heading"><div><p className="eyebrow">Centro de operaciones</p><h2>Estado de la búsqueda</h2><p className="hero-copy">Supervisa fuentes, ejecuciones y la salud de tus integraciones locales.</p></div><button type="button" className="primary-button" onClick={manualRefresh} disabled={refreshing} aria-busy={refreshing}>{refreshing ? "Actualizando…" : "Actualizar ofertas"}</button></div>
-    {error && <div className="error-callout" role="alert"><strong>Error</strong><span>{error}</span><button type="button" className="secondary-button compact" onClick={() => void load()}>Reintentar</button></div>}
+    {error && <div className="error-callout" role="alert"><strong>Error</strong><span>{error}</span>{errorFields.length > 0 && <ul className="form-error-list">{errorFields.map((field, index) => <li key={`${field.field ?? "error"}-${index}`}><strong>{field.field ?? "Revisa este campo"}:</strong> {field.message ?? "Corrige este valor y vuelve a intentar."}</li>)}</ul>}<button type="button" className="secondary-button compact" onClick={() => void load()}>Reintentar</button></div>}
     {loading ? <div className="loading-state" role="status" aria-live="polite"><span className="loading-spinner" aria-hidden="true" />Cargando estado operativo…</div> : <>
       <div className="ops-metrics" aria-label="Métricas de operación"><Metric label="Ofertas activas" value={totalJobs} hint={`${totalJobsRegistered} registradas`} /><Metric label="Ejecuciones" value={totalExecutions} hint={`${runningExecutions} en curso`} /><Metric label="Fuentes activas" value={sources.filter((s) => s.enabled).length} hint={`${sources.length} configuradas`} /><Metric label="Última actualización" value={lastUpdated ? new Date(lastUpdated).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" }) : "—"} hint="hora local" /></div>
       <div className="operations-grid">

@@ -5,6 +5,7 @@
 - `fix(harness): repair inactive current task state` — canonicaliza y repara estados inactivos obsoletos mediante `init --force`.
 - `feat(api): support validated ats job feeds` — normaliza feeds JSON públicos de Greenhouse y Lever con enlaces oficiales y rechaza URLs malformadas.
 - `fix(api): harden ats feed normalization` — tolera metadatos en lista y aplica el nombre de compañía solo cuando está configurado explícitamente.
+- `fix(web): explain and confirm source activation` — solicita aceptación explícita de términos al activar fuentes y muestra los detalles de validación de la API.
 
 ### HARNESS-004 — Attempt 1
 
