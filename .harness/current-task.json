@@ -1,26 +1,32 @@
 {
   "schema_version": 1,
   "active": true,
-  "task_id": "HARNESS-004",
+  "task_id": "SOURCES-004",
   "state": "approved",
-  "attempt": 1,
+  "attempt": 2,
   "evidence": {
     "coder": {
       "result": "pass",
-      "evidence": "scripts/harness.py modificado; py_compile OK; tests.harness.test_harness: 35 tests OK; init --force repara current-task inactivo obsoleto y validate/status quedan válidos",
-      "attempt": 1
+      "evidence": "Rework intento 2: JobPipeline zero-jobs issue/failed; factory URL validation structured 422; allow_network bool validation consistent; backend pytest target 29 pass with one unrelated NameError; compileall OK",
+      "attempt": 2
     },
     "tester": {
       "result": "pass",
-      "evidence": "Regresión init_force stale inactive: 1 OK; suite tests/harness: 36 OK; py_compile harness y test OK",
-      "attempt": 1
+      "evidence": "Rework tests_sources_004: backend venv 10/10 OK; related suites 28 OK con un NameError preexistente en test_sources.py:191; compile OK; guard sin SQLAlchemy evita import crash",
+      "attempt": 2
     },
     "reviewer": {
       "result": "pass",
-      "evidence": "APPROVED: diff scoped; py_compile OK; harness suite 36 OK; validate/status OK; git diff --check limpio",
-      "attempt": 1
+      "evidence": "APPROVED intento 2: zero-jobs failed en factory y JobPipeline; URLs inválidas 422 estructurado; allow_network bool consistente; guard de tests; target 10/10 OK y diff check limpio",
+      "attempt": 2
     }
   },
-  "rejections": [],
+  "rejections": [
+    {
+      "by": "reviewer",
+      "reason": "CHANGES_REQUESTED: pipeline cron JobPipeline.run aún trata zero jobs como success; _validate_source_configuration deja URLs inválidas en 500; allow_network no normaliza/rechaza tipos no booleanos. Además el entorno python3 sin SQLAlchemy no puede importar 6 tests, aunque backend/.venv pasó 7/7.",
+      "attempt": 1
+    }
+  ],
   "commit": null
 }

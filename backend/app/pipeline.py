@@ -17,13 +17,12 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .connectors import DEFAULT_ADAPTERS
-from .constants import KIND_MAP
 from .jobs import canonicalize_url, fingerprint_job
 from .matching import MatchingService
 from .models import Job, PipelineExecution, Profile, Source, SourceRun
 from .notion_sync import NotionSyncService, SyncOutcome
 from .repositories import EvaluationRepository, JobRepository, ProfileRepository
-from .sources import SourceAdapter, SourceConfig, SourceKind
+from .sources import SourceAdapter, SourceConfig, SourceKind, resolve_source_adapter
 
 
 @dataclass(frozen=True)
@@ -72,14 +71,7 @@ class JobPipeline:
         self.adapters = {adapter.name: adapter for adapter in adapters}
 
     def _adapter(self, source: Source, config: Mapping[str, Any]) -> SourceAdapter | None:
-        name = str(config.get("adapter") or source.name)
-        adapter = self.adapters.get(name)
-        if adapter:
-            return adapter
-        mapped = KIND_MAP.get(source.kind)
-        if mapped:
-            return self.adapters.get(mapped)
-        return self.adapters.get(source.kind)
+        return resolve_source_adapter(source, tuple(self.adapters.values()), config)
 
     @staticmethod
     def _config(source: Source) -> SourceConfig:
@@ -137,14 +129,26 @@ class JobPipeline:
                         discovered.append(JobRepository(self.session).upsert(job)); report.jobs_ingested += 1
                     except Exception as exc:
                         report.issues.append(PipelineIssue("normalize", f"{type(exc).__name__}: {exc}", source.name, normalized.title))
+            # An apparently successful fetch that yields no jobs is not a
+            # healthy ingestion.  Keep this explicit in both the source run
+            # and the top-level report so scheduled/manual workers return a
+            # failure instead of silently reporting success.
+            if result is not None and len(result.jobs) == 0 and not result.error:
+                source_error = "No jobs found; source did not produce a healthy ingestion"
+                report.issues.append(PipelineIssue("ingest", source_error, source.name))
             run_status = result.status if result is not None else "failed"
+            if result is not None and len(result.jobs) == 0:
+                run_status = "failed"
             source_run = SourceRun(execution_id=execution.id, source_id=source.id, status=run_status,
                                    jobs_found=len(result.jobs) if result is not None else 0,
-                                   error=result.error if result is not None else source_error,
+                                   error=(result.error if result is not None and result.error else source_error),
                                    started_at=started, finished_at=datetime.now(timezone.utc))
             self.session.add(source_run)
             report.source_runs.append({"source": source.name, "status": run_status, "jobs_found": source_run.jobs_found, "error": source_run.error})
             self.session.commit()
+
+        if not source_items:
+            report.issues.append(PipelineIssue("ingest", "No enabled sources configured"))
 
         # Evaluate each retained job independently.  The deterministic score is
         # persisted even if Ollama is unavailable (MatchingService fallback).

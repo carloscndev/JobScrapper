@@ -17,6 +17,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
+from .constants import KIND_MAP
 from .models import Source
 
 if TYPE_CHECKING:
@@ -161,6 +162,31 @@ class SourceAdapter(ABC):
     @abstractmethod
     def fetch(self, config: SourceConfig) -> SourceFetchResult:
         """Fetch and normalize jobs, honoring timeout and rate-limit settings."""
+
+
+def resolve_source_adapter(
+    source: Source,
+    adapters: Sequence[SourceAdapter],
+    config: Mapping[str, Any] | None = None,
+) -> SourceAdapter | None:
+    """Resolve one adapter using the same precedence for every ingestion path.
+
+    An explicitly configured adapter is authoritative: an unknown override is
+    an error at the call site rather than silently falling back to a kind
+    mapping.  Without an override, a source name is checked first, followed by
+    the canonical kind mapping and the raw kind value.
+    """
+
+    values = config if config is not None else (source.config or {})
+    lookup = {str(adapter.name): adapter for adapter in adapters}
+    override = values.get("adapter")
+    if override is not None:
+        return lookup.get(str(override))
+    candidates = (source.name, KIND_MAP.get(source.kind), source.kind)
+    for candidate in candidates:
+        if candidate is not None and str(candidate) in lookup:
+            return lookup[str(candidate)]
+    return None
 
 
 class SourceService:

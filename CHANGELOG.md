@@ -15,6 +15,17 @@
 - Commit subject: fix(harness): repair inactive current task state
 - Commit hash: pending
 
+### SOURCES-004 — Attempt 2
+
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/sources.py`, `backend/app/pipeline.py`, `tests/backend/test_sources_004.py`
+- Commands: target source tests, related backend suites, compileall, diff check
+- Tester: PASS
+- Reviewer: APPROVED
+- Risks: external providers remain subject to robots/rate limits
+- Commit subject: fix(api): make source refresh configuration executable
+- Commit hash: pending
+
 All notable product changes will be documented here following Keep a Changelog and Semantic Versioning.
 
 ## [0.1.0] - 2026-07-20

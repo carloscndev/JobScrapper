@@ -25,9 +25,8 @@ from .schemas import (JobDetailResponse, JobEvaluationResponse, JobListItem, Pag
                       SourceUpdatePayload, UploadResponse)
 from .services import ProfileService
 from .connectors import DEFAULT_ADAPTERS
-from .constants import KIND_MAP
 from .jobs import canonicalize_url, fingerprint_job
-from .sources import SourceConfig, SourceKind, SourceService
+from .sources import SourceConfig, SourceKind, SourceService, resolve_source_adapter
 from .notion import NotionConfig
 from .process_lock import ProcessLock
 
@@ -35,6 +34,86 @@ from .config import Settings
 from .observability import configure_logging
 from .cv_profile import SUPPORTED_MIME_TYPES
 from sqlalchemy.exc import IntegrityError
+
+
+def _source_configuration_error(fields: list[dict[str, str]]) -> HTTPException:
+    return HTTPException(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        detail={
+            "error": {
+                "code": "source_configuration_error",
+                "message": "Source configuration is not runnable",
+                "fields": fields,
+            }
+        },
+    )
+
+
+def _source_url_fields(base_url: str | None, terms_url: str | None) -> list[dict[str, str]]:
+    """Return structured validation errors for optional source URLs."""
+
+    fields: list[dict[str, str]] = []
+    for field_name, value in (("base_url", base_url), ("terms_url", terms_url)):
+        if value is None:
+            continue
+        parsed = urlparse(value)
+        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+            fields.append({"field": field_name, "message": f"{field_name} must be an http(s) URL", "type": "value_error"})
+    return fields
+
+
+def _validate_source_configuration(
+    *,
+    name: str,
+    kind: str,
+    base_url: str | None,
+    terms_url: str | None,
+    terms_accepted: bool,
+    settings: dict[str, Any],
+) -> None:
+    """Reject enabled sources that cannot be fetched deterministically.
+
+    Fixture mode is the default safety boundary.  Network mode is explicit and
+    still requires a base URL; offline mode requires the fixture expected by
+    the selected adapter.  Adapter lookup itself is shared with refresh.
+    """
+
+    # Validate URLs before constructing ``SourceConfig``.  Its dataclass
+    # contract raises ValueError for malformed URLs; doing this at the HTTP
+    # boundary keeps configuration errors as the documented structured 422
+    # response instead of leaking as a server error.
+    fields = _source_url_fields(base_url, terms_url)
+
+    allow_network_value = settings.get("allow_network", False)
+    if "allow_network" in settings and type(allow_network_value) is not bool:
+        fields.append({"field": "config.allow_network", "message": "allow_network must be a boolean", "type": "bool_type"})
+    allow_network = allow_network_value if type(allow_network_value) is bool else False
+
+    if not terms_accepted and settings.get("terms_accepted") is not True:
+        fields.append({"field": "terms_accepted", "message": "terms_accepted=True is required before enabling this source", "type": "value_error"})
+
+    class _SourceRef:
+        config = settings
+        # resolve_source_adapter only needs these source attributes.
+        def __init__(self) -> None:
+            self.name = name
+            self.kind = kind
+
+    adapter = resolve_source_adapter(_SourceRef(), DEFAULT_ADAPTERS, settings)  # type: ignore[arg-type]
+    requested = settings.get("adapter")
+    if adapter is None:
+        label = f"adapter {requested!r}" if requested is not None else f"source name {name!r} or kind {kind!r}"
+        fields.append({"field": "config.adapter", "message": f"No adapter configured for {label}", "type": "value_error"})
+    else:
+        if allow_network:
+            if not base_url:
+                fields.append({"field": "base_url", "message": "base_url is required when allow_network=True", "type": "value_error"})
+        else:
+            fixture_keys = ("payload", "payload_path") if adapter.name == "json-api-feed" else ("html", "html_path")
+            if not any(settings.get(key) for key in fixture_keys):
+                fields.append({"field": "config", "message": f"provide {' or '.join(fixture_keys)} or set allow_network=True", "type": "value_error"})
+    if fields:
+        raise _source_configuration_error(fields)
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -192,6 +271,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.post("/api/v1/operations/sources", status_code=status.HTTP_201_CREATED, tags=["operations"])
     def create_source(payload: SourceCreatePayload) -> dict[str, Any]:
         with session_factory() as db:
+            url_fields = _source_url_fields(payload.base_url, payload.terms_url)
+            if url_fields:
+                raise _source_configuration_error(url_fields)
+            if payload.enabled:
+                _validate_source_configuration(
+                    name=payload.name,
+                    kind=payload.kind,
+                    base_url=payload.base_url,
+                    terms_url=payload.terms_url,
+                    terms_accepted=payload.terms_accepted,
+                    settings=dict(payload.config),
+                )
             config = SourceConfig(
                 name=payload.name,
                 kind=SourceKind(payload.kind),
@@ -212,15 +303,30 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             source = SourceRepository(db).get_by_id(source_id)
             if source is None:
                 raise HTTPException(status_code=404, detail={"error": {"code": "source_not_found", "message": f"Source {source_id} does not exist", "fields": []}})
-            if payload.enabled is not None:
-                source.enabled = payload.enabled
             if payload.name is not None:
                 source.name = payload.name
             if payload.base_url is not None:
                 source.base_url = payload.base_url
+            if payload.terms_url is not None:
+                source.terms_url = payload.terms_url
             if payload.config is not None:
                 merged = {**(source.config or {}), **payload.config}
                 source.config = merged
+            if payload.enabled is not None:
+                source.enabled = payload.enabled
+            url_fields = _source_url_fields(source.base_url, source.terms_url)
+            if url_fields:
+                raise _source_configuration_error(url_fields)
+            if source.enabled:
+                values = dict(source.config or {})
+                _validate_source_configuration(
+                    name=source.name,
+                    kind=source.kind,
+                    base_url=source.base_url,
+                    terms_url=source.terms_url,
+                    terms_accepted=bool(values.get("terms_accepted")),
+                    settings=values,
+                )
             db.commit()
             db.refresh(source)
             return _safe_source_config(source)
@@ -274,24 +380,58 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             found = failed = 0
             enabled_sources = db.scalars(select(Source).where(Source.enabled.is_(True)).order_by(Source.name)).all()
             issues_total = 0
+            source_errors: list[str] = []
             for source in enabled_sources:
                 started = datetime.now(timezone.utc)
-                source_config = SourceConfig(name=source.name, kind=SourceKind(source.kind), base_url=source.base_url,
-                    terms_url=source.terms_url, terms_accepted=bool((source.config or {}).get("terms_accepted")), settings=source.config or {})
-                name = (source.config or {}).get("adapter", source.name)
-                adapter = next((item for item in DEFAULT_ADAPTERS if item.name == name), None)
-                if adapter is None:
-                    mapped = KIND_MAP.get(source.kind)
-                    adapter = next((item for item in DEFAULT_ADAPTERS if item.name == (mapped or source.kind)), None)
-                result = adapter.fetch(source_config) if adapter else None
-                run = SourceRun(execution_id=execution.id, source_id=source.id, status=result.status if result else "failed",
-                                jobs_found=len(result.jobs) if result else 0, error=result.error if result else "No adapter configured",
+                source_config = None
+                adapter = None
+                result = None
+                source_error: str | None = None
+                values = source.config or {}
+                try:
+                    source_config = SourceConfig(
+                        name=source.name,
+                        kind=SourceKind(source.kind),
+                        base_url=source.base_url,
+                        terms_url=source.terms_url,
+                        terms_accepted=bool(values.get("terms_accepted")),
+                        timeout_seconds=float(values.get("timeout_seconds", 20)),
+                        requests_per_minute=int(values.get("requests_per_minute", 30)),
+                        max_retries=int(values.get("max_retries", 2)),
+                        settings=values,
+                    )
+                    adapter = resolve_source_adapter(source, DEFAULT_ADAPTERS, values)
+                    if adapter is None:
+                        override = values.get("adapter")
+                        requested = f"adapter {override!r}" if override is not None else f"source name {source.name!r} or kind {source.kind!r}"
+                        source_error = f"No adapter configured for {requested}"
+                    else:
+                        result = adapter.fetch(source_config)
+                except Exception as exc:  # isolate malformed config and adapter/network failures per source
+                    source_error = f"{type(exc).__name__}: {exc}"
+
+                if result is not None and result.error:
+                    source_error = result.error
+                jobs_found = len(result.jobs) if result is not None else 0
+                if result is not None and jobs_found == 0 and not source_error:
+                    source_error = "No jobs found; source did not produce a healthy ingestion"
+                if source_error:
+                    source_errors.append(f"{source.name}: {source_error}")
+                run_status = (
+                    result.status
+                    if result is not None
+                    else "failed"
+                )
+                if jobs_found == 0:
+                    run_status = "failed"
+                run = SourceRun(execution_id=execution.id, source_id=source.id, status=run_status,
+                                jobs_found=jobs_found, error=source_error,
                                 started_at=started, finished_at=datetime.now(timezone.utc))
                 db.add(run)
                 if result:
                     found += len(result.jobs)
-                    failed += 1 if result.error else 0
-                    issues_total += 1 if result.error else 0
+                    failed += 1 if run_status != "success" else 0
+                    issues_total += 1 if source_error else 0
                     for normalized in result.jobs:
                         JobRepository(db).upsert(Job(source_id=source.id, title=normalized.title, company=normalized.company, description=normalized.description,
                                     description_url=normalized.description_url, application_url=normalized.application_url,
@@ -299,12 +439,24 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                     location=normalized.location, region=normalized.region, modality=str(normalized.modality),
                                     salary_min=normalized.salary_min, salary_max=normalized.salary_max, salary_currency=normalized.salary_currency,
                                     published_at=normalized.published_at, metadata_json={**dict(normalized.metadata), "source": source.name}))
-            execution.status = "failed" if failed and not found else ("partial" if failed else "success")
+                else:
+                    failed += 1
+                    issues_total += 1
+            execution.status = "failed" if not found else ("partial" if failed else "success")
             execution.finished_at = datetime.now(timezone.utc)
             execution.metrics = {"jobs_found": found, "sources_failed": failed,
                                  "sources_total": len(enabled_sources), "issues_total": issues_total,
                                  "duration_seconds": round((datetime.now(timezone.utc) - started_clock).total_seconds(), 3),
                                  "max_concurrency": runtime.max_concurrency}
+            execution.error = (
+                "; ".join(source_errors)[:2000]
+                if source_errors
+                else (
+                    "No enabled sources configured"
+                    if not enabled_sources
+                    else ("No jobs found from enabled sources" if not found else None)
+                )
+            )
             db.commit(); db.refresh(execution)
             # The response is serialized after this session scope exits;
             # eagerly load the relationship to avoid DetachedInstanceError.

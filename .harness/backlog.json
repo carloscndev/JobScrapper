@@ -1305,7 +1305,7 @@
     {
       "id": "HARNESS-004",
       "title": "Repair inactive current-task state and validation regression",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "TEST-012"
       ],
@@ -1321,6 +1321,120 @@
         "Inactive current-task uses null state and zero attempt",
         "Harness validate and status pass from a clean inactive state",
         "Regression test covers the invalid committed inactive state"
+      ],
+      "commit_hash": "9a08012"
+    },
+    {
+      "id": "SOURCES-004",
+      "title": "Make source registration and refresh executable",
+      "status": "approved",
+      "depends_on": [
+        "HARNESS-004"
+      ],
+      "commit": "fix(api): make source refresh configuration executable",
+      "allowed_paths": [
+        "backend/app/**",
+        "tests/backend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Source configuration validates adapter, terms and network mode before enabling",
+        "Refresh resolves adapters without unbound variables and records actionable source errors",
+        "A source with no adapter or zero jobs cannot silently report a healthy ingestion",
+        "Backend source and refresh regression tests pass"
+      ],
+      "commit_hash": "n/a"
+    },
+    {
+      "id": "JOBS-003",
+      "title": "Normalize job description and application links",
+      "status": "blocked",
+      "depends_on": [
+        "SOURCES-004"
+      ],
+      "commit": "fix(api): normalize job source links",
+      "allowed_paths": [
+        "backend/app/connectors.py",
+        "backend/app/jobs.py",
+        "tests/backend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Relative links resolve correctly with and without trailing slash",
+        "Description and application URLs remain distinct when supplied",
+        "Invalid or missing links produce source-level errors with fixture coverage"
+      ],
+      "commit_hash": "n/a"
+    },
+    {
+      "id": "SOURCES-005",
+      "title": "Add executable source configuration and diagnostics to dashboard",
+      "status": "blocked",
+      "depends_on": [
+        "SOURCES-004"
+      ],
+      "commit": "feat(web): add source configuration diagnostics",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "UI configures adapter, terms acknowledgement and network/fixture mode",
+        "Source list exposes last run status and actionable errors",
+        "Source creation rejects incomplete runnable configuration"
+      ],
+      "commit_hash": "n/a"
+    },
+    {
+      "id": "PROFILE-003",
+      "title": "Persist restrictions and preference controls",
+      "status": "blocked",
+      "depends_on": [
+        "SOURCES-005"
+      ],
+      "commit": "fix(web): persist profile restrictions and preferences",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        "tests/backend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Restriction controls are controlled state and load from persisted preferences",
+        "Save sends excluded_constraints and willing_to_relocate",
+        "Reloading the profile preserves every restriction and weight",
+        "HTTP and frontend persistence tests pass"
+      ],
+      "commit_hash": "n/a"
+    },
+    {
+      "id": "TEST-013",
+      "title": "Add source and preference end-to-end regression coverage",
+      "status": "blocked",
+      "depends_on": [
+        "JOBS-003",
+        "PROFILE-003"
+      ],
+      "commit": "test(regression): cover source ingestion and preference persistence",
+      "allowed_paths": [
+        "tests/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Fixture source reaches ingestion and exposes failures",
+        "Relative links are verified in dashboard detail flow",
+        "Restrictions survive API save and browser reload"
       ],
       "commit_hash": "n/a"
     }

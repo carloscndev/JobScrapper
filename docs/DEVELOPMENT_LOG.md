@@ -864,3 +864,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: `init --force` sigue siendo una operación explícita que reinicia estados pendientes/bloqueados
 - Commit subject: fix(harness): repair inactive current task state
 - Commit hash: pending
+
+### SOURCES-004 — Attempt 2
+
+- Started / finished: 2026-07-30 / 2026-07-30
+- Acceptance criteria: todos los hallazgos corregidos; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `backend/app/sources.py`, `backend/app/pipeline.py`, `tests/backend/test_sources_004.py`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_sources_004 -v`; related suites; `compileall`; `git diff --check`
+- Tester: PASS — 10/10 target; fallos restantes preexistentes aislados
+- Reviewer: APPROVED — alcance y requisitos completos
+- Rework: resolved
+- Changelog: added
+- Risks: fallos preexistentes fuera de alcance permanecen documentados
+- Commit subject: fix(api): make source refresh configuration executable
+- Commit hash: pending
