@@ -1441,7 +1441,7 @@
     {
       "id": "SOURCES-006",
       "title": "Resolve legacy source adapters by provider and URL",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "TEST-013"
       ],
@@ -1459,7 +1459,7 @@
         "Unknown career pages remain explicitly unsupported",
         "Regression tests cover legacy resolution without changing terms acceptance"
       ],
-      "commit_hash": "n/a"
+      "commit_hash": "6f2a10f"
     }
   ]
 }
