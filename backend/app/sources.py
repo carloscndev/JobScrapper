@@ -186,6 +186,40 @@ def resolve_source_adapter(
     for candidate in candidates:
         if candidate is not None and str(candidate) in lookup:
             return lookup[str(candidate)]
+
+    # Older persisted sources predate the explicit adapter setting and often
+    # only retain a provider name or URL.  Keep those records runnable without
+    # weakening the explicit override contract above.  Provider matching is
+    # deliberately narrow: only the canonical Greenhouse/Lever hostnames and
+    # provider tokens are recognized; unknown career pages remain unsupported.
+    legacy_provider: str | None = None
+    name = str(getattr(source, "name", "")).casefold()
+    provider = str(
+        getattr(source, "provider", "")
+        or values.get("provider", "")
+        or values.get("source_provider", "")
+    ).casefold()
+    base_url = str(
+        getattr(source, "base_url", "")
+        or values.get("base_url", "")
+    ).casefold()
+    hostname = urlparse(base_url).hostname or ""
+    greenhouse_host = hostname == "greenhouse.io" or hostname.endswith(".greenhouse.io")
+    lever_host = hostname == "lever.co" or hostname.endswith(".lever.co")
+    if (
+        "greenhouse" in provider
+        or "greenhouse" in name
+        or greenhouse_host
+    ):
+        legacy_provider = "greenhouse-career-page"
+    elif (
+        "lever" in provider
+        or "lever" in name
+        or lever_host
+    ):
+        legacy_provider = "lever-career-page"
+    if legacy_provider is not None:
+        return lookup.get(legacy_provider)
     return None
 
 

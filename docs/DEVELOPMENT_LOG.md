@@ -775,6 +775,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: feat(api): add source deletion endpoint and UI button
 - Commit hash: 7ebd4e8
 
+### SOURCES-006 — Attempt 3
+
+- Started / finished: 2026-07-31 / 2026-07-31
+- Acceptance criteria: fuentes legacy resuelven adaptadores por proveedor/URL; dominios lookalike permanecen unsupported; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/sources.py`, `tests/backend/test_adapter_lookup.py`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_adapter_lookup -v` (16/16); `python3 -m py_compile backend/app/sources.py tests/backend/test_adapter_lookup.py`; `git diff --check`
+- Tester: PASS — regresiones para Greenhouse/Lever por nombre, provider y URL, precedencia de override y hosts lookalike
+- Reviewer: APPROVED — límites de hostname seguros; `backend/app/schemas.py` preexistente excluido del stage
+- Rework: intentos 1 y 2 corregidos; intento 3 aprobado
+- Changelog: added
+- Risks: fuentes aún requieren aceptación explícita de términos y configuración de red/fixture antes de ejecutar
+- Commit subject: fix(api): resolve legacy source adapters
+- Commit hash: pending
+
 ### TEST-013 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30

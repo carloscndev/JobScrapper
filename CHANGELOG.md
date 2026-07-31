@@ -723,6 +723,17 @@ All notable product changes will be documented here following Keep a Changelog a
 - Commit subject: feat(api): add source deletion endpoint and UI button
 - Commit hash: 7ebd4e8
 
+### SOURCES-006 — Attempt 3
+
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/sources.py`, `tests/backend/test_adapter_lookup.py`
+- Commands: adapter lookup 16/16; py_compile; diff check
+- Tester: PASS — legacy provider aliases and canonical host boundaries
+- Reviewer: APPROVED — unknown/lookalike hosts remain unsupported
+- Risks: terms acceptance and network permissions remain explicit requirements
+- Commit subject: fix(api): resolve legacy source adapters
+- Commit hash: pending
+
 ### TEST-013 — Attempt 2
 
 - Skills: coder `webapp-testing`; tester `webapp-testing`; reviewer `webapp-testing`

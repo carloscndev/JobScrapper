@@ -99,5 +99,92 @@ class FactoryAdapterLookupTests(unittest.TestCase):
         self.assertEqual(_resolve("api", "greenhouse-career-page"), "greenhouse-career-page")
 
 
+class LegacyCareerPageLookupTests(unittest.TestCase):
+    """Keep legacy persisted career-page sources resolvable without overrides."""
+
+    def setUp(self) -> None:
+        from app.sources import resolve_source_adapter
+
+        self.resolve = resolve_source_adapter
+
+    def _source(
+        self,
+        *,
+        name: str = "Acme careers",
+        base_url: str = "https://careers.example.com",
+        config: dict | None = None,
+    ) -> MagicMock:
+        source = MagicMock()
+        source.name = name
+        source.kind = "career_page"
+        source.base_url = base_url
+        source.provider = ""
+        source.config = config or {}
+        return source
+
+    def _adapter(self, source: MagicMock, config: dict | None = None) -> FakeAdapter | None:
+        return self.resolve(source, FAKE_ADAPTERS, config)
+
+    def test_greenhouse_legacy_name_resolves(self) -> None:
+        adapter = self._adapter(self._source(name="Acme Greenhouse careers"))
+        self.assertIsNotNone(adapter)
+        self.assertEqual(adapter.name, "greenhouse-career-page")
+
+    def test_lever_legacy_name_resolves(self) -> None:
+        adapter = self._adapter(self._source(name="Acme Lever jobs"))
+        self.assertIsNotNone(adapter)
+        self.assertEqual(adapter.name, "lever-career-page")
+
+    def test_greenhouse_canonical_url_resolves(self) -> None:
+        adapter = self._adapter(self._source(base_url="https://boards.greenhouse.io/acme"))
+        self.assertIsNotNone(adapter)
+        self.assertEqual(adapter.name, "greenhouse-career-page")
+
+    def test_lever_canonical_url_resolves(self) -> None:
+        adapter = self._adapter(self._source(base_url="https://jobs.lever.co/acme"))
+        self.assertIsNotNone(adapter)
+        self.assertEqual(adapter.name, "lever-career-page")
+
+    def test_provider_metadata_resolves_greenhouse_and_lever(self) -> None:
+        greenhouse = self._adapter(self._source(config={"provider": "greenhouse"}))
+        lever = self._adapter(self._source(config={"source_provider": "lever"}))
+        self.assertIsNotNone(greenhouse)
+        self.assertIsNotNone(lever)
+        self.assertEqual(greenhouse.name, "greenhouse-career-page")
+        self.assertEqual(lever.name, "lever-career-page")
+
+    def test_unknown_career_page_remains_unsupported(self) -> None:
+        adapter = self._adapter(self._source(name="Acme careers", base_url="https://jobs.example.com/acme"))
+        self.assertIsNone(adapter)
+
+    def test_lookalike_provider_hosts_remain_unsupported(self) -> None:
+        for host in (
+            "https://notgreenhouse.io/jobs",
+            "https://greenhouse.io.evil.test/jobs",
+            "https://notlever.co/jobs",
+            "https://lever.co.evil.test/jobs",
+        ):
+            with self.subTest(host=host):
+                self.assertIsNone(self._adapter(self._source(base_url=host)))
+
+    def test_explicit_override_wins_over_legacy_name_and_url(self) -> None:
+        source = self._source(
+            name="Acme Greenhouse careers",
+            base_url="https://boards.greenhouse.io/acme",
+            config={"adapter": "lever-career-page"},
+        )
+        adapter = self._adapter(source, source.config)
+        self.assertIsNotNone(adapter)
+        self.assertEqual(adapter.name, "lever-career-page")
+
+    def test_unknown_explicit_override_does_not_fallback_to_legacy_provider(self) -> None:
+        source = self._source(
+            name="Acme Greenhouse careers",
+            base_url="https://boards.greenhouse.io/acme",
+            config={"adapter": "missing-adapter"},
+        )
+        self.assertIsNone(self._adapter(source, source.config))
+
+
 if __name__ == "__main__":
     unittest.main()

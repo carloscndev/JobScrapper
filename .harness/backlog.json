@@ -1437,6 +1437,29 @@
         "Restrictions survive API save and browser reload"
       ],
       "commit_hash": "06a0d67"
+    },
+    {
+      "id": "SOURCES-006",
+      "title": "Resolve legacy source adapters by provider and URL",
+      "status": "approved",
+      "depends_on": [
+        "TEST-013"
+      ],
+      "commit": "fix(api): resolve legacy source adapters",
+      "allowed_paths": [
+        "backend/app/sources.py",
+        "tests/backend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "API/feed sources resolve through the canonical kind mapping",
+        "Greenhouse and Lever legacy names or URLs resolve to their adapters",
+        "Unknown career pages remain explicitly unsupported",
+        "Regression tests cover legacy resolution without changing terms acceptance"
+      ],
+      "commit_hash": "n/a"
     }
   ]
 }

@@ -1,10 +1,37 @@
 {
   "schema_version": 1,
-  "active": false,
-  "task_id": null,
-  "state": null,
-  "attempt": 0,
-  "evidence": {},
-  "rejections": [],
-  "commit": "06a0d674164b53c99fa6dafacfdb8f8510f11bb6"
+  "active": true,
+  "task_id": "SOURCES-006",
+  "state": "approved",
+  "attempt": 3,
+  "evidence": {
+    "coder": {
+      "result": "pass",
+      "evidence": "Intento 3: host matching usa exact greenhouse.io/lever.co o subdominio con boundary; lookalikes regresión; backend/.venv suite 17/17; py_compile y diff-check OK",
+      "attempt": 3
+    },
+    "tester": {
+      "result": "pass",
+      "evidence": "Recheck intento 3: adapter lookup 17/17, incluye provider/name/URL y dominios lookalike; py_compile y diff-check OK",
+      "attempt": 3
+    },
+    "reviewer": {
+      "result": "pass",
+      "evidence": "APPROVED intento 3: resolver exact host/.suffix, lookalike rejection, aliases and precedence reviewed; backend/.venv test_adapter_lookup 16/16; py_compile and diff-check; schemas.py excluded",
+      "attempt": 3
+    }
+  },
+  "rejections": [
+    {
+      "by": "reviewer",
+      "reason": "CHANGES_REQUESTED durante recheck: provider metadata test inicialmente ocultaba config por MagicMock; tester corrigió fixture para provider vacío y debe repetirse suite 15/15 antes de aprobación",
+      "attempt": 1
+    },
+    {
+      "by": "reviewer",
+      "reason": "CHANGES_REQUESTED: legacy URL matching acepta lookalike notgreenhouse.io/notlever.co por endswith; exigir host exacto greenhouse.io o sufijo .greenhouse.io y equivalente Lever, agregar regresiones; schemas.py fuera de scope no stage",
+      "attempt": 2
+    }
+  ],
+  "commit": null
 }
