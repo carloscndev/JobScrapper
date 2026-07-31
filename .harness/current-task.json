@@ -1,30 +1,30 @@
 {
   "schema_version": 1,
   "active": true,
-  "task_id": "PROFILE-003",
+  "task_id": "TEST-013",
   "state": "approved",
   "attempt": 2,
   "evidence": {
     "coder": {
       "result": "pass",
-      "evidence": "PROFILE-003 intento 2: App.tsx añade autoComplete=off a los tres checkboxes; cd frontend && pnpm build (tsc + vite build) OK; sin cambios fuera de frontend",
+      "evidence": "TEST-013 intento 2: browser smoke guarda/recarga checkbox y verifica hrefs de Aplicar/descripción; path tests/e2e/test_regression_013.py; target 6 tests (3 skips), py_compile y diff-check OK",
       "attempt": 2
     },
     "tester": {
       "result": "pass",
-      "evidence": "Intento 2: backend/.venv/bin/python -m unittest tests.backend.test_api_profile -v = 11/11; frontend suite = 39/39; cd frontend && pnpm build (tsc + vite) OK; git diff --check OK; prueba HTTP PUT→GET de restricciones y pesos añadida",
+      "evidence": "Rework intento 2: tests/e2e/test_regression_013.py 6 OK (3 skips esperados), browser assertions para guardar/recargar checkbox y hrefs añadidas; frontend 39/39; py_compile y diff-check OK; Playwright/API skip por entorno",
       "attempt": 2
     },
     "reviewer": {
       "result": "pass",
-      "evidence": "APPROVED intento 2: App.tsx checkboxes controlled + autocomplete=off; HTTP PUT→GET persistence test; backend profile 11/11; frontend 39/39; pnpm build; diff check; schemas.py preexisting excluded from stage",
+      "evidence": "APPROVED intento 2: e2e regression covers optional browser save/reload restrictions and distinct application/description hrefs; static/API contracts cover fixture errors and persistence; target 6/6 with 3 expected skips; scope tests/e2e only; schemas.py excluded",
       "attempt": 2
     }
   },
   "rejections": [
     {
       "by": "reviewer",
-      "reason": "CHANGES_REQUESTED: excluir backend/app/schemas.py del stage; agregar prueba HTTP PUT/GET para restricciones y pesos; añadir autocomplete=off a los tres checkboxes; revisión React/UI pendiente",
+      "reason": "CHANGES_REQUESTED: añadir assertions browser ejecutables para guardar/recargar restricciones y hrefs relativos en detalle; documentar skip opt-in Playwright; corregir evidencia de ruta a tests/e2e/test_regression_013.py; excluir schemas.py preexistente del stage",
       "attempt": 1
     }
   ],

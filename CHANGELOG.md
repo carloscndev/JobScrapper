@@ -722,3 +722,14 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: none
 - Commit subject: feat(api): add source deletion endpoint and UI button
 - Commit hash: 7ebd4e8
+
+### TEST-013 — Attempt 2
+
+- Skills: coder `webapp-testing`; tester `webapp-testing`; reviewer `webapp-testing`
+- Files: `tests/e2e/test_regression_013.py`
+- Commands: regression 6/6 (3 expected skips); frontend 39/39; py_compile; diff check
+- Tester: PASS — fixture/error, links and preference save/reload regression coverage
+- Reviewer: APPROVED — optional browser assertions are actionable and scoped to tests
+- Risks: browser/API gates need optional local services and dependencies
+- Commit subject: test(regression): cover source ingestion and preference persistence
+- Commit hash: pending

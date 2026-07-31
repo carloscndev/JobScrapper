@@ -1395,7 +1395,7 @@
     {
       "id": "PROFILE-003",
       "title": "Persist restrictions and preference controls",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "SOURCES-005"
       ],
@@ -1414,12 +1414,12 @@
         "Reloading the profile preserves every restriction and weight",
         "HTTP and frontend persistence tests pass"
       ],
-      "commit_hash": "n/a"
+      "commit_hash": "cea15a9"
     },
     {
       "id": "TEST-013",
       "title": "Add source and preference end-to-end regression coverage",
-      "status": "blocked",
+      "status": "approved",
       "depends_on": [
         "JOBS-003",
         "PROFILE-003"

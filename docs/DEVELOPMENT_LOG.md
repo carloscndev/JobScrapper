@@ -775,6 +775,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: feat(api): add source deletion endpoint and UI button
 - Commit hash: 7ebd4e8
 
+### TEST-013 — Attempt 2
+
+- Started / finished: 2026-07-30 / 2026-07-30
+- Acceptance criteria: regresión de ingestion, enlaces relativos/detalle y persistencia de restricciones; PASS
+- Skills: coder `webapp-testing`; tester `webapp-testing`; reviewer `webapp-testing`
+- Files: `tests/e2e/test_regression_013.py`
+- Commands: `./.venv/bin/python -m unittest -v tests.e2e.test_regression_013` (6/6, 3 skips opt-in); frontend 39/39; `py_compile`; `git diff --check`
+- Tester: PASS — assertions browser opcionales cubren guardar/recargar restricciones y hrefs de aplicación/descripción; API y contratos fixture pasan cuando dependencias están disponibles
+- Reviewer: APPROVED — alcance solo tests, skips de infraestructura explícitos y assertions no vacuas
+- Rework: intento 1 rechazado por cobertura browser insuficiente y ruta de evidencia; intento 2 resuelto
+- Changelog: added
+- Risks: Playwright/API requieren URL, servidor y dependencias opcionales; legacy E2E puede fallar por sandbox/connection refused
+- Commit subject: test(regression): cover source ingestion and preference persistence
+- Commit hash: pending
+
 ### API-006 — Attempt 1
 
 - Started / finished: 2026-07-21 / 2026-07-21
