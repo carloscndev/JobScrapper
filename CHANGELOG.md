@@ -37,6 +37,17 @@
 - Commit subject: fix(api): make source refresh configuration executable
 - Commit hash: pending
 
+### SOURCES-005 — Attempt 3
+
+- Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `frontend/src/styles.css`, `tests/frontend/test_sources_005.py`
+- Commands: frontend tests, pnpm build, tsc, diff check
+- Tester: PASS
+- Reviewer: APPROVED
+- Risks: Playwright bloqueado por sandbox Chromium local
+- Commit subject: feat(web): add source configuration diagnostics
+- Commit hash: pending
+
 All notable product changes will be documented here following Keep a Changelog and Semantic Versioning.
 
 ## [0.1.0] - 2026-07-20

@@ -1350,7 +1350,7 @@
     {
       "id": "JOBS-003",
       "title": "Normalize job description and application links",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "SOURCES-004"
       ],
@@ -1368,12 +1368,12 @@
         "Description and application URLs remain distinct when supplied",
         "Invalid or missing links produce source-level errors with fixture coverage"
       ],
-      "commit_hash": "n/a"
+      "commit_hash": "e32a0f1"
     },
     {
       "id": "SOURCES-005",
       "title": "Add executable source configuration and diagnostics to dashboard",
-      "status": "pending",
+      "status": "approved",
       "depends_on": [
         "SOURCES-004"
       ],

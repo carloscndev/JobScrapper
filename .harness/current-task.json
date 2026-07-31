@@ -1,31 +1,36 @@
 {
   "schema_version": 1,
   "active": true,
-  "task_id": "JOBS-003",
+  "task_id": "SOURCES-005",
   "state": "approved",
-  "attempt": 2,
+  "attempt": 3,
   "evidence": {
     "coder": {
       "result": "pass",
-      "evidence": "Rework intento 2: _resolve_job_url valida raw antes de urljoin, rechaza esquemas/hosts/puertos malformados; connector pytest 15 passed; no tests/commits editados",
-      "attempt": 2
+      "evidence": "Rework intento 2: fixture JSON/HTML shape validation, ApiRequestError fields rendered, source controls name/autocomplete, tab Arrow/Home/End + roving tabindex; npm run build OK; source tests 5 OK; diff check OK",
+      "attempt": 3
     },
     "tester": {
       "result": "pass",
-      "evidence": "Rework test raw malformed links added; py_compile/diff-check OK; backend/.venv runtime unavailable in tester env (16 skipped; dependency install blocked), previous backend/.venv run had connector 15/15",
-      "attempt": 2
+      "evidence": "Intento 3: test_sources_005 9/9; suite frontend 34/34; pnpm build y tsc -b OK; E2E Playwright bloqueado por sandbox Chromium MachPort permission, sin assertions ejecutadas; cambios solo tests/frontend",
+      "attempt": 3
     },
     "reviewer": {
       "result": "pass",
-      "evidence": "APPROVED intento 2: backend connector suite 16/16; raw malformed URLs rejected; relative/trailing slash and distinct links verified; schemas.py remains out of scope",
-      "attempt": 2
+      "evidence": "APPROVED intento 3: UI guidelines/React review; fixtures, 422 fields, tab keyboard, names/autocomplete y diagnostics resueltos; 9/9 tests, build/tsc/diff-check OK; schemas.py fuera de stage",
+      "attempt": 3
     }
   },
   "rejections": [
     {
-      "by": "reviewer",
-      "reason": "CHANGES_REQUESTED: _resolve_job_url acepta raw malformados como https:, https://, //, https://?foo o https://:bad tras urljoin; validar raw scheme/netloc/hostname y evitar fallback. schemas.py local está fuera de JOBS-003 y debe preservarse sin stage.",
+      "by": "tester",
+      "reason": "CHANGES_REQUESTED: test_sources_005 falla porque client.ts solo lee body.detail.error; backend devuelve top-level body.error. Build/tsc pasan; Playwright bloqueado por falta de módulo/EPERM bind, sin modificar producción.",
       "attempt": 1
+    },
+    {
+      "by": "reviewer",
+      "reason": "CHANGES_REQUESTED: excluir schemas.py fuera de scope; validar fixture JSON {}/[] y HTML sin cards/links; mostrar fields de 422 junto al mensaje; mejorar accesibilidad del formulario/tablist según UI guidelines (teclado y nombres/autocomplete).",
+      "attempt": 2
     }
   ],
   "commit": null

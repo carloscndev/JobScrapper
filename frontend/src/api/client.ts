@@ -23,6 +23,19 @@ export interface ApiClient {
   uploadProfile: (file: File) => Promise<UploadResponse>;
 }
 
+export type SourceAdapterName = "json-api-feed" | "greenhouse-career-page" | "lever-career-page";
+
+export interface SourceConfig {
+  adapter?: SourceAdapterName | string;
+  allow_network?: boolean;
+  terms_accepted?: boolean;
+  payload?: string;
+  payload_path?: string;
+  html?: string;
+  html_path?: string;
+  [key: string]: unknown;
+}
+
 export interface OperationsHealth {
   status: "ok" | "degraded" | "error" | string;
   checked_at?: string;
@@ -33,8 +46,10 @@ export interface SourceSummary {
   id: number;
   name: string;
   kind: string;
-  base_url: string;
+  base_url: string | null;
   enabled: boolean;
+  terms_url?: string | null;
+  config: SourceConfig;
   robots_checked_at?: string | null;
 }
 
@@ -42,14 +57,28 @@ export interface SourceCreateRequest {
   name: string;
   kind?: string;
   base_url?: string;
+  terms_url?: string;
   enabled?: boolean;
-  config?: Record<string, unknown>;
+  config?: SourceConfig;
+  terms_accepted?: boolean;
 }
 
 export interface SourceUpdateRequest {
   enabled?: boolean;
   name?: string;
   base_url?: string;
+  terms_url?: string;
+  config?: SourceConfig;
+}
+
+export interface SourceRunSummary {
+  id: number;
+  source_id: number;
+  status: string;
+  jobs_found: number;
+  error?: string | null;
+  started_at?: string;
+  finished_at?: string | null;
 }
 
 export interface ExecutionSummary {
@@ -60,6 +89,19 @@ export interface ExecutionSummary {
   finished_at?: string | null;
   metrics: { jobs_found?: number; sources_failed?: number; [key: string]: number | string | undefined };
   error?: string | null;
+  source_runs?: SourceRunSummary[];
+}
+
+export class ApiRequestError extends Error {
+  readonly status: number;
+  readonly fields: Array<{ field?: string; message?: string }>;
+
+  constructor(message: string, status: number, fields: Array<{ field?: string; message?: string }> = []) {
+    super(message);
+    this.name = "ApiRequestError";
+    this.status = status;
+    this.fields = fields;
+  }
 }
 
 export interface OperationsMetrics {
@@ -183,7 +225,22 @@ export interface JobListParams {
 export function createApiClient(baseUrl = ""): ApiClient {
   async function request<T>(path: string, init?: RequestInit): Promise<T> {
     const response = await fetch(`${baseUrl}${path}`, init);
-    if (!response.ok) throw new Error(`API request failed (${response.status})`);
+    if (!response.ok) {
+      type ApiErrorPayload = { message?: string; fields?: Array<{ field?: string; message?: string }> };
+      const body = await response.json().catch(() => null) as {
+        error?: ApiErrorPayload;
+        detail?: ApiErrorPayload | { error?: ApiErrorPayload };
+        message?: string;
+        fields?: Array<{ field?: string; message?: string }>;
+      } | null;
+      const detail: ApiErrorPayload | undefined = body?.error
+        ?? (body?.detail && "error" in body.detail
+          ? body.detail.error
+          : body?.detail && "message" in body.detail
+            ? body.detail
+            : undefined);
+      throw new ApiRequestError(detail?.message ?? body?.message ?? `API request failed (${response.status})`, response.status, detail?.fields ?? body?.fields ?? []);
+    }
     return (await response.json()) as T;
   }
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { createApiClient, type ExecutionSummary, type HealthStatus, type JobDetailResponse, type JobSummary, type OperationsHealth, type OperationsMetrics, type SourceSummary } from "./api/client";
+import { ApiRequestError, createApiClient, type ExecutionSummary, type HealthStatus, type JobDetailResponse, type JobSummary, type OperationsHealth, type OperationsMetrics, type SourceAdapterName, type SourceRunSummary, type SourceSummary } from "./api/client";
 import "./styles.css";
 
 type Section = "profile" | "preferences" | "vacancies" | "operations";
@@ -59,6 +59,51 @@ const initialDraft: ProfileDraft = {
 };
 
 const apiClient = createApiClient();
+
+const SOURCE_ADAPTERS: Array<{ value: SourceAdapterName; label: string; kind: "api" | "career_page"; fixtureLabel: string; fixtureHint: string }> = [
+  { value: "json-api-feed", label: "JSON API o feed", kind: "api", fixtureLabel: "Payload JSON", fixtureHint: "Objeto con jobs o data no vacío; cada oferta requiere description_url o url." },
+  { value: "greenhouse-career-page", label: "Greenhouse", kind: "career_page", fixtureLabel: "HTML de la página", fixtureHint: "HTML estático con tarjetas article/li y enlaces de oferta." },
+  { value: "lever-career-page", label: "Lever", kind: "career_page", fixtureLabel: "HTML de la página", fixtureHint: "HTML estático con tarjetas article/li y enlaces de oferta." },
+];
+
+const TAB_SECTIONS: Section[] = ["vacancies", "profile", "preferences", "operations"];
+
+function validateSourceFixture(adapter: SourceAdapterName, fixture: string): string | null {
+  if (adapter === "json-api-feed") {
+    let payload: unknown;
+    try {
+      payload = JSON.parse(fixture);
+    } catch {
+      return "El payload debe ser JSON válido.";
+    }
+    if (typeof payload !== "object" || payload === null || Array.isArray(payload)) {
+      return "El payload debe ser un objeto JSON con jobs o data.";
+    }
+    const record = payload as Record<string, unknown>;
+    const jobs = Array.isArray(record.jobs) ? record.jobs : undefined;
+    const data = Array.isArray(record.data) ? record.data : undefined;
+    const items = jobs ?? data;
+    if (!items || items.length === 0) {
+      return "El payload debe incluir una lista jobs o data con al menos una oferta.";
+    }
+    const invalidIndex = items.findIndex((item) => {
+      if (typeof item !== "object" || item === null || Array.isArray(item)) return true;
+      const job = item as Record<string, unknown>;
+      const url = job.description_url ?? job.url;
+      return typeof url !== "string" || url.trim().length === 0;
+    });
+    if (invalidIndex >= 0) {
+      return `La oferta ${invalidIndex + 1} debe incluir description_url o url.`;
+    }
+    return null;
+  }
+
+  const cardPattern = /<(article|li)\b[^>]*>[\s\S]*?<a\b[^>]*href\s*=\s*["'][^"']+["'][^>]*>[\s\S]*?<\/\1>/i;
+  if (!cardPattern.test(fixture)) {
+    return "El HTML debe incluir al menos una tarjeta article/li con un enlace de oferta.";
+  }
+  return null;
+}
 
 function App() {
   const [section, setSection] = useState<Section>("profile");
@@ -123,6 +168,20 @@ function App() {
     setDraft((current) => ({ ...current, [key]: value }));
   };
 
+  const handleTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    const currentIndex = TAB_SECTIONS.indexOf(section);
+    let nextIndex = currentIndex;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (currentIndex + 1) % TAB_SECTIONS.length;
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIndex = (currentIndex - 1 + TAB_SECTIONS.length) % TAB_SECTIONS.length;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = TAB_SECTIONS.length - 1;
+    if (nextIndex !== currentIndex) {
+      event.preventDefault();
+      setSection(TAB_SECTIONS[nextIndex]);
+      document.getElementById(`tab-${TAB_SECTIONS[nextIndex]}`)?.focus();
+    }
+  };
+
   const handleCvUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -185,10 +244,10 @@ function App() {
         <div className="page-heading"><div><p className="eyebrow">Configuración</p><h1 id="page-title">Tu perfil de búsqueda</h1><p className="hero-copy">Revisa lo que extrajimos de tu CV y ajusta qué hace relevante una oferta.</p></div><button type="button" className="secondary-button compact" onClick={refreshHealth} disabled={isRefreshing}>{isRefreshing ? "Comprobando…" : "Comprobar conexión"}</button></div>
 
         <nav className="tabs" role="tablist" aria-label="Secciones del perfil">
-          <button id="tab-vacancies" role="tab" type="button" className={section === "vacancies" ? "tab active" : "tab"} aria-controls="vacancies-panel" aria-selected={section === "vacancies"} onClick={() => setSection("vacancies")}>Ofertas</button>
-          <button id="tab-profile" role="tab" type="button" className={section === "profile" ? "tab active" : "tab"} aria-controls="profile-panel" aria-selected={section === "profile"} onClick={() => setSection("profile")}>CV y perfil</button>
-          <button id="tab-preferences" role="tab" type="button" className={section === "preferences" ? "tab active" : "tab"} aria-controls="preferences-panel" aria-selected={section === "preferences"} onClick={() => setSection("preferences")}>Preferencias y pesos</button>
-          <button id="tab-operations" role="tab" type="button" className={section === "operations" ? "tab active" : "tab"} aria-controls="operations-panel" aria-selected={section === "operations"} onClick={() => setSection("operations")}>Operación</button>
+          <button id="tab-vacancies" role="tab" type="button" className={section === "vacancies" ? "tab active" : "tab"} aria-controls="vacancies-panel" aria-selected={section === "vacancies"} tabIndex={section === "vacancies" ? 0 : -1} onKeyDown={handleTabKeyDown} onClick={() => setSection("vacancies")}>Ofertas</button>
+          <button id="tab-profile" role="tab" type="button" className={section === "profile" ? "tab active" : "tab"} aria-controls="profile-panel" aria-selected={section === "profile"} tabIndex={section === "profile" ? 0 : -1} onKeyDown={handleTabKeyDown} onClick={() => setSection("profile")}>CV y perfil</button>
+          <button id="tab-preferences" role="tab" type="button" className={section === "preferences" ? "tab active" : "tab"} aria-controls="preferences-panel" aria-selected={section === "preferences"} tabIndex={section === "preferences" ? 0 : -1} onKeyDown={handleTabKeyDown} onClick={() => setSection("preferences")}>Preferencias y pesos</button>
+          <button id="tab-operations" role="tab" type="button" className={section === "operations" ? "tab active" : "tab"} aria-controls="operations-panel" aria-selected={section === "operations"} tabIndex={section === "operations" ? 0 : -1} onKeyDown={handleTabKeyDown} onClick={() => setSection("operations")}>Operación</button>
         </nav>
 
         {profileError && <div className="error-callout" role="alert"><strong>Error</strong><span>{profileError}</span></div>}
@@ -212,8 +271,14 @@ function OperationsDashboard() {
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formName, setFormName] = useState("");
-  const [formKind, setFormKind] = useState("career_page");
+  const [formAdapter, setFormAdapter] = useState<SourceAdapterName>("json-api-feed");
   const [formUrl, setFormUrl] = useState("");
+  const [formTermsUrl, setFormTermsUrl] = useState("");
+  const [formMode, setFormMode] = useState<"fixture" | "network">("fixture");
+  const [formFixture, setFormFixture] = useState("");
+  const [formTermsAccepted, setFormTermsAccepted] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formErrorFields, setFormErrorFields] = useState<Array<{ field?: string; message?: string }>>([]);
 
   const load = async () => {
     setLoading(true); setError(null);
@@ -239,11 +304,35 @@ function OperationsDashboard() {
 
   const createSource = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
+    setFormErrorFields([]);
+    const adapter = SOURCE_ADAPTERS.find((item) => item.value === formAdapter) ?? SOURCE_ADAPTERS[0];
+    const name = formName.trim();
+    const url = formUrl.trim();
+    const termsUrl = formTermsUrl.trim();
+    const fixture = formFixture.trim();
+    if (!name) { setFormError("Indica un nombre para la fuente."); return; }
+    if (!formTermsAccepted) { setFormError("Debes aceptar los términos de uso de la fuente antes de activarla."); return; }
+    if (formMode === "network" && !url) { setFormError("La URL base es obligatoria en modo red."); return; }
+    if (formMode === "fixture" && !fixture) { setFormError(`Agrega ${adapter.fixtureLabel.toLowerCase()} o cambia a modo red.`); return; }
+    if (formMode === "fixture") {
+      const fixtureError = validateSourceFixture(adapter.value, fixture);
+      if (fixtureError) { setFormError(fixtureError); return; }
+    }
     try {
-      await apiClient.createSource({ name: formName, kind: formKind, base_url: formUrl || undefined });
-      setShowForm(false); setFormName(""); setFormKind("career_page"); setFormUrl("");
+      const config = {
+        adapter: adapter.value,
+        allow_network: formMode === "network",
+        terms_accepted: true,
+        ...(formMode === "fixture" ? (adapter.value === "json-api-feed" ? { payload: fixture } : { html: fixture }) : {}),
+      };
+      await apiClient.createSource({ name, kind: adapter.kind, base_url: url || undefined, terms_url: termsUrl || undefined, terms_accepted: true, config });
+      setShowForm(false); setFormName(""); setFormAdapter("json-api-feed"); setFormUrl(""); setFormTermsUrl(""); setFormMode("fixture"); setFormFixture(""); setFormTermsAccepted(false); setFormErrorFields([]);
       void load();
-    } catch { setError("No se pudo crear la fuente."); }
+    } catch (caught) {
+      setFormError(caught instanceof ApiRequestError ? caught.message : "No se pudo crear la fuente.");
+      setFormErrorFields(caught instanceof ApiRequestError ? caught.fields : []);
+    }
   };
 
   const deleteSource = async (id: number, name: string) => {
@@ -257,6 +346,13 @@ function OperationsDashboard() {
   const totalJobsRegistered = metrics?.jobs.total ?? 0;
   const totalExecutions = metrics?.executions.total ?? 0;
   const runningExecutions = metrics?.executions.running ?? 0;
+  const latestSourceRuns = new Map<number, SourceRunSummary>();
+  executions.forEach((execution) => {
+    execution.source_runs?.forEach((run) => {
+      if (!latestSourceRuns.has(run.source_id)) latestSourceRuns.set(run.source_id, run);
+    });
+  });
+  const selectedAdapter = SOURCE_ADAPTERS.find((item) => item.value === formAdapter) ?? SOURCE_ADAPTERS[0];
 
   return <section id="operations-panel" className="operations-dashboard" role="tabpanel" aria-labelledby="tab-operations" tabIndex={0}>
     <div className="dashboard-heading"><div><p className="eyebrow">Centro de operaciones</p><h2>Estado de la búsqueda</h2><p className="hero-copy">Supervisa fuentes, ejecuciones y la salud de tus integraciones locales.</p></div><button type="button" className="primary-button" onClick={manualRefresh} disabled={refreshing} aria-busy={refreshing}>{refreshing ? "Actualizando…" : "Actualizar ofertas"}</button></div>
@@ -267,13 +363,26 @@ function OperationsDashboard() {
         <section className="panel" aria-labelledby="sources-title">
           <div className="panel-heading"><div><p className="card-kicker">Ingesta</p><h3 id="sources-title">Fuentes conectadas</h3></div><span className="source-count">{sources.filter((s) => s.enabled).length}/{sources.length} activas</span></div>
           <p className="muted">Activa o pausa una fuente sin perder su configuración.</p>
-          {sources.length ? <ul className="source-list">{sources.map((source) => <li key={source.id}><div><strong>{source.name}</strong><span>{source.kind} · {source.base_url}</span></div><div className="source-actions"><button type="button" className={`toggle ${source.enabled ? "on" : ""}`} aria-pressed={source.enabled} onClick={() => toggleSource(source.id, source.enabled)}><span aria-hidden="true" />{source.enabled ? "Activa" : "Pausada"}</button><button type="button" className="toggle danger" onClick={() => deleteSource(source.id, source.name)}>Eliminar</button></div></li>)}</ul> : <div className="empty-state"><strong>No hay fuentes configuradas.</strong><span>Agrega una fuente para iniciar la búsqueda.</span></div>}
+          {sources.length ? <ul className="source-list">{sources.map((source) => {
+            const run = latestSourceRuns.get(source.id);
+            const runClass = run?.status === "success" ? "healthy" : run ? "failed" : "unknown";
+            return <li key={source.id}>
+              <div className="source-details"><strong>{source.name}</strong><span>{source.config?.adapter ?? source.kind} · {source.base_url || "Fixture local"}</span><span className={`source-run-status ${runClass}`} aria-label={run ? `Última ejecución: ${run.status}` : "Sin ejecuciones"}>{run ? `${run.status} · ${run.jobs_found} ofertas` : "Sin ejecuciones"}</span>{run?.error && <span className="source-error" title={run.error}>{run.error}</span>}</div>
+              <div className="source-actions"><button type="button" className={`toggle ${source.enabled ? "on" : ""}`} aria-pressed={source.enabled} onClick={() => toggleSource(source.id, source.enabled)}><span aria-hidden="true" />{source.enabled ? "Activa" : "Pausada"}</button><button type="button" className="toggle danger" onClick={() => deleteSource(source.id, source.name)}>Eliminar</button></div>
+            </li>;
+          })}</ul> : <div className="empty-state"><strong>No hay fuentes configuradas.</strong><span>Agrega una fuente para iniciar la búsqueda.</span></div>}
           <button type="button" className="secondary-button compact" style={{ marginTop: "0.75rem" }} onClick={() => setShowForm(!showForm)}>{showForm ? "Cancelar" : "Agregar fuente"}</button>
-          {showForm && <form onSubmit={createSource} style={{ marginTop: "0.75rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            <label>Nombre<input value={formName} onChange={(e) => setFormName(e.target.value)} required placeholder="Ej: MiFeed" /></label>
-            <label>Tipo<select value={formKind} onChange={(e) => setFormKind(e.target.value)}><option value="career_page">Career page</option><option value="api">API</option><option value="feed">Feed</option></select></label>
-            <label>URL base<input value={formUrl} onChange={(e) => setFormUrl(e.target.value)} placeholder="https://ejemplo.com/jobs" type="url" /></label>
-            <button type="submit" className="primary-button">Crear fuente</button>
+          {showForm && <form onSubmit={createSource} className="source-form">
+            <p className="source-form-intro">Configura una fuente completa para que la próxima actualización pueda ejecutarla.</p>
+            {formError && <div className="error-callout" role="alert"><strong>No se creó</strong><span>{formError}</span>{formErrorFields.length > 0 && <ul className="form-error-list">{formErrorFields.map((field, index) => <li key={`${field.field ?? "error"}-${index}`}><strong>{field.field ?? "Revisa este campo"}:</strong> {field.message ?? "Corrige este valor y vuelve a intentar."}</li>)}</ul>}</div>}
+            <label htmlFor="source-name">Nombre<input id="source-name" name="sourceName" autoComplete="organization" value={formName} onChange={(e) => setFormName(e.target.value)} required placeholder="Ej: Greenhouse Acme" /></label>
+            <label htmlFor="source-adapter">Adaptador<select id="source-adapter" name="sourceAdapter" autoComplete="off" value={formAdapter} onChange={(e) => setFormAdapter(e.target.value as SourceAdapterName)} aria-describedby="adapter-hint">{SOURCE_ADAPTERS.map((adapter) => <option key={adapter.value} value={adapter.value}>{adapter.label}</option>)}</select><small id="adapter-hint">El adaptador determina el formato que se leerá.</small></label>
+            <label htmlFor="source-mode">Modo de ingesta<select id="source-mode" name="sourceMode" autoComplete="off" value={formMode} onChange={(e) => setFormMode(e.target.value as "fixture" | "network")}><option value="fixture">Fixture local (recomendado para probar)</option><option value="network">Red (consulta la URL)</option></select></label>
+            <label htmlFor="source-base-url">URL base{formMode === "network" ? <input id="source-base-url" name="baseUrl" autoComplete="url" value={formUrl} onChange={(e) => setFormUrl(e.target.value)} required placeholder="https://ejemplo.com/jobs" type="url" /> : <input id="source-base-url" name="baseUrl" autoComplete="url" value={formUrl} onChange={(e) => setFormUrl(e.target.value)} placeholder="Opcional: se usa para resolver enlaces relativos" type="url" />}<small>{formMode === "network" ? "Debe ser una URL http(s) accesible y permitida por robots.txt." : "Opcional en modo fixture."}</small></label>
+            <label htmlFor="source-terms-url">URL de términos de uso<input id="source-terms-url" name="termsUrl" autoComplete="url" value={formTermsUrl} onChange={(e) => setFormTermsUrl(e.target.value)} placeholder="https://ejemplo.com/terms" type="url" /><small>Guarda la referencia que revisaste antes de habilitar la fuente.</small></label>
+            <label htmlFor="source-fixture">{selectedAdapter.fixtureLabel}{formMode === "fixture" && <textarea id="source-fixture" name="fixture" autoComplete="off" value={formFixture} onChange={(e) => setFormFixture(e.target.value)} required rows={selectedAdapter.value === "json-api-feed" ? 6 : 5} placeholder={selectedAdapter.value === "json-api-feed" ? '{"jobs": [{"title": "...", "description_url": "https://..."}]}' : "<article data-job=\"true\">...</article>"} />}<small>{formMode === "fixture" ? selectedAdapter.fixtureHint : "No se necesita fixture en modo red."}</small></label>
+            <label className="checkbox-row source-terms" htmlFor="source-terms-accepted"><input type="checkbox" checked={formTermsAccepted} onChange={(e) => setFormTermsAccepted(e.target.checked)} required id="source-terms-accepted" name="termsAccepted" autoComplete="off" />Confirmo que revisé y acepto los términos de uso de esta fuente.</label>
+            <button type="submit" className="primary-button">Crear fuente ejecutable</button>
           </form>}
         </section>
         <section className="panel" aria-labelledby="health-title"><div className="panel-heading"><div><p className="card-kicker">Disponibilidad</p><h3 id="health-title">Salud de servicios</h3></div><span className={`health-badge ${healthy ? "healthy" : "degraded"}`}><i aria-hidden="true" />{healthy ? "Saludable" : "Revisar"}</span></div><ul className="health-list">{Object.entries(operationsHealth?.checks ?? { api: { status: "local" }, database: { status: "local" }, ollama: { status: "opcional" }, notion: { status: "opcional" } }).map(([name, check]) => <li key={name}><span>{name === "api" ? "API" : name === "database" ? "SQLite" : name === "ollama" ? "Modelo local" : "Notion"}</span><strong className={check.status === "ok" || check.status === "local" ? "ok" : "muted-status"}>{check.status}</strong></li>)}</ul></section>

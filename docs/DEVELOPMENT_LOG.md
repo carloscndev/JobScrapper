@@ -894,3 +894,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: enlaces externos siguen sujetos a disponibilidad y políticas del proveedor
 - Commit subject: fix(api): normalize job source links
 - Commit hash: pending
+
+### SOURCES-005 — Attempt 3
+
+- Started / finished: 2026-07-30 / 2026-07-30
+- Acceptance criteria: configuración ejecutable, diagnóstico por fuente y accesibilidad; PASS
+- Skills: coder `vercel-react-best-practices`; reviewer `web-design-guidelines` + `vercel-react-best-practices`; tester `webapp-testing`
+- Files: `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `frontend/src/styles.css`, `tests/frontend/test_sources_005.py`
+- Commands: `python3 -m unittest tests.frontend.test_sources_005 -v`; frontend suite; `pnpm build`; `tsc -b`; `git diff --check`
+- Tester: PASS — 9/9 target, 34/34 frontend suite, build/tsc OK; Playwright bloqueado por sandbox Chromium
+- Reviewer: APPROVED — fixtures, errores 422, tabs y controles accesibles revisados
+- Rework: intentos 1 y 2 corregidos; intento 3 aprobado
+- Changelog: added
+- Risks: E2E browser requiere entorno con Chromium y permisos de sandbox
+- Commit subject: feat(web): add source configuration diagnostics
+- Commit hash: pending
