@@ -1,32 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "TEST-013",
-  "state": "approved",
-  "attempt": 2,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "TEST-013 intento 2: browser smoke guarda/recarga checkbox y verifica hrefs de Aplicar/descripción; path tests/e2e/test_regression_013.py; target 6 tests (3 skips), py_compile y diff-check OK",
-      "attempt": 2
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "Rework intento 2: tests/e2e/test_regression_013.py 6 OK (3 skips esperados), browser assertions para guardar/recargar checkbox y hrefs añadidas; frontend 39/39; py_compile y diff-check OK; Playwright/API skip por entorno",
-      "attempt": 2
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "APPROVED intento 2: e2e regression covers optional browser save/reload restrictions and distinct application/description hrefs; static/API contracts cover fixture errors and persistence; target 6/6 with 3 expected skips; scope tests/e2e only; schemas.py excluded",
-      "attempt": 2
-    }
-  },
-  "rejections": [
-    {
-      "by": "reviewer",
-      "reason": "CHANGES_REQUESTED: añadir assertions browser ejecutables para guardar/recargar restricciones y hrefs relativos en detalle; documentar skip opt-in Playwright; corregir evidencia de ruta a tests/e2e/test_regression_013.py; excluir schemas.py preexistente del stage",
-      "attempt": 1
-    }
-  ],
-  "commit": null
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
+  "rejections": [],
+  "commit": "06a0d674164b53c99fa6dafacfdb8f8510f11bb6"
 }

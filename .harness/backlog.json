@@ -1419,7 +1419,7 @@
     {
       "id": "TEST-013",
       "title": "Add source and preference end-to-end regression coverage",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "JOBS-003",
         "PROFILE-003"
@@ -1436,7 +1436,7 @@
         "Relative links are verified in dashboard detail flow",
         "Restrictions survive API save and browser reload"
       ],
-      "commit_hash": "n/a"
+      "commit_hash": "06a0d67"
     }
   ]
 }
