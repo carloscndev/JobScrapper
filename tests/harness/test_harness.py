@@ -377,6 +377,28 @@ class HarnessTestCase(unittest.TestCase):
         errors = harness.validate_data(CONFIG, backlog, current)
         self.assertTrue(any("Inactive current-task must not identify a task" in error for error in errors))
 
+    def test_init_force_repairs_stale_inactive_current_task(self) -> None:
+        """A stale idle record is rejected normally and repaired only explicitly."""
+        stale = deepcopy(CURRENT)
+        stale.update({"task_id": "ONE", "state": "committed", "attempt": 3})
+        self._write(self.current_path, stale)
+
+        with self.assertRaisesRegex(harness.HarnessError, "Invalid harness state"):
+            harness.command_init(self.args(force=False))
+        self.assertEqual(stale, self.current())
+
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            harness.command_init(self.args(force=True))
+
+        self.assertIn("Harness initialized and valid", output.getvalue())
+        self.assertEqual(CURRENT, self.current())
+        self.assertEqual(
+            {"ONE": "pending", "TWO": "blocked"},
+            {task["id"]: task["status"] for task in self.backlog()["tasks"]},
+        )
+        harness.require_valid(CONFIG, self.backlog(), self.current())
+
     def test_record_rejects_blank_evidence(self) -> None:
         self.start()
         with self.assertRaisesRegex(harness.HarnessError, "Evidence must not be empty"):

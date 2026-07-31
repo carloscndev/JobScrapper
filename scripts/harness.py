@@ -179,15 +179,45 @@ def persist(backlog: dict[str, Any], current: dict[str, Any]) -> None:
     write_json(CURRENT_PATH, current)
 
 
+def inactive_current() -> dict[str, Any]:
+    """Return the canonical representation for an idle harness.
+
+    Keeping this shape in one place prevents a stale task/state/attempt from
+    being carried over when the lifecycle is reset.  Validation intentionally
+    remains strict; callers must opt in to repair with ``init --force``.
+    """
+    return {
+        "schema_version": 1,
+        "active": False,
+        "task_id": None,
+        "state": None,
+        "attempt": 0,
+        "evidence": {},
+        "rejections": [],
+        "commit": None,
+    }
+
+
 def command_init(args: argparse.Namespace) -> None:
     config, backlog, current = load()
-    require_valid(config, backlog, current)
-    if current.get("active") and not args.force:
-        raise HarnessError("Cannot initialize while a task is active; use --force to reset intentionally")
+    if args.force:
+        # A prior completion could leave an inactive current-task record with
+        # stale ``state``/``attempt`` metadata.  Such a record is deliberately
+        # rejected by normal validation, but an explicit --force reset must be
+        # able to repair it.  Validate the backlog against the canonical idle
+        # record while ignoring only the stale inactive metadata.
+        if current.get("active"):
+            require_valid(config, backlog, current)
+        else:
+            require_valid(config, backlog, inactive_current())
+    else:
+        require_valid(config, backlog, current)
+        if current.get("active"):
+            raise HarnessError("Cannot initialize while a task is active; use --force to reset intentionally")
     if args.force:
         for task in backlog["tasks"]:
             task["status"] = "pending" if not task.get("depends_on") else "blocked"
-        current = {"schema_version": 1, "active": False, "task_id": None, "state": None, "attempt": 0, "evidence": {}, "rejections": [], "commit": None}
+        current = inactive_current()
         persist(backlog, current)
     print("Harness initialized and valid")
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+- `fix(harness): repair inactive current task state` — canonicaliza y repara estados inactivos obsoletos mediante `init --force`.
+
+### HARNESS-004 — Attempt 1
+
+- Skills: coder none; tester none; reviewer none
+- Files: `scripts/harness.py`, `tests/harness/test_harness.py`, `.harness/current-task.json`, `.harness/backlog.json`
+- Commands: `python3 -m unittest tests.harness.test_harness -v`; `python3 -m py_compile scripts/harness.py tests/harness/test_harness.py`; `python3 scripts/harness.py validate`; `python3 scripts/harness.py status`
+- Tester: PASS
+- Reviewer: APPROVED
+- Risks: `init --force` sigue siendo una operación explícita
+- Commit subject: fix(harness): repair inactive current task state
+- Commit hash: pending
+
 All notable product changes will be documented here following Keep a Changelog and Semantic Versioning.
 
 ## [0.1.0] - 2026-07-20

@@ -1301,6 +1301,28 @@
         "All existing tests still pass"
       ],
       "commit_hash": "94dfe6f"
+    },
+    {
+      "id": "HARNESS-004",
+      "title": "Repair inactive current-task state and validation regression",
+      "status": "approved",
+      "depends_on": [
+        "TEST-012"
+      ],
+      "commit": "fix(harness): repair inactive current task state",
+      "allowed_paths": [
+        ".harness/**",
+        "scripts/harness.py",
+        "tests/harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Inactive current-task uses null state and zero attempt",
+        "Harness validate and status pass from a clean inactive state",
+        "Regression test covers the invalid committed inactive state"
+      ],
+      "commit_hash": "n/a"
     }
   ]
 }

@@ -849,3 +849,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: none
 - Commit subject: refactor(api): extract shared KIND_MAP to constants module
 - Commit hash: 9ccd5b3
+
+### HARNESS-004 — Attempt 1
+
+- Started / finished: 2026-07-30 / 2026-07-30
+- Acceptance criteria: inactive current-task canonicalizado; reparación explícita con `init --force`; regresión automatizada; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `scripts/harness.py`, `tests/harness/test_harness.py`, `.harness/current-task.json`, `.harness/backlog.json`
+- Commands: `python3 -m unittest tests.harness.test_harness -v`; `python3 -m py_compile scripts/harness.py tests/harness/test_harness.py`; `python3 scripts/harness.py validate`; `python3 scripts/harness.py status`
+- Tester: PASS — 36 tests OK, incluyendo reparación de estado inactivo obsoleto
+- Reviewer: APPROVED — alcance, seguridad y transiciones correctas
+- Rework: none
+- Changelog: added
+- Risks: `init --force` sigue siendo una operación explícita que reinicia estados pendientes/bloqueados
+- Commit subject: fix(harness): repair inactive current task state
+- Commit hash: pending

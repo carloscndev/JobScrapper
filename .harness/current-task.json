@@ -1,10 +1,26 @@
 {
   "schema_version": 1,
-  "active": false,
-  "task_id": null,
-  "state": "committed",
+  "active": true,
+  "task_id": "HARNESS-004",
+  "state": "approved",
   "attempt": 1,
-  "evidence": {"tester": "All tasks committed and verified", "reviewer": "APPROVED"},
+  "evidence": {
+    "coder": {
+      "result": "pass",
+      "evidence": "scripts/harness.py modificado; py_compile OK; tests.harness.test_harness: 35 tests OK; init --force repara current-task inactivo obsoleto y validate/status quedan válidos",
+      "attempt": 1
+    },
+    "tester": {
+      "result": "pass",
+      "evidence": "Regresión init_force stale inactive: 1 OK; suite tests/harness: 36 OK; py_compile harness y test OK",
+      "attempt": 1
+    },
+    "reviewer": {
+      "result": "pass",
+      "evidence": "APPROVED: diff scoped; py_compile OK; harness suite 36 OK; validate/status OK; git diff --check limpio",
+      "attempt": 1
+    }
+  },
   "rejections": [],
-  "commit": "aaa2ba6c1a3a9f7a979173df29bce033a86c0b7f"
+  "commit": null
 }
