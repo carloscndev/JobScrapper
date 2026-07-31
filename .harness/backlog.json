@@ -1464,7 +1464,7 @@
     {
       "id": "SOURCES-007",
       "title": "Add validated Greenhouse and Lever JSON job feeds",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "SOURCES-006"
       ],
@@ -1481,7 +1481,8 @@
         "Lever postings API records normalize title, location, description and distinct hosted/application URLs",
         "Malformed or missing ATS links are rejected without example.com fallbacks",
         "Connector regression tests pass for both feed shapes"
-      ]
+      ],
+      "commit_hash": "366c2b5"
     }
   ]
 }

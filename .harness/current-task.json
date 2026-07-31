@@ -1,26 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "SOURCES-007",
-  "state": "approved",
-  "attempt": 1,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "backend/app/connectors.py; backend/.venv/bin/python -m unittest tests.backend.test_connectors -v (16/16); fixtures Greenhouse/Lever PASS; py_compile and git diff --check PASS",
-      "attempt": 1
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "backend/.venv/bin/python -m unittest tests.backend.test_sources_007 -v (3/3) and tests.backend.test_connectors -v (16/16)",
-      "attempt": 1
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "APPROVED: Greenhouse/Lever payloads, distinct links, malformed URL rejection; backend/.venv tests 3/3 + 16/16; py_compile and diff-check pass",
-      "attempt": 1
-    }
-  },
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
   "rejections": [],
-  "commit": null
+  "commit": "366c2b5ad9b5346cc6787e6db61169f4c1778d7b"
 }
