@@ -15,7 +15,7 @@ import urllib.request
 from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, urlunsplit
 from urllib.robotparser import RobotFileParser
 from typing import Any, Mapping
 
@@ -42,9 +42,11 @@ _RATE_LIMITER = _RateLimiter()
 def _date(value: Any) -> date | None:
     if not value:
         return None
+    if isinstance(value, (int, float)):
+        return date.fromtimestamp(value)
     try:
         return date.fromisoformat(str(value)[:10])
-    except ValueError:
+    except (ValueError, TypeError):
         return None
 
 
@@ -116,17 +118,78 @@ def _sanitize_text(value: str) -> str:
     return " ".join("".join(ch for ch in value if ch == "\n" or ch == "\t" or ord(ch) >= 32).split())
 
 
+def _normalise_base_url(base_url: str | None) -> str:
+    """Return a directory-style HTTP(S) base for consistent relative joins."""
+    if not base_url:
+        return ""
+    parsed = urlparse(str(base_url).strip())
+    if parsed.scheme.lower() not in {"http", "https"} or not parsed.netloc:
+        raise ValueError(f"source base_url must be an absolute HTTP(S) URL: {base_url!r}")
+    path = parsed.path or "/"
+    if not path.endswith("/"):
+        path += "/"
+    return urlunsplit((parsed.scheme.lower(), parsed.netloc, path, "", ""))
+
+
+def _resolve_job_url(value: Any, base_url: str, field: str, *, required: bool = False) -> str | None:
+    """Resolve and validate one source link, preserving actionable field names."""
+    if value is None or not str(value).strip():
+        if required:
+            raise ValueError(f"job is missing a valid {field} URL")
+        return None
+    raw = str(value).strip()
+
+    # Validate the source value before joining it.  ``urljoin`` treats malformed
+    # absolute-looking values such as ``https:`` as relative paths, which could
+    # otherwise silently fall back to the configured source base URL.
+    try:
+        if any(ord(char) < 32 for char in raw):
+            raise ValueError
+        raw_parsed = urlparse(raw)
+        if raw.startswith("//"):
+            raise ValueError
+        if raw_parsed.scheme:
+            if raw_parsed.scheme.lower() not in {"http", "https"}:
+                raise ValueError
+            if not raw_parsed.netloc or not raw_parsed.hostname:
+                raise ValueError
+            # Accessing ``port`` validates malformed and out-of-range ports.
+            raw_parsed.port
+            if any(char.isspace() or ord(char) < 32 for char in raw_parsed.hostname):
+                raise ValueError
+    except (TypeError, ValueError):
+        raise ValueError(f"job has an invalid {field} URL: {value!r}") from None
+
+    resolved = urljoin(base_url, raw)
+    try:
+        parsed = urlparse(resolved)
+        parsed.port
+        hostname = parsed.hostname
+    except (TypeError, ValueError):
+        raise ValueError(f"job has an invalid {field} URL: {value!r}") from None
+    if parsed.scheme.lower() not in {"http", "https"} or not parsed.netloc or not hostname:
+        raise ValueError(f"job has an invalid {field} URL: {value!r}")
+    if any(char.isspace() or ord(char) < 32 for char in hostname):
+        raise ValueError(f"job has an invalid {field} URL: {value!r}")
+    return resolved
+
+
 def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> NormalizedJob:
-    description_url = str(item.get("description_url") or item.get("url") or item.get("apply_url") or "")
-    application_url = item.get("application_url") or item.get("apply_url")
-    description_url = urljoin(base_url or "", description_url)
-    application_url = urljoin(base_url or "", str(application_url)) if application_url else None
-    if not description_url or urlparse(description_url).scheme not in {"http", "https"}:
-        raise ValueError("job is missing a valid description URL")
-    location = str(item.get("location") or item.get("locations") or "").strip() or None
-    salary_min = _number(item.get("salary_min"))
-    salary_max = _number(item.get("salary_max"))
-    # Some providers only expose a range as one string (e.g. "$50,000-$70,000 USD").
+    # A source's base URL is normalized once so ``/jobs`` and ``jobs`` resolve
+    # identically whether the configured base ends in a slash or not.
+    normalized_base = _normalise_base_url(base_url)
+    # Application links must never become a fallback description link: source
+    # provenance and the two user-facing actions are distinct fields.
+    description_url = _resolve_job_url(
+        item.get("description_url") or item.get("url"), normalized_base, "description", required=True
+    )
+    application_url = _resolve_job_url(
+        item.get("application_url") or item.get("apply_url"), normalized_base, "application"
+    )
+    location = str(item.get("location") or item.get("locations") or item.get("candidate_required_location")
+                   or item.get("jobLocation") or item.get("jobGeo") or "").strip() or None
+    salary_min = _number(item.get("salary_min") or item.get("salaryMin"))
+    salary_max = _number(item.get("salary_max") or item.get("salaryMax"))
     if salary_min is None and salary_max is None and item.get("salary"):
         amounts = re.findall(r"\d[\d,]*(?:\.\d+)?", str(item["salary"]))
         if amounts:
@@ -135,22 +198,26 @@ def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> Normaliz
     requirements = _requirements(item.get("requirements") or item.get("qualifications") or item.get("must_have"))
     metadata = {"source_adapter": source, "requirements": list(requirements), **dict(item.get("metadata") or {})}
     return NormalizedJob(
-        title=str(item.get("title") or item.get("name") or "Untitled role").strip(),
-        company=str(item.get("company") or item.get("employer") or source).strip(),
-        description=_sanitize_text(str(item.get("description") or item.get("summary") or "No description provided")),
+        title=str(item.get("title") or item.get("name") or item.get("jobTitle") or "Untitled role").strip(),
+        company=str(item.get("company") or item.get("employer") or item.get("company_name")
+                    or item.get("companyName") or source).strip(),
+        description=_sanitize_text(str(item.get("description") or item.get("summary")
+                                       or item.get("jobDescription") or "No description provided")),
         description_url=description_url,
         application_url=application_url,
-        canonical_url=urljoin(base_url or "", str(item["canonical_url"])) if item.get("canonical_url") else description_url,
+        canonical_url=_resolve_job_url(item.get("canonical_url"), normalized_base, "canonical") or description_url,
         location=location,
         region=classify_region(location, item.get("region")).value,
-        # Many career pages only encode work mode in the location label
-        # (for example, ``Remote - United States``), so use it as a fallback.
-        modality=_modality(item.get("modality") or item.get("workplace_type") or item.get("location")),
+        modality=_modality(item.get("modality") or item.get("workplace_type") or item.get("remote")
+                           or item.get("jobType") or item.get("location")),
         salary_min=salary_min, salary_max=salary_max,
-        salary_currency=_currency(item.get("salary_currency") or item.get("currency") or item.get("salary")),
-        published_at=_date(item.get("published_at") or item.get("date_posted")),
+        salary_currency=_currency(item.get("salary_currency") or item.get("currency")
+                                  or item.get("salaryCurrency") or item.get("salary")),
+        published_at=_date(item.get("published_at") or item.get("date_posted") or item.get("publication_date")
+                           or item.get("created_at") or item.get("pubDate")),
         requirements=requirements,
-        salary_period=str(item.get("salary_period") or item.get("pay_period") or "").strip().lower() or None,
+        salary_period=str(item.get("salary_period") or item.get("pay_period")
+                          or item.get("salaryPeriod") or "").strip().lower() or None,
         source=str(item.get("source") or source),
         metadata=metadata,
     )
@@ -159,12 +226,15 @@ def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> Normaliz
 def _content(config: SourceConfig, key: str) -> str:
     config.validate_terms_acceptance()
     settings = dict(config.settings)
+    allow_network = settings.get("allow_network", False)
+    if type(allow_network) is not bool:
+        raise ValueError("allow_network must be a boolean")
     if key in settings:
         return str(settings[key])
     path = settings.get(f"{key}_path")
     if path:
         return Path(str(path)).read_text(encoding="utf-8")
-    if not settings.get("allow_network", False):
+    if not allow_network:
         raise RuntimeError(f"{config.name} requires an inline {key} fixture or allow_network=true")
     if not config.base_url:
         raise ValueError("base_url is required for network fetching")
@@ -211,6 +281,7 @@ class JsonApiFeedAdapter(SourceAdapter):
             errors: list[str] = []
             for item in items:
                 if not isinstance(item, Mapping):
+                    errors.append("invalid job: item must be an object with a description URL")
                     continue
                 try:
                     jobs.append(_job(item, config.base_url, self.name))
@@ -301,6 +372,7 @@ class _CareerPageAdapter(SourceAdapter):
             errors: list[str] = []
             for card in parser.cards:
                 if not card.get("url"):
+                    errors.append("invalid job: job is missing a valid description URL")
                     continue
                 try:
                     jobs.append(_job({**card, "company": self.company, "description_url": card.get("url")}, config.base_url, self.name))

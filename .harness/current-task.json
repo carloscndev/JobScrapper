@@ -1,30 +1,30 @@
 {
   "schema_version": 1,
   "active": true,
-  "task_id": "SOURCES-004",
+  "task_id": "JOBS-003",
   "state": "approved",
   "attempt": 2,
   "evidence": {
     "coder": {
       "result": "pass",
-      "evidence": "Rework intento 2: JobPipeline zero-jobs issue/failed; factory URL validation structured 422; allow_network bool validation consistent; backend pytest target 29 pass with one unrelated NameError; compileall OK",
+      "evidence": "Rework intento 2: _resolve_job_url valida raw antes de urljoin, rechaza esquemas/hosts/puertos malformados; connector pytest 15 passed; no tests/commits editados",
       "attempt": 2
     },
     "tester": {
       "result": "pass",
-      "evidence": "Rework tests_sources_004: backend venv 10/10 OK; related suites 28 OK con un NameError preexistente en test_sources.py:191; compile OK; guard sin SQLAlchemy evita import crash",
+      "evidence": "Rework test raw malformed links added; py_compile/diff-check OK; backend/.venv runtime unavailable in tester env (16 skipped; dependency install blocked), previous backend/.venv run had connector 15/15",
       "attempt": 2
     },
     "reviewer": {
       "result": "pass",
-      "evidence": "APPROVED intento 2: zero-jobs failed en factory y JobPipeline; URLs inválidas 422 estructurado; allow_network bool consistente; guard de tests; target 10/10 OK y diff check limpio",
+      "evidence": "APPROVED intento 2: backend connector suite 16/16; raw malformed URLs rejected; relative/trailing slash and distinct links verified; schemas.py remains out of scope",
       "attempt": 2
     }
   },
   "rejections": [
     {
       "by": "reviewer",
-      "reason": "CHANGES_REQUESTED: pipeline cron JobPipeline.run aún trata zero jobs como success; _validate_source_configuration deja URLs inválidas en 500; allow_network no normaliza/rechaza tipos no booleanos. Además el entorno python3 sin SQLAlchemy no puede importar 6 tests, aunque backend/.venv pasó 7/7.",
+      "reason": "CHANGES_REQUESTED: _resolve_job_url acepta raw malformados como https:, https://, //, https://?foo o https://:bad tras urljoin; validar raw scheme/netloc/hostname y evitar fallback. schemas.py local está fuera de JOBS-003 y debe preservarse sin stage.",
       "attempt": 1
     }
   ],

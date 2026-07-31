@@ -15,6 +15,17 @@
 - Commit subject: fix(harness): repair inactive current task state
 - Commit hash: pending
 
+### JOBS-003 — Attempt 2
+
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_connectors.py`
+- Commands: connector tests, py_compile, diff check
+- Tester: PASS
+- Reviewer: APPROVED
+- Risks: external links depend on provider availability
+- Commit subject: fix(api): normalize job source links
+- Commit hash: pending
+
 ### SOURCES-004 — Attempt 2
 
 - Skills: coder none; tester none; reviewer none

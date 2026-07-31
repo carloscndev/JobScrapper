@@ -879,3 +879,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: fallos preexistentes fuera de alcance permanecen documentados
 - Commit subject: fix(api): make source refresh configuration executable
 - Commit hash: pending
+
+### JOBS-003 — Attempt 2
+
+- Started / finished: 2026-07-30 / 2026-07-30
+- Acceptance criteria: normalización de enlaces y validación estricta de URLs; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_connectors.py`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_connectors -v`; `py_compile`; `git diff --check`
+- Tester: PASS — 16/16 connector tests; fallos externos preexistentes aislados
+- Reviewer: APPROVED — raw malformed URLs rechazadas y URLs relativas resueltas correctamente
+- Rework: resolved
+- Changelog: added
+- Risks: enlaces externos siguen sujetos a disponibilidad y políticas del proveedor
+- Commit subject: fix(api): normalize job source links
+- Commit hash: pending

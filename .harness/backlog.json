@@ -103,7 +103,7 @@
     },
     {
       "id": "HARNESS-001",
-      "title": "CLI lifecycle \u2014 validate, status, advance",
+      "title": "CLI lifecycle — validate, status, advance",
       "status": "committed",
       "depends_on": [
         "SKILLS-002"
@@ -958,7 +958,7 @@
     },
     {
       "id": "API-008",
-      "title": "Catch CVParserUnavailable \u2192 422 in upload endpoint",
+      "title": "Catch CVParserUnavailable → 422 in upload endpoint",
       "status": "committed",
       "depends_on": [
         "API-007"
@@ -1285,7 +1285,7 @@
     },
     {
       "id": "NOTION-004",
-      "title": "Fix data_sources \u2192 databases in Notion API paths",
+      "title": "Fix data_sources → databases in Notion API paths",
       "status": "committed",
       "depends_on": [],
       "commit": "fix(api): fix data_sources to databases in Notion API paths",
@@ -1327,7 +1327,7 @@
     {
       "id": "SOURCES-004",
       "title": "Make source registration and refresh executable",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "HARNESS-004"
       ],
@@ -1345,12 +1345,12 @@
         "A source with no adapter or zero jobs cannot silently report a healthy ingestion",
         "Backend source and refresh regression tests pass"
       ],
-      "commit_hash": "n/a"
+      "commit_hash": "0128ed6"
     },
     {
       "id": "JOBS-003",
       "title": "Normalize job description and application links",
-      "status": "blocked",
+      "status": "approved",
       "depends_on": [
         "SOURCES-004"
       ],
@@ -1373,7 +1373,7 @@
     {
       "id": "SOURCES-005",
       "title": "Add executable source configuration and diagnostics to dashboard",
-      "status": "blocked",
+      "status": "pending",
       "depends_on": [
         "SOURCES-004"
       ],
