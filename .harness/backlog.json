@@ -1532,7 +1532,7 @@
     {
       "id": "FRONTEND-011",
       "title": "Add integrated source activation dialog",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-010"
       ],
@@ -1551,7 +1551,8 @@
         "Confirm sends terms_accepted=true only after checkbox acceptance",
         "Dialog has accessible labeling, focus-visible controls and inline errors",
         "Frontend tests, typecheck and production build pass"
-      ]
+      ],
+      "commit_hash": "b9cf561"
     }
   ]
 }

@@ -1,32 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "FRONTEND-011",
-  "state": "approved",
-  "attempt": 2,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "Added overscroll-behavior: contain to activation dialog backdrop; pnpm build, tsc, tests 12/12 and diff-check remain green",
-      "attempt": 2
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "Re-ran frontend activation dialog/source/operations tests 12/12; pnpm build and tsc -b pass",
-      "attempt": 2
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "APPROVED after rework: modal overscroll-behavior contain present; frontend tests 12/12, build and tsc pass",
-      "attempt": 2
-    }
-  },
-  "rejections": [
-    {
-      "by": "reviewer",
-      "reason": "Reviewer: modal backdrop requires overscroll-behavior: contain for accessible scroll isolation",
-      "attempt": 1
-    }
-  ],
-  "commit": null
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
+  "rejections": [],
+  "commit": "b9cf5614d84a07f47cebac9191e561d2a7b3fe95"
 }
