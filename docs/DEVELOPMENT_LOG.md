@@ -805,6 +805,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: feat(api): support validated ats job feeds
 - Commit hash: pending
 
+### SOURCES-008 — Attempt 1
+
+- Started / finished: 2026-07-31 / 2026-07-31
+- Acceptance criteria: metadata ATS tolerante a listas; fallback explícito de compañía; rechazo sin compañía; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_sources_008.py`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_sources_008 tests.backend.test_sources_007 tests.backend.test_connectors -v` (22/22); `backend/.venv/bin/python -m py_compile backend/app/connectors.py tests/backend/test_sources_008.py`; `git diff --check`
+- Tester: PASS — metadata Greenhouse, company fallback y rechazo de registros incompletos
+- Reviewer: APPROVED — alcance y regresiones revisados
+- Reprocesos: none
+- Changelog: added
+- Risks: los proveedores pueden omitir la compañía; solo se usa un fallback configurado explícitamente
+- Commit subject: fix(api): harden ats feed normalization
+- Commit hash: pending
+
 ### TEST-013 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30

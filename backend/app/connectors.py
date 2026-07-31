@@ -186,7 +186,13 @@ def _resolve_job_url(value: Any, base_url: str, field: str, *, required: bool = 
     return resolved
 
 
-def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> NormalizedJob:
+def _job(
+    item: Mapping[str, Any],
+    base_url: str | None,
+    source: str,
+    *,
+    default_company: str | None = None,
+) -> NormalizedJob:
     # A source's base URL is normalized once so ``/jobs`` and ``jobs`` resolve
     # identically whether the configured base ends in a slash or not.
     normalized_base = _normalise_base_url(base_url)
@@ -219,11 +225,16 @@ def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> Normaliz
             salary_min = _number(amounts[0])
             salary_max = _number(amounts[-1])
     requirements = _requirements(item.get("requirements") or item.get("qualifications") or item.get("must_have"))
-    metadata = {"source_adapter": source, "requirements": list(requirements), **dict(item.get("metadata") or {})}
+    metadata = {"source_adapter": source, "requirements": list(requirements)}
+    provider_metadata = item.get("metadata")
+    if isinstance(provider_metadata, Mapping):
+        metadata.update(dict(provider_metadata))
+    elif provider_metadata is not None:
+        metadata["provider_metadata"] = provider_metadata
     return NormalizedJob(
         title=str(item.get("title") or item.get("name") or item.get("jobTitle") or item.get("text") or "Untitled role").strip(),
         company=str(item.get("company") or item.get("employer") or item.get("company_name")
-                    or item.get("companyName") or source).strip(),
+                    or item.get("companyName") or default_company or "").strip(),
         description=_sanitize_text(str(item.get("description") or item.get("content")
                                        or item.get("descriptionPlain") or item.get("summary")
                                        or item.get("jobDescription") or "No description provided")),
@@ -306,6 +317,9 @@ def _fetch_json_feed(config: SourceConfig, adapter_name: str, default_company: s
         config.validate_terms_acceptance()
         payload = json.loads(_content(config, "payload"))
         items = _json_items(payload)
+        configured_company = config.settings.get("company")
+        configured_company = str(configured_company).strip() if configured_company else None
+        company_fallback = configured_company or default_company
         jobs: list[NormalizedJob] = []
         errors: list[str] = []
         for item in items:
@@ -314,9 +328,7 @@ def _fetch_json_feed(config: SourceConfig, adapter_name: str, default_company: s
                 continue
             try:
                 record = dict(item)
-                if default_company and not any(record.get(key) for key in ("company", "employer", "company_name", "companyName")):
-                    record["company"] = default_company
-                jobs.append(_job(record, config.base_url, adapter_name))
+                jobs.append(_job(record, config.base_url, adapter_name, default_company=company_fallback))
             except Exception as exc:
                 errors.append(f"invalid job: {exc}")
         return SourceFetchResult(jobs=tuple(jobs), error="; ".join(errors) if errors else None)
@@ -424,7 +436,12 @@ class _CareerPageAdapter(SourceAdapter):
                     errors.append("invalid job: job is missing a valid description URL")
                     continue
                 try:
-                    jobs.append(_job({**card, "company": self.company, "description_url": card.get("url")}, config.base_url, self.name))
+                    jobs.append(_job(
+                        {**card, "description_url": card.get("url")},
+                        config.base_url,
+                        self.name,
+                        default_company=self.company,
+                    ))
                 except Exception as exc:
                     errors.append(f"invalid job: {exc}")
             return SourceFetchResult(jobs=tuple(jobs), error="; ".join(errors) if errors else None)

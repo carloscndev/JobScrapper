@@ -1,10 +1,26 @@
 {
   "schema_version": 1,
-  "active": false,
-  "task_id": null,
-  "state": null,
-  "attempt": 0,
-  "evidence": {},
+  "active": true,
+  "task_id": "SOURCES-008",
+  "state": "approved",
+  "attempt": 1,
+  "evidence": {
+    "coder": {
+      "result": "pass",
+      "evidence": "backend/app/connectors.py; backend/.venv tests SOURCES-007 + connectors 19/19; metadata/company custom checks PASS; py_compile and diff-check PASS",
+      "attempt": 1
+    },
+    "tester": {
+      "result": "pass",
+      "evidence": "backend/.venv/bin/python -m unittest tests.backend.test_sources_008 tests.backend.test_sources_007 tests.backend.test_connectors -v (22/22)",
+      "attempt": 1
+    },
+    "reviewer": {
+      "result": "pass",
+      "evidence": "APPROVED: metadata arrays preserved, explicit company fallback, missing company rejected; 22/22 tests, py_compile and diff-check pass",
+      "attempt": 1
+    }
+  },
   "rejections": [],
-  "commit": "366c2b5ad9b5346cc6787e6db61169f4c1778d7b"
+  "commit": null
 }

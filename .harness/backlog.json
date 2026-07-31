@@ -1483,6 +1483,27 @@
         "Connector regression tests pass for both feed shapes"
       ],
       "commit_hash": "366c2b5"
+    },
+    {
+      "id": "SOURCES-008",
+      "title": "Harden ATS feed metadata and company labeling",
+      "status": "approved",
+      "depends_on": [
+        "SOURCES-007"
+      ],
+      "commit": "fix(api): harden ats feed normalization",
+      "allowed_paths": [
+        "backend/app/connectors.py",
+        "tests/backend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Greenhouse metadata arrays do not discard valid jobs or fail the source",
+        "Configured company labels are applied when a provider omits company",
+        "Existing URL validation and connector regression tests remain green"
+      ]
     }
   ]
 }
