@@ -3,6 +3,7 @@
 ## Unreleased
 
 - `fix(harness): repair inactive current task state` — canonicaliza y repara estados inactivos obsoletos mediante `init --force`.
+- `feat(api): support validated ats job feeds` — normaliza feeds JSON públicos de Greenhouse y Lever con enlaces oficiales y rechaza URLs malformadas.
 
 ### HARNESS-004 — Attempt 1
 

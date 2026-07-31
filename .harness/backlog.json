@@ -1460,6 +1460,28 @@
         "Regression tests cover legacy resolution without changing terms acceptance"
       ],
       "commit_hash": "6f2a10f"
+    },
+    {
+      "id": "SOURCES-007",
+      "title": "Add validated Greenhouse and Lever JSON job feeds",
+      "status": "approved",
+      "depends_on": [
+        "SOURCES-006"
+      ],
+      "commit": "feat(api): support validated ats job feeds",
+      "allowed_paths": [
+        "backend/app/connectors.py",
+        "tests/backend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Greenhouse jobs API records normalize title, company, description and actionable absolute URL",
+        "Lever postings API records normalize title, location, description and distinct hosted/application URLs",
+        "Malformed or missing ATS links are rejected without example.com fallbacks",
+        "Connector regression tests pass for both feed shapes"
+      ]
     }
   ]
 }

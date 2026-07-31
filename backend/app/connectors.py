@@ -43,9 +43,21 @@ def _date(value: Any) -> date | None:
     if not value:
         return None
     if isinstance(value, (int, float)):
-        return date.fromtimestamp(value)
+        # Lever commonly returns Unix timestamps in milliseconds while other
+        # feeds use seconds.  Normalize both forms and isolate malformed
+        # provider values to the record instead of failing the whole source.
+        timestamp = float(value)
+        if abs(timestamp) >= 100_000_000_000:
+            timestamp /= 1000
+        try:
+            return date.fromtimestamp(timestamp)
+        except (OverflowError, OSError, ValueError):
+            return None
+    text = str(value).strip()
+    if re.fullmatch(r"-?\d+(?:\.\d+)?", text):
+        return _date(float(text))
     try:
-        return date.fromisoformat(str(value)[:10])
+        return date.fromisoformat(text[:10])
     except (ValueError, TypeError):
         return None
 
@@ -181,13 +193,24 @@ def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> Normaliz
     # Application links must never become a fallback description link: source
     # provenance and the two user-facing actions are distinct fields.
     description_url = _resolve_job_url(
-        item.get("description_url") or item.get("url"), normalized_base, "description", required=True
+        item.get("description_url") or item.get("url") or item.get("absolute_url") or item.get("hostedUrl"),
+        normalized_base,
+        "description",
+        required=True,
     )
     application_url = _resolve_job_url(
-        item.get("application_url") or item.get("apply_url"), normalized_base, "application"
+        item.get("application_url") or item.get("apply_url") or item.get("applyUrl"),
+        normalized_base,
+        "application",
     )
-    location = str(item.get("location") or item.get("locations") or item.get("candidate_required_location")
-                   or item.get("jobLocation") or item.get("jobGeo") or "").strip() or None
+    location_value = (item.get("location") or item.get("locations") or item.get("candidate_required_location")
+                      or item.get("jobLocation") or item.get("jobGeo"))
+    if isinstance(location_value, Mapping):
+        location_value = location_value.get("name") or location_value.get("location")
+    categories = item.get("categories")
+    if not location_value and isinstance(categories, Mapping):
+        location_value = categories.get("location")
+    location = str(location_value or "").strip() or None
     salary_min = _number(item.get("salary_min") or item.get("salaryMin"))
     salary_max = _number(item.get("salary_max") or item.get("salaryMax"))
     if salary_min is None and salary_max is None and item.get("salary"):
@@ -198,23 +221,29 @@ def _job(item: Mapping[str, Any], base_url: str | None, source: str) -> Normaliz
     requirements = _requirements(item.get("requirements") or item.get("qualifications") or item.get("must_have"))
     metadata = {"source_adapter": source, "requirements": list(requirements), **dict(item.get("metadata") or {})}
     return NormalizedJob(
-        title=str(item.get("title") or item.get("name") or item.get("jobTitle") or "Untitled role").strip(),
+        title=str(item.get("title") or item.get("name") or item.get("jobTitle") or item.get("text") or "Untitled role").strip(),
         company=str(item.get("company") or item.get("employer") or item.get("company_name")
                     or item.get("companyName") or source).strip(),
-        description=_sanitize_text(str(item.get("description") or item.get("summary")
+        description=_sanitize_text(str(item.get("description") or item.get("content")
+                                       or item.get("descriptionPlain") or item.get("summary")
                                        or item.get("jobDescription") or "No description provided")),
         description_url=description_url,
         application_url=application_url,
-        canonical_url=_resolve_job_url(item.get("canonical_url"), normalized_base, "canonical") or description_url,
+        canonical_url=_resolve_job_url(
+            item.get("canonical_url") or item.get("absolute_url") or item.get("hostedUrl"),
+            normalized_base,
+            "canonical",
+        ) or description_url,
         location=location,
         region=classify_region(location, item.get("region")).value,
-        modality=_modality(item.get("modality") or item.get("workplace_type") or item.get("remote")
+        modality=_modality(item.get("modality") or item.get("workplace_type") or item.get("workplaceType") or item.get("remote")
                            or item.get("jobType") or item.get("location")),
         salary_min=salary_min, salary_max=salary_max,
         salary_currency=_currency(item.get("salary_currency") or item.get("currency")
                                   or item.get("salaryCurrency") or item.get("salary")),
         published_at=_date(item.get("published_at") or item.get("date_posted") or item.get("publication_date")
-                           or item.get("created_at") or item.get("pubDate")),
+                           or item.get("created_at") or item.get("first_published") or item.get("createdAt")
+                           or item.get("pubDate")),
         requirements=requirements,
         salary_period=str(item.get("salary_period") or item.get("pay_period")
                           or item.get("salaryPeriod") or "").strip().lower() or None,
@@ -262,6 +291,39 @@ def _robots_check(url: str, user_agent: str) -> None:
         raise PermissionError(f"robots.txt disallows fetching {url}")
 
 
+def _json_items(payload: Any) -> Any:
+    """Extract the supported collection shapes used by JSON ATS feeds."""
+    if isinstance(payload, list):
+        return payload
+    if isinstance(payload, Mapping):
+        return payload.get("jobs", payload.get("data", []))
+    return []
+
+
+def _fetch_json_feed(config: SourceConfig, adapter_name: str, default_company: str | None = None) -> SourceFetchResult:
+    """Decode and normalize JSON records while isolating malformed items."""
+    try:
+        config.validate_terms_acceptance()
+        payload = json.loads(_content(config, "payload"))
+        items = _json_items(payload)
+        jobs: list[NormalizedJob] = []
+        errors: list[str] = []
+        for item in items:
+            if not isinstance(item, Mapping):
+                errors.append("invalid job: item must be an object with a description URL")
+                continue
+            try:
+                record = dict(item)
+                if default_company and not any(record.get(key) for key in ("company", "employer", "company_name", "companyName")):
+                    record["company"] = default_company
+                jobs.append(_job(record, config.base_url, adapter_name))
+            except Exception as exc:
+                errors.append(f"invalid job: {exc}")
+        return SourceFetchResult(jobs=tuple(jobs), error="; ".join(errors) if errors else None)
+    except Exception as exc:  # source isolation is handled by the pipeline
+        return SourceFetchResult(error=f"{type(exc).__name__}: {exc}")
+
+
 class JsonApiFeedAdapter(SourceAdapter):
     """Adapter for a JSON API or feed returning a list under ``jobs``/``data``."""
 
@@ -273,23 +335,7 @@ class JsonApiFeedAdapter(SourceAdapter):
         return self._name
 
     def fetch(self, config: SourceConfig) -> SourceFetchResult:
-        try:
-            config.validate_terms_acceptance()
-            payload = json.loads(_content(config, "payload"))
-            items = payload if isinstance(payload, list) else payload.get("jobs", payload.get("data", []))
-            jobs: list[NormalizedJob] = []
-            errors: list[str] = []
-            for item in items:
-                if not isinstance(item, Mapping):
-                    errors.append("invalid job: item must be an object with a description URL")
-                    continue
-                try:
-                    jobs.append(_job(item, config.base_url, self.name))
-                except Exception as exc:
-                    errors.append(f"invalid job: {exc}")
-            return SourceFetchResult(jobs=tuple(jobs), error="; ".join(errors) if errors else None)
-        except Exception as exc:  # source isolation is handled by the pipeline
-            return SourceFetchResult(error=f"{type(exc).__name__}: {exc}")
+        return _fetch_json_feed(config, self.name)
 
 
 class _CardParser(HTMLParser):
@@ -366,6 +412,9 @@ class _CareerPageAdapter(SourceAdapter):
     def fetch(self, config: SourceConfig) -> SourceFetchResult:
         try:
             config.validate_terms_acceptance()
+            settings = dict(config.settings)
+            if "payload" in settings or settings.get("payload_path"):
+                return _fetch_json_feed(config, self.name, self.company)
             parser = _CardParser()
             parser.feed(_content(config, "html"))
             jobs: list[NormalizedJob] = []

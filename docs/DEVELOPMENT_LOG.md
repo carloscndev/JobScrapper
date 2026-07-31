@@ -790,6 +790,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: fix(api): resolve legacy source adapters
 - Commit hash: pending
 
+### SOURCES-007 — Attempt 1
+
+- Started / finished: 2026-07-31 / 2026-07-31
+- Acceptance criteria: feeds JSON de Greenhouse y Lever normalizados; enlaces válidos y separados cuando el proveedor los ofrece; enlaces malformados rechazados; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_sources_007.py`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_sources_007 -v` (3/3); `backend/.venv/bin/python -m unittest tests.backend.test_connectors -v` (16/16); `backend/.venv/bin/python -m py_compile backend/app/connectors.py`; `git diff --check`
+- Tester: PASS — fixtures Greenhouse/Lever, ubicación/fecha/enlaces y rechazo de URLs inválidas
+- Reviewer: APPROVED — validación estricta, sin fallback `example.com`, alcance revisado
+- Reprocesos: none
+- Changelog: added
+- Risks: la URL de aplicación de Greenhouse puede ser la misma página accionable y queda nula si el feed no publica `applyUrl`; ambos proveedores siguen sujetos a sus términos y límites
+- Commit subject: feat(api): support validated ats job feeds
+- Commit hash: pending
+
 ### TEST-013 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30
