@@ -7,6 +7,7 @@
 - `fix(api): harden ats feed normalization` — tolera metadatos en lista y aplica el nombre de compañía solo cuando está configurado explícitamente.
 - `fix(web): explain and confirm source activation` — solicita aceptación explícita de términos al activar fuentes y muestra los detalles de validación de la API.
 - `fix(web): add source terms activation dialog` — integra un diálogo accesible con enlace de términos, checkbox obligatorio y cancelación segura.
+- `fix(web): distinguish paused sources from stale runs` — evita mostrar fallos históricos como si fueran errores actuales de fuentes pausadas.
 
 ### HARNESS-004 — Attempt 1
 

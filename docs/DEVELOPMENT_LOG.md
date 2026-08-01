@@ -850,6 +850,21 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Commit subject: fix(web): add source terms activation dialog
 - Commit hash: pending
 
+### FRONTEND-012 — Attempt 1
+
+- Started / finished: 2026-08-01 / 2026-08-01
+- Acceptance criteria: fuentes pausadas sin errores históricos; fuentes activas conservan su último estado; PASS
+- Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
+- Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_paused_sources.py`
+- Commands: `python3 -m unittest tests.frontend.test_frontend_paused_sources tests.frontend.test_frontend_operations tests.frontend.test_sources_005 -v` (17/17; reviewer 18/18); `cd frontend && pnpm build`; `cd frontend && pnpm exec tsc -b`; `git diff --check`
+- Tester: PASS — estados pausada/activa y supresión de errores históricos
+- Reviewer: APPROVED — comportamiento y accesibilidad revisados
+- Reprocesos: none
+- Changelog: added
+- Risks: el historial de ejecuciones se conserva para auditoría, pero no se presenta como estado actual de una fuente pausada
+- Commit subject: fix(web): distinguish paused sources from stale runs
+- Commit hash: pending
+
 ### TEST-013 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30

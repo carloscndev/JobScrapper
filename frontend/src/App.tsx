@@ -436,10 +436,11 @@ function OperationsDashboard() {
           <div className="panel-heading"><div><p className="card-kicker">Ingesta</p><h3 id="sources-title">Fuentes conectadas</h3></div><span className="source-count">{sources.filter((s) => s.enabled).length}/{sources.length} activas</span></div>
           <p className="muted">Activa o pausa una fuente sin perder su configuración.</p>
           {sources.length ? <ul className="source-list">{sources.map((source) => {
-            const run = latestSourceRuns.get(source.id);
-            const runClass = run?.status === "success" ? "healthy" : run ? "failed" : "unknown";
+            const run = source.enabled ? latestSourceRuns.get(source.id) : undefined;
+            const runClass = source.enabled ? (run?.status === "success" ? "healthy" : run ? "failed" : "unknown") : "paused";
+            const runLabel = source.enabled ? (run ? `Última ejecución: ${run.status}` : "Sin ejecuciones") : "Pausada";
             return <li key={source.id}>
-              <div className="source-details"><strong>{source.name}</strong><span>{source.config?.adapter ?? source.kind} · {source.base_url || "Fixture local"}</span><span className={`source-run-status ${runClass}`} aria-label={run ? `Última ejecución: ${run.status}` : "Sin ejecuciones"}>{run ? `${run.status} · ${run.jobs_found} ofertas` : "Sin ejecuciones"}</span>{run?.error && <span className="source-error" title={run.error}>{run.error}</span>}</div>
+              <div className="source-details"><strong>{source.name}</strong><span>{source.config?.adapter ?? source.kind} · {source.base_url || "Fixture local"}</span><span className={`source-run-status ${runClass}`} aria-label={runLabel}>{source.enabled ? (run ? `${run.status} · ${run.jobs_found} ofertas` : "Sin ejecuciones") : "Pausada"}</span>{source.enabled && run?.error && <span className="source-error" title={run.error}>{run.error}</span>}</div>
               <div className="source-actions"><button type="button" className={`toggle ${source.enabled ? "on" : ""}`} aria-pressed={source.enabled} onClick={() => toggleSource(source.id, source.enabled)}><span aria-hidden="true" />{source.enabled ? "Activa" : "Pausada"}</button><button type="button" className="toggle danger" onClick={() => deleteSource(source.id, source.name)}>Eliminar</button></div>
             </li>;
           })}</ul> : <div className="empty-state"><strong>No hay fuentes configuradas.</strong><span>Agrega una fuente para iniciar la búsqueda.</span></div>}

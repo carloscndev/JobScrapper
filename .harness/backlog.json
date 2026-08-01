@@ -1553,6 +1553,28 @@
         "Frontend tests, typecheck and production build pass"
       ],
       "commit_hash": "b9cf561"
+    },
+    {
+      "id": "FRONTEND-012",
+      "title": "Hide stale run errors for paused sources",
+      "status": "approved",
+      "depends_on": [
+        "FRONTEND-011"
+      ],
+      "commit": "fix(web): distinguish paused sources from stale runs",
+      "allowed_paths": [
+        "frontend/src/App.tsx",
+        "tests/frontend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Paused sources display Pausada regardless of historical run status",
+        "Historical source errors are not shown as current errors while paused",
+        "Enabled sources retain their latest run status and error details",
+        "Frontend regression tests, typecheck and build pass"
+      ]
     }
   ]
 }
