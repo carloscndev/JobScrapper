@@ -1599,6 +1599,28 @@
         "Backend refresh and matching regression tests pass"
       ],
       "commit_hash": "46afcde"
+    },
+    {
+      "id": "API-018",
+      "title": "Ignore Remote OK API legal metadata records",
+      "status": "approved",
+      "depends_on": [
+        "API-017"
+      ],
+      "commit": "fix(api): ignore remote ok legal metadata",
+      "allowed_paths": [
+        "backend/app/connectors.py",
+        "tests/backend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Remote OK legal metadata does not create an invalid-job source error",
+        "Valid Remote OK jobs remain ingestible with description and application links",
+        "Generic feeds still report malformed job records as partial",
+        "Connector and related backend tests pass"
+      ]
     }
   ]
 }

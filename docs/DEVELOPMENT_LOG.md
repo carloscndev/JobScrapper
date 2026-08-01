@@ -1310,3 +1310,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: el score determinista depende de la calidad del perfil y los metadatos normalizados; análisis narrativo de Ollama sigue siendo opcional
 - Commit subject: fix(api): calculate compatibility during refresh
 - Commit hash: 46afcde
+
+### API-018 — Attempt 1
+
+- Started / finished: 2026-07-31 / 2026-07-31
+- Acceptance criteria: envelope legal de Remote OK ignorado; ofertas válidas conservadas; registros genéricos malformados siguen en partial; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_api_sources_018.py`, `.harness/backlog.json`, `.harness/current-task.json`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_sources_018 tests.backend.test_connectors -v` (18/18); suite ampliada connector/source (24/24); `py_compile`; `git diff --check`
+- Tester: PASS — el registro `legal` inicial de Remote OK no genera error; los registros sin URL siguen aislados y reportados como partial
+- Reviewer: APPROVED — filtro estrecho por envelope legal, URLs válidas retenidas y alcance revisado
+- Reprocesos: none
+- Changelog: added
+- Risks: Remote OK puede cambiar su contrato; se conserva la validación estricta para registros que parezcan ofertas
+- Commit subject: fix(api): ignore remote ok legal metadata
+- Commit hash: pending

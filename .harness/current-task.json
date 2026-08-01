@@ -1,10 +1,26 @@
 {
   "schema_version": 1,
-  "active": false,
-  "task_id": null,
-  "state": null,
-  "attempt": 0,
-  "evidence": {},
+  "active": true,
+  "task_id": "API-018",
+  "state": "approved",
+  "attempt": 1,
+  "evidence": {
+    "coder": {
+      "result": "pass",
+      "evidence": "connectors.py ignores only legal metadata envelopes without job markers; malformed job-like legal records remain partial. py_compile, diff-check and related connector/source suites 19/19 pass",
+      "attempt": 1
+    },
+    "tester": {
+      "result": "pass",
+      "evidence": "tests/backend/test_api_018.py added; API-018 plus connector and sources suites 22/22 pass. Covers legal envelope ignored, generic missing URL remains partial, and legal+job marker remains partial.",
+      "attempt": 1
+    },
+    "reviewer": {
+      "result": "pass",
+      "evidence": "APPROVED: _is_legal_metadata narrowly skips only legal envelopes without job markers; legal+job-shaped malformed records remain partial; generic malformed feeds remain partial; valid links retained. Expanded connector/API/source run 24/24, py_compile and diff-check pass. schemas.py excluded.",
+      "attempt": 1
+    }
+  },
   "rejections": [],
-  "commit": "46afcdef1fa50e74f422f9f9be0acb1bb2451a4b"
+  "commit": null
 }

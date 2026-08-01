@@ -311,6 +311,18 @@ def _json_items(payload: Any) -> Any:
     return []
 
 
+def _is_legal_metadata(item: Mapping[str, Any]) -> bool:
+    """Recognize a provider legal envelope without hiding malformed jobs."""
+    if "legal" not in item:
+        return False
+    job_markers = {
+        "title", "name", "text", "description", "content", "descriptionPlain",
+        "url", "absolute_url", "hostedUrl", "applyUrl", "company", "company_name",
+        "companyName", "location", "categories",
+    }
+    return not any(marker in item for marker in job_markers)
+
+
 def _fetch_json_feed(config: SourceConfig, adapter_name: str, default_company: str | None = None) -> SourceFetchResult:
     """Decode and normalize JSON records while isolating malformed items."""
     try:
@@ -325,6 +337,8 @@ def _fetch_json_feed(config: SourceConfig, adapter_name: str, default_company: s
         for item in items:
             if not isinstance(item, Mapping):
                 errors.append("invalid job: item must be an object with a description URL")
+                continue
+            if _is_legal_metadata(item):
                 continue
             try:
                 record = dict(item)
