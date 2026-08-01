@@ -1649,7 +1649,7 @@
     {
       "id": "DOCS-002",
       "title": "Prepare GitHub-ready project README",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "API-019"
       ],
@@ -1665,7 +1665,8 @@
         "Docker, local development, Notion, Ollama, sources, cron and tests are documented",
         "GitHub publication and security guidance are included",
         "Commands and repository links are consistent with the current project"
-      ]
+      ],
+      "commit_hash": "9ffd0fb"
     }
   ]
 }
