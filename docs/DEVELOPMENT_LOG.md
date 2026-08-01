@@ -1339,4 +1339,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: added
 - Risks: cada board puede cambiar su contrato o ubicación; las fuentes se validarán en cada refresh
 - Commit subject: feat(api): add validated mexico job sources
-- Commit hash: pending
+- Commit hash: 2a4dd67

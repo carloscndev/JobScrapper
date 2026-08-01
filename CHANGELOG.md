@@ -763,4 +763,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — malformed URLs rejected without fallback and scope verified
 - Risks: provider board schemas and availability may change; each refresh records source status
 - Commit subject: feat(api): add validated mexico job sources
-- Commit hash: pending
+- Commit hash: 2a4dd67
