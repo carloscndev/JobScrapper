@@ -19,7 +19,8 @@ from fastapi.responses import JSONResponse
 from .database import create_db_engine, create_session_factory
 from .models import Base, Evaluation, Job, Profile, PipelineExecution, Source, SourceRun
 from sqlalchemy import asc, desc, func, or_, select
-from .repositories import ProfileRepository, JobRepository, SourceRepository
+from .repositories import EvaluationRepository, ProfileRepository, JobRepository, SourceRepository
+from .matching import MatchingService
 from .schemas import (JobDetailResponse, JobEvaluationResponse, JobListItem, PaginatedJobsResponse,
                       PreferencePayload, ProfileResponse, ProfileUpdatePayload, SourceCreatePayload,
                       SourceUpdatePayload, UploadResponse)
@@ -381,6 +382,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             enabled_sources = db.scalars(select(Source).where(Source.enabled.is_(True)).order_by(Source.name)).all()
             issues_total = 0
             source_errors: list[str] = []
+            ingested_jobs: list[Job] = []
+            evaluations_created = 0
+            evaluation_errors = 0
             for source in enabled_sources:
                 started = datetime.now(timezone.utc)
                 source_config = None
@@ -433,19 +437,46 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     failed += 1 if run_status != "success" else 0
                     issues_total += 1 if source_error else 0
                     for normalized in result.jobs:
-                        JobRepository(db).upsert(Job(source_id=source.id, title=normalized.title, company=normalized.company, description=normalized.description,
+                        persisted_job = JobRepository(db).upsert(Job(source_id=source.id, title=normalized.title, company=normalized.company, description=normalized.description,
                                     description_url=normalized.description_url, application_url=normalized.application_url,
                                     canonical_url=canonicalize_url(normalized.effective_canonical_url), fingerprint=fingerprint_job(normalized),
                                     location=normalized.location, region=normalized.region, modality=str(normalized.modality),
                                     salary_min=normalized.salary_min, salary_max=normalized.salary_max, salary_currency=normalized.salary_currency,
                                     published_at=normalized.published_at, metadata_json={**dict(normalized.metadata), "source": source.name}))
+                        ingested_jobs.append(persisted_job)
                 else:
                     failed += 1
                     issues_total += 1
-            execution.status = "failed" if not found else ("partial" if failed else "success")
+
+            # Evaluate only jobs produced by this refresh.  The first profile
+            # is used for the local single-user API; a missing profile must
+            # never roll back successful ingestion.
+            jobs_for_evaluation = list({job.id: job for job in ingested_jobs}.values())
+            configured_max_jobs = getattr(runtime, "max_jobs", None)
+            max_jobs = len(jobs_for_evaluation) if configured_max_jobs is None else max(0, int(configured_max_jobs))
+            jobs_for_evaluation = jobs_for_evaluation[:max_jobs]
+            if jobs_for_evaluation:
+                profile = db.scalar(select(Profile).order_by(Profile.id).limit(1))
+                if profile is None:
+                    evaluation_errors = len(jobs_for_evaluation)
+                    issues_total += 1
+                    source_errors.append("evaluation: no profile is available for deterministic scoring")
+                else:
+                    preferences = ProfileRepository(db).current_preferences(profile.id)
+                    matcher = MatchingService(EvaluationRepository(db), ProfileRepository(db))
+                    for job in jobs_for_evaluation:
+                        try:
+                            matcher.evaluate(profile, job, preferences)
+                            evaluations_created += 1
+                        except Exception as exc:  # isolate one scoring failure from ingestion
+                            evaluation_errors += 1
+                            issues_total += 1
+                            source_errors.append(f"evaluation job {job.id}: {type(exc).__name__}: {exc}")
+            execution.status = "failed" if not found else ("partial" if failed or evaluation_errors else "success")
             execution.finished_at = datetime.now(timezone.utc)
             execution.metrics = {"jobs_found": found, "sources_failed": failed,
                                  "sources_total": len(enabled_sources), "issues_total": issues_total,
+                                 "evaluations_created": evaluations_created, "evaluation_errors": evaluation_errors,
                                  "duration_seconds": round((datetime.now(timezone.utc) - started_clock).total_seconds(), 3),
                                  "max_concurrency": runtime.max_concurrency}
             execution.error = (

@@ -1295,3 +1295,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: fallos preexistentes de la suite backend completa permanecen fuera de alcance
 - Commit subject: fix(web): persist profile restrictions and preferences
 - Commit hash: pending
+
+### API-017 — Attempt 1
+
+- Started / finished: 2026-07-31 / 2026-07-31
+- Acceptance criteria: refresh manual evalúa ofertas, expone score en listado/detalle y conserva ingesta ante errores; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/factory.py`, `tests/backend/test_api_scoring_017.py`, `.harness/backlog.json`, `.harness/current-task.json`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_scoring_017 tests.backend.test_api_jobs -v` (9/9); fixture de 101 ofertas (101 evaluaciones); `py_compile`; `git diff --check`
+- Tester: PASS — scores persistidos y visibles en listado/detalle; missing profile conserva ingesta; sin límite implícito de 100 ofertas
+- Reviewer: APPROVED — errores de evaluación aislados y métricas `evaluations_created`/`evaluation_errors` verificadas
+- Rework: intento 1 ajustó el límite implícito; todos los jobs se evalúan si no hay configuración explícita
+- Changelog: added
+- Risks: el score determinista depende de la calidad del perfil y los metadatos normalizados; análisis narrativo de Ollama sigue siendo opcional
+- Commit subject: fix(api): calculate compatibility during refresh
+- Commit hash: pending

@@ -1576,6 +1576,28 @@
         "Frontend regression tests, typecheck and build pass"
       ],
       "commit_hash": "1775d74"
+    },
+    {
+      "id": "API-017",
+      "title": "Evaluate jobs during manual refresh",
+      "status": "approved",
+      "depends_on": [
+        "FRONTEND-012"
+      ],
+      "commit": "fix(api): calculate compatibility during refresh",
+      "allowed_paths": [
+        "backend/app/factory.py",
+        "tests/backend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Manual refresh evaluates discovered jobs against the current profile",
+        "Job list and detail responses expose persisted compatibility scores",
+        "Missing profile or scoring failures are reported without rolling back ingestion",
+        "Backend refresh and matching regression tests pass"
+      ]
     }
   ]
 }

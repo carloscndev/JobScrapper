@@ -8,6 +8,7 @@
 - `fix(web): explain and confirm source activation` — solicita aceptación explícita de términos al activar fuentes y muestra los detalles de validación de la API.
 - `fix(web): add source terms activation dialog` — integra un diálogo accesible con enlace de términos, checkbox obligatorio y cancelación segura.
 - `fix(web): distinguish paused sources from stale runs` — evita mostrar fallos históricos como si fueran errores actuales de fuentes pausadas.
+- `fix(api): calculate compatibility during refresh` — evalúa las ofertas ingeridas contra el perfil actual y persiste el porcentaje de compatibilidad para listado y detalle.
 
 ### HARNESS-004 — Attempt 1
 
