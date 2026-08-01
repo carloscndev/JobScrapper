@@ -1324,4 +1324,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: added
 - Risks: Remote OK puede cambiar su contrato; se conserva la validación estricta para registros que parezcan ofertas
 - Commit subject: fix(api): ignore remote ok legal metadata
-- Commit hash: pending
+- Commit hash: 75fb58b
