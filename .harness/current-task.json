@@ -1,26 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "API-019",
-  "state": "approved",
-  "attempt": 1,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "connectors.py normaliza Ashby jobUrl/descriptionHtml/applyUrl/publishedAt/isRemote y variantes regionales mexicanas. test_connectors + test_sources_007 19/19, fixture Ashby manual PASS, py_compile y diff-check PASS",
-      "attempt": 1
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "tests/backend/test_api_sources_019.py cubre payload Kueski/Ashby, URLs, HTML saneado, fecha, remoto, Mexico/Guadalajara y URLs malformadas. Suite nueva + connectors 19/19 PASS; py_compile y diff-check PASS",
-      "attempt": 1
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "APPROVED: Ashby jobUrl/applyUrl strict HTTP validation, descriptionHtml sanitization, publishedAt, isRemote and Mexico/Guadalajara classification verified; malformed javascript rejected. Expanded API-019 + connector/source run 25/25, py_compile and diff-check pass. schemas.py excluded.",
-      "attempt": 1
-    }
-  },
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
   "rejections": [],
-  "commit": null
+  "commit": "2a4dd67073dff092092a917052bdf86cbaa24dfc"
 }

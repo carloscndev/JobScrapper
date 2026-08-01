@@ -1626,7 +1626,7 @@
     {
       "id": "API-019",
       "title": "Add validated Mexico job sources",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "API-018"
       ],
@@ -1643,7 +1643,8 @@
         "Ashby job board fields are normalized without example.com fallbacks",
         "Location classification recognizes Mexico and Guadalajara variants",
         "Connector and source regression tests pass"
-      ]
+      ],
+      "commit_hash": "2a4dd67"
     }
   ]
 }
