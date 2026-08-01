@@ -122,6 +122,7 @@ class SourceUpdatePayload(BaseModel):
     enabled: bool | None = None
     name: str | None = Field(default=None, min_length=1, max_length=120)
     base_url: str | None = Field(default=None, max_length=2048)
+    terms_url: str | None = Field(default=None, max_length=2048)
     config: dict[str, Any] | None = None
 
 
