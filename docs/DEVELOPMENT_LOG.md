@@ -1340,3 +1340,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: cada board puede cambiar su contrato o ubicación; las fuentes se validarán en cada refresh
 - Commit subject: feat(api): add validated mexico job sources
 - Commit hash: 2a4dd67
+
+### DOCS-002 — Attempt 2
+
+- Started / finished: 2026-07-31 / 2026-07-31
+- Acceptance criteria: README para GitHub con IA asistida, arquitectura, stack, setup, operación, seguridad y contribución; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `README.md`, `.harness/backlog.json`, `.harness/current-task.json`
+- Commands: `git diff --check`; `python3 scripts/harness.py validate`; `docker compose config --quiet`; 48 pruebas frontend; `pnpm build`; referencias estáticas verificadas
+- Tester: PASS — comandos y rutas consistentes; el flujo Ollama carga `.env` antes de expandir `OLLAMA_MODEL`
+- Reviewer: APPROVED — README completo para GitHub y sin desajuste de modelo en Compose
+- Reprocesos: intento 1 corrigió la carga explícita de `.env` para Ollama
+- Changelog: added
+- Risks: los enlaces externos y requisitos opcionales dependen del entorno del usuario
+- Commit subject: docs(repo): prepare github project documentation
+- Commit hash: pending

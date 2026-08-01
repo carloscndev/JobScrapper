@@ -764,3 +764,15 @@ All notable product changes will be documented here following Keep a Changelog a
 - Risks: provider board schemas and availability may change; each refresh records source status
 - Commit subject: feat(api): add validated mexico job sources
 - Commit hash: 2a4dd67
+
+### DOCS-002 — Attempt 2
+
+- Reescribió el README para GitHub con propósito, aviso de desarrollo asistido por IA, arquitectura, tecnologías, instalación local/Docker, Notion, Ollama, fuentes, cron, pruebas, seguridad, contribución y publicación.
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `README.md`
+- Commands: harness validate, Compose config, frontend tests/build, referencias estáticas y diff check
+- Tester: PASS
+- Reviewer: APPROVED
+- Risks: requiere configurar secretos y dependencias opcionales según el entorno
+- Commit subject: docs(repo): prepare github project documentation
+- Commit hash: pending

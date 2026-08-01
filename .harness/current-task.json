@@ -1,10 +1,32 @@
 {
   "schema_version": 1,
-  "active": false,
-  "task_id": null,
-  "state": null,
-  "attempt": 0,
-  "evidence": {},
-  "rejections": [],
-  "commit": "2a4dd67073dff092092a917052bdf86cbaa24dfc"
+  "active": true,
+  "task_id": "DOCS-002",
+  "state": "approved",
+  "attempt": 2,
+  "evidence": {
+    "coder": {
+      "result": "pass",
+      "evidence": "Attempt 2: README now sources .env with set -a before pulling $OLLAMA_MODEL, preventing model fallback mismatch; git diff --check PASS",
+      "attempt": 2
+    },
+    "tester": {
+      "result": "pass",
+      "evidence": "Rechecked README command consistency, harness validate and git diff --check after Ollama env export fix.",
+      "attempt": 2
+    },
+    "reviewer": {
+      "result": "pass",
+      "evidence": "APPROVED intento 2: README carga .env antes de ollama pull $OLLAMA_MODEL; docker compose config --quiet, harness validate y git diff --check pasan.",
+      "attempt": 2
+    }
+  },
+  "rejections": [
+    {
+      "by": "reviewer",
+      "reason": "CHANGES_REQUESTED: Docker Ollama pull command expands OLLAMA_MODEL in host shell without sourcing .env, so documented gemma3:1b can fall back to llama3.2:3b.",
+      "attempt": 1
+    }
+  ],
+  "commit": null
 }

@@ -1645,6 +1645,27 @@
         "Connector and source regression tests pass"
       ],
       "commit_hash": "2a4dd67"
+    },
+    {
+      "id": "DOCS-002",
+      "title": "Prepare GitHub-ready project README",
+      "status": "approved",
+      "depends_on": [
+        "API-019"
+      ],
+      "commit": "docs(repo): prepare github project documentation",
+      "allowed_paths": [
+        "README.md",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "README documents purpose, AI-assisted development, architecture and stack",
+        "Docker, local development, Notion, Ollama, sources, cron and tests are documented",
+        "GitHub publication and security guidance are included",
+        "Commands and repository links are consistent with the current project"
+      ]
     }
   ]
 }
