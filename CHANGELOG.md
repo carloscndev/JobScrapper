@@ -775,4 +775,4 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED
 - Risks: requiere configurar secretos y dependencias opcionales según el entorno
 - Commit subject: docs(repo): prepare github project documentation
-- Commit hash: pending
+- Commit hash: 9ffd0fb

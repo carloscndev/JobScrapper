@@ -1354,4 +1354,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: added
 - Risks: los enlaces externos y requisitos opcionales dependen del entorno del usuario
 - Commit subject: docs(repo): prepare github project documentation
-- Commit hash: pending
+- Commit hash: 9ffd0fb
