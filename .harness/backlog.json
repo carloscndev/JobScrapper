@@ -1580,7 +1580,7 @@
     {
       "id": "API-017",
       "title": "Evaluate jobs during manual refresh",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-012"
       ],
@@ -1597,7 +1597,8 @@
         "Job list and detail responses expose persisted compatibility scores",
         "Missing profile or scoring failures are reported without rolling back ingestion",
         "Backend refresh and matching regression tests pass"
-      ]
+      ],
+      "commit_hash": "46afcde"
     }
   ]
 }

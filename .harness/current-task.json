@@ -1,26 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "API-017",
-  "state": "approved",
-  "attempt": 1,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "factory.py implements isolated deterministic scoring on manual refresh; coder py_compile and diff-check pass; fixture refresh evidence evaluations_created=1 and score=87.5; missing profile preserves ingestion",
-      "attempt": 1
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "API-017 tras ajuste: 2/2 tests nuevos y suite relacionada test_api_jobs 9/9 PASS; fixture de 101 jobs confirmó jobs_found=101, evaluations_created=101, evaluation_errors=0 y total=101; py_compile y git diff --check PASS",
-      "attempt": 1
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "APPROVED: factory evaluates all ingested jobs when no explicit max_jobs exists; 101-job regression evaluations_created=101; missing profile and per-job errors isolated; list/detail score exposure verified; py_compile and git diff --check pass. Related command had 20 pass and one pre-existing operations lock failure.",
-      "attempt": 1
-    }
-  },
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
   "rejections": [],
-  "commit": null
+  "commit": "46afcdef1fa50e74f422f9f9be0acb1bb2451a4b"
 }
