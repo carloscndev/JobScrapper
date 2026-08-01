@@ -1309,4 +1309,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: added
 - Risks: el score determinista depende de la calidad del perfil y los metadatos normalizados; análisis narrativo de Ollama sigue siendo opcional
 - Commit subject: fix(api): calculate compatibility during refresh
-- Commit hash: pending
+- Commit hash: 46afcde
