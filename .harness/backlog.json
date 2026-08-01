@@ -1603,7 +1603,7 @@
     {
       "id": "API-018",
       "title": "Ignore Remote OK API legal metadata records",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "API-017"
       ],
@@ -1620,7 +1620,8 @@
         "Valid Remote OK jobs remain ingestible with description and application links",
         "Generic feeds still report malformed job records as partial",
         "Connector and related backend tests pass"
-      ]
+      ],
+      "commit_hash": "75fb58b"
     }
   ]
 }
