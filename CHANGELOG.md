@@ -9,6 +9,7 @@
 - `fix(web): add source terms activation dialog` — integra un diálogo accesible con enlace de términos, checkbox obligatorio y cancelación segura.
 - `fix(web): distinguish paused sources from stale runs` — evita mostrar fallos históricos como si fueran errores actuales de fuentes pausadas.
 - `fix(api): ignore remote ok legal metadata` — omite el envelope legal inicial de Remote OK sin ocultar errores de ofertas malformadas.
+- `feat(api): add validated mexico job sources` — normaliza campos de boards Ashby/Greenhouse usados por fuentes mexicanas como Kueski, Bitso y Wizeline.
 - `fix(api): calculate compatibility during refresh` — evalúa las ofertas ingeridas contra el perfil actual y persiste el porcentaje de compatibilidad para listado y detalle.
 
 ### HARNESS-004 — Attempt 1
@@ -750,4 +751,16 @@ All notable product changes will be documented here following Keep a Changelog a
 - Reviewer: APPROVED — optional browser assertions are actionable and scoped to tests
 - Risks: browser/API gates need optional local services and dependencies
 - Commit subject: test(regression): cover source ingestion and preference persistence
+- Commit hash: pending
+
+### API-019 — Attempt 1
+
+- Added Ashby/Greenhouse field normalization for validated Mexico-oriented sources (Kueski, Bitso and Wizeline).
+- Skills: coordinator none; coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_api_sources_019.py`
+- Commands: API-019 and connector/source regressions 25/25; py_compile; git diff --check
+- Tester: PASS — valid description/application URLs, sanitized descriptions and Mexico/Guadalajara classification
+- Reviewer: APPROVED — malformed URLs rejected without fallback and scope verified
+- Risks: provider board schemas and availability may change; each refresh records source status
+- Commit subject: feat(api): add validated mexico job sources
 - Commit hash: pending

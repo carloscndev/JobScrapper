@@ -96,11 +96,11 @@ def classify_region(location: Any, explicit: Any = None) -> JobRegion:
     text = re.sub(r"[\u00fa\u00f9\u00fc]", "u", text)
     if re.search(r"\b(cdmx|ciudad de mexico|mexico city|distrito federal)\b", text):
         return JobRegion.CDMX
-    if re.search(r"\b(guadalajara|zapopan|jalisco)\b", text):
+    if re.search(r"\b(guadalajara|guadajalara|zapopan|jalisco)\b", text):
         return JobRegion.GUADALAJARA
     if re.search(r"\b(usa|u\.s\.a\.?|united states|estados unidos|\b(us)\b)", text):
         return JobRegion.USA
-    if re.search(r"\b(mexico|mexico|mx|monterrey|queretaro|puebla|merida|tijuana)\b", text):
+    if re.search(r"\b(mexico|mejico|republica mexicana|estado de mexico|edomex|mx|monterrey|queretaro|puebla|merida|tijuana)\b", text):
         return JobRegion.MEXICO
     return JobRegion.OTHER
 
@@ -199,7 +199,7 @@ def _job(
     # Application links must never become a fallback description link: source
     # provenance and the two user-facing actions are distinct fields.
     description_url = _resolve_job_url(
-        item.get("description_url") or item.get("url") or item.get("absolute_url") or item.get("hostedUrl"),
+        item.get("description_url") or item.get("url") or item.get("absolute_url") or item.get("hostedUrl") or item.get("jobUrl"),
         normalized_base,
         "description",
         required=True,
@@ -235,7 +235,7 @@ def _job(
         title=str(item.get("title") or item.get("name") or item.get("jobTitle") or item.get("text") or "Untitled role").strip(),
         company=str(item.get("company") or item.get("employer") or item.get("company_name")
                     or item.get("companyName") or default_company or "").strip(),
-        description=_sanitize_text(str(item.get("description") or item.get("content")
+        description=_sanitize_text(str(item.get("description") or item.get("descriptionHtml") or item.get("content")
                                        or item.get("descriptionPlain") or item.get("summary")
                                        or item.get("jobDescription") or "No description provided")),
         description_url=description_url,
@@ -248,12 +248,14 @@ def _job(
         location=location,
         region=classify_region(location, item.get("region")).value,
         modality=_modality(item.get("modality") or item.get("workplace_type") or item.get("workplaceType") or item.get("remote")
+                           or ("remote" if item.get("isRemote") is True else None)
                            or item.get("jobType") or item.get("location")),
         salary_min=salary_min, salary_max=salary_max,
         salary_currency=_currency(item.get("salary_currency") or item.get("currency")
                                   or item.get("salaryCurrency") or item.get("salary")),
         published_at=_date(item.get("published_at") or item.get("date_posted") or item.get("publication_date")
                            or item.get("created_at") or item.get("first_published") or item.get("createdAt")
+                           or item.get("publishedAt")
                            or item.get("pubDate")),
         requirements=requirements,
         salary_period=str(item.get("salary_period") or item.get("pay_period")
@@ -317,7 +319,8 @@ def _is_legal_metadata(item: Mapping[str, Any]) -> bool:
         return False
     job_markers = {
         "title", "name", "text", "description", "content", "descriptionPlain",
-        "url", "absolute_url", "hostedUrl", "applyUrl", "company", "company_name",
+        "url", "absolute_url", "hostedUrl", "jobUrl", "applyUrl", "company", "company_name",
+        "descriptionHtml",
         "companyName", "location", "categories",
     }
     return not any(marker in item for marker in job_markers)

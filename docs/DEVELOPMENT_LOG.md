@@ -1325,3 +1325,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: Remote OK puede cambiar su contrato; se conserva la validación estricta para registros que parezcan ofertas
 - Commit subject: fix(api): ignore remote ok legal metadata
 - Commit hash: 75fb58b
+
+### API-019 — Attempt 1
+
+- Started / finished: 2026-07-31 / 2026-07-31
+- Acceptance criteria: normalización de boards mexicanos con URLs válidas, campos Ashby, regiones México/Guadalajara y validación estricta; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_api_sources_019.py`, `.harness/backlog.json`, `.harness/current-task.json`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_sources_019 tests.backend.test_connectors -v` (19/19); suite ampliada (25/25); `py_compile`; `git diff --check`
+- Tester: PASS — Kueski/Ashby conserva descripción, aplicación, fecha, remoto y regionalización sin fallbacks
+- Reviewer: APPROVED — URLs, HTML saneado, errores de esquema y alcance revisados
+- Reprocesos: none
+- Changelog: added
+- Risks: cada board puede cambiar su contrato o ubicación; las fuentes se validarán en cada refresh
+- Commit subject: feat(api): add validated mexico job sources
+- Commit hash: pending

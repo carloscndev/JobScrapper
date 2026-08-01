@@ -1622,6 +1622,28 @@
         "Connector and related backend tests pass"
       ],
       "commit_hash": "75fb58b"
+    },
+    {
+      "id": "API-019",
+      "title": "Add validated Mexico job sources",
+      "status": "approved",
+      "depends_on": [
+        "API-018"
+      ],
+      "commit": "feat(api): add validated mexico job sources",
+      "allowed_paths": [
+        "backend/app/connectors.py",
+        "tests/backend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Mexican company boards expose valid description and application URLs",
+        "Ashby job board fields are normalized without example.com fallbacks",
+        "Location classification recognizes Mexico and Guadalajara variants",
+        "Connector and source regression tests pass"
+      ]
     }
   ]
 }
