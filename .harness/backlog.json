@@ -1557,7 +1557,7 @@
     {
       "id": "FRONTEND-012",
       "title": "Hide stale run errors for paused sources",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "FRONTEND-011"
       ],
@@ -1574,7 +1574,8 @@
         "Historical source errors are not shown as current errors while paused",
         "Enabled sources retain their latest run status and error details",
         "Frontend regression tests, typecheck and build pass"
-      ]
+      ],
+      "commit_hash": "1775d74"
     }
   ]
 }
