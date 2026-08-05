@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `docs(repo): translate ai disclosure to english` — translates the AI-assistance disclosure while retaining the requested developer-implementation wording.
 - `docs(repo): translate readme to english` — translates the project README to English while preserving the requested AI-assistance disclosure in Spanish.
 - `fix(harness): repair inactive current task state` — canonicaliza y repara estados inactivos obsoletos mediante `init --force`.
 - `feat(api): support validated ats job feeds` — normaliza feeds JSON públicos de Greenhouse y Lever con enlaces oficiales y rechaza URLs malformadas.
@@ -23,6 +24,17 @@
 - Risks: documentation-only wording change
 - Commit subject: docs(repo): translate readme to english
 - Commit hash: beefe4d
+
+### DOCS-004 — Attempt 1
+
+- Skills: coder none; tester none; reviewer none
+- Files: `README.md`
+- Commands: harness validation and 36 tests; skill allowlist check; Python compile; diff check; deterministic language, scope, and Markdown assertions
+- Tester: PASS — README entirely English, only the disclosure changed, and requested meaning retained
+- Reviewer: APPROVED
+- Risks: documentation-only wording change
+- Commit subject: docs(repo): translate ai disclosure to english
+- Commit hash: pending
 
 ### HARNESS-004 — Attempt 1
 

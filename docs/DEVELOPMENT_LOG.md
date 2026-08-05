@@ -1370,3 +1370,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: documentation-only wording change; none
 - Commit subject: docs(repo): translate readme to english
 - Commit hash: beefe4d
+
+### DOCS-004 — Attempt 1
+
+- Started / finished: 2026-08-05 / 2026-08-05
+- Acceptance criteria: complete README in English; AI disclosure retains requested developer-implementation wording; no other README content changes; formatting valid; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `README.md`, `.harness/backlog.json`, `.harness/current-task.json`, `docs/DEVELOPMENT_LOG.md`, `CHANGELOG.md`
+- Commands: `python3 scripts/harness.py validate`; `scripts/check-skills.sh`; 36 harness tests; `python3 -m py_compile scripts/harness.py`; `git diff --check`; deterministic language, line-scope, and Markdown assertions
+- Tester: PASS — entire README English and only the disclosure line changed
+- Reviewer: APPROVED
+- Rework: none
+- Changelog: entry added
+- Risks: none
+- Commit subject: docs(repo): translate ai disclosure to english
+- Commit hash: pending

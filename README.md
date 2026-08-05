@@ -11,7 +11,7 @@ be synchronized with Notion.
 
 > **AI-assisted development**
 >
-> Este proyecto fue creado y documentado con asistencia de IA (Codex) dentro de un arnés multiagente. La IA ayudó a implementar, probar y revisar cambios; las decisiones de producto, aceptación de términos de fuentes, configuración de secretos y aprobación de commits fueron implementados por el desarrollador.
+> This project was created and documented with AI assistance (Codex) within a multi-agent harness. AI helped implement, test, and review changes; product decisions, acceptance of source terms, secret configuration, and commit approval were implemented by the developer.
 
 ## Features
 

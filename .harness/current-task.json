@@ -1,10 +1,26 @@
 {
   "schema_version": 1,
-  "active": false,
-  "task_id": null,
-  "state": null,
-  "attempt": 0,
-  "evidence": {},
+  "active": true,
+  "task_id": "DOCS-004",
+  "state": "approved",
+  "attempt": 1,
+  "evidence": {
+    "coder": {
+      "result": "pass",
+      "evidence": "Translated only AI disclosure to English; requested developer-implementation wording retained; diff check clean",
+      "attempt": 1
+    },
+    "tester": {
+      "result": "pass",
+      "evidence": "PASS: entire README English; only disclosure line changed; requested meaning retained; 36 harness tests, validation and diff check passed",
+      "attempt": 1
+    },
+    "reviewer": {
+      "result": "pass",
+      "evidence": "APPROVED",
+      "attempt": 1
+    }
+  },
   "rejections": [],
-  "commit": "beefe4d4384bf3bd43702d1252750eb779616405"
+  "commit": null
 }

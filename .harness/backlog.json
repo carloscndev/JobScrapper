@@ -1689,6 +1689,27 @@
         "README formatting and repository references remain valid"
       ],
       "commit_hash": "beefe4d"
+    },
+    {
+      "id": "DOCS-004",
+      "title": "Translate AI-assistance disclosure to English",
+      "status": "approved",
+      "depends_on": [
+        "DOCS-003"
+      ],
+      "commit": "docs(repo): translate ai disclosure to english",
+      "allowed_paths": [
+        "README.md",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "The complete README is written in English",
+        "The AI-assistance disclosure retains the requested developer-implementation wording",
+        "No other README content changes",
+        "README formatting remains valid"
+      ]
     }
   ]
 }
