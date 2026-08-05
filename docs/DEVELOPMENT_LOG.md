@@ -1355,3 +1355,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: los enlaces externos y requisitos opcionales dependen del entorno del usuario
 - Commit subject: docs(repo): prepare github project documentation
 - Commit hash: 9ffd0fb
+
+### DOCS-003 — Attempt 1
+
+- Started / finished: 2026-08-05 / 2026-08-05
+- Acceptance criteria: README content translated to English except the requested Spanish AI-assistance paragraph; paragraph preserved verbatim once; commands, links, technical meaning, formatting, and repository references retained; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `README.md`, `.harness/backlog.json`, `.harness/current-task.json`, `docs/DEVELOPMENT_LOG.md`, `CHANGELOG.md`
+- Commands: `python3 scripts/harness.py validate`; `scripts/check-skills.sh`; `python3 -m unittest discover -s tests/harness -p 'test_*.py'`; `python3 -m py_compile scripts/harness.py`; `git diff --check`; deterministic README paragraph, language, link, fence, command, heading, and table assertions
+- Tester: PASS — 36 harness tests passed; exact paragraph appears once; no other Spanish text detected; links, Markdown structure, and commands verified
+- Reviewer: APPROVED — requirements, complete diff, tester evidence, scope, secrets, and compatibility reviewed
+- Rework: none
+- Changelog: entry added
+- Risks: documentation-only wording change; none
+- Commit subject: docs(repo): translate readme to english
+- Commit hash: pending

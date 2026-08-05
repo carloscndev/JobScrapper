@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `docs(repo): translate readme to english` — translates the project README to English while preserving the requested AI-assistance disclosure in Spanish.
 - `fix(harness): repair inactive current task state` — canonicaliza y repara estados inactivos obsoletos mediante `init --force`.
 - `feat(api): support validated ats job feeds` — normaliza feeds JSON públicos de Greenhouse y Lever con enlaces oficiales y rechaza URLs malformadas.
 - `fix(api): harden ats feed normalization` — tolera metadatos en lista y aplica el nombre de compañía solo cuando está configurado explícitamente.
@@ -11,6 +12,17 @@
 - `fix(api): ignore remote ok legal metadata` — omite el envelope legal inicial de Remote OK sin ocultar errores de ofertas malformadas.
 - `feat(api): add validated mexico job sources` — normaliza campos de boards Ashby/Greenhouse usados por fuentes mexicanas como Kueski, Bitso y Wizeline.
 - `fix(api): calculate compatibility during refresh` — evalúa las ofertas ingeridas contra el perfil actual y persiste el porcentaje de compatibilidad para listado y detalle.
+
+### DOCS-003 — Attempt 1
+
+- Skills: coder none; tester none; reviewer none
+- Files: `README.md`
+- Commands: harness validation and 36 tests; skill allowlist check; Python compile; diff check; deterministic README content and structure assertions
+- Tester: PASS — exact Spanish paragraph preserved once; remaining content, links, Markdown structure, and commands verified in English
+- Reviewer: APPROVED
+- Risks: documentation-only wording change
+- Commit subject: docs(repo): translate readme to english
+- Commit hash: pending
 
 ### HARNESS-004 — Attempt 1
 

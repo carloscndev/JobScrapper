@@ -1667,6 +1667,27 @@
         "Commands and repository links are consistent with the current project"
       ],
       "commit_hash": "9ffd0fb"
+    },
+    {
+      "id": "DOCS-003",
+      "title": "Translate project README to English",
+      "status": "approved",
+      "depends_on": [
+        "DOCS-002"
+      ],
+      "commit": "docs(repo): translate readme to english",
+      "allowed_paths": [
+        "README.md",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "All README content is written in English except the requested AI-assistance paragraph",
+        "The requested Spanish AI-assistance paragraph is preserved verbatim",
+        "Commands, links and technical meaning remain unchanged",
+        "README formatting and repository references remain valid"
+      ]
     }
   ]
 }
