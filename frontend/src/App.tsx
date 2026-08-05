@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiRequestError, createApiClient, type ExecutionSummary, type HealthStatus, type JobDetailResponse, type JobSummary, type OperationsHealth, type OperationsMetrics, type SourceAdapterName, type SourceRunSummary, type SourceSummary } from "./api/client";
 import "./styles.css";
 
@@ -71,6 +71,11 @@ const initialDraft: ProfileDraft = {
 
 const apiClient = createApiClient();
 
+async function requestHealth() {
+  const response = await apiClient.getHealth();
+  return response;
+}
+
 const SOURCE_ADAPTERS: Array<{ value: SourceAdapterName; label: string; kind: "api" | "career_page"; fixtureLabel: string; fixtureHint: string }> = [
   { value: "json-api-feed", label: "JSON API or feed", kind: "api", fixtureLabel: "JSON payload", fixtureHint: "Non-empty object with jobs or data; each opening requires description_url or url." },
   { value: "greenhouse-career-page", label: "Greenhouse", kind: "career_page", fixtureLabel: "Page HTML", fixtureHint: "Static HTML with article/li cards and job-opening links." },
@@ -121,26 +126,35 @@ function App() {
   const [draft, setDraft] = useState<ProfileDraft>(initialDraft);
   const [health, setHealth] = useState<HealthStatus>("unavailable");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [connectionMessage, setConnectionMessage] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [cvName, setCvName] = useState("CV_Carlos_Castaneda.pdf");
   const [profileId, setProfileId] = useState<number | null>(null);
   const [profileVersion, setProfileVersion] = useState(1);
   const [profileError, setProfileError] = useState<string | null>(null);
+  const healthRequestRef = useRef<ReturnType<typeof requestHealth> | null>(null);
 
-  const refreshHealth = async () => {
+  const refreshHealth = async (announce = true) => {
     setIsRefreshing(true);
+    if (announce) setConnectionMessage("Checking the API connection…");
+    const request = healthRequestRef.current ?? requestHealth();
+    healthRequestRef.current = request;
     try {
-      const response = await apiClient.getHealth();
-      setHealth(response.status === "ok" ? "ok" : "unavailable");
+      const response = await request;
+      const connected = response.status === "ok";
+      setHealth(connected ? "ok" : "unavailable");
+      if (announce) setConnectionMessage(connected ? "Connection successful. The API is online." : "Connection failed. The API reported an unhealthy status.");
     } catch {
       setHealth("unavailable");
+      if (announce) setConnectionMessage("Connection failed. The API could not be reached.");
     } finally {
       setIsRefreshing(false);
+      if (healthRequestRef.current === request) healthRequestRef.current = null;
     }
   };
 
-  useEffect(() => { void refreshHealth(); }, []);
+  useEffect(() => { void refreshHealth(false); }, []);
 
   useEffect(() => {
     const stored = localStorage.getItem("profileId");
@@ -271,7 +285,8 @@ function App() {
       </header>
 
       <main className="main-content" aria-labelledby="page-title" id="main-content">
-        <div className="page-heading"><div><p className="eyebrow">Configuration</p><h1 id="page-title">Your search profile</h1><p className="hero-copy">Review what we extracted from your resume and adjust what makes an opening relevant.</p></div><button type="button" className="secondary-button compact" onClick={refreshHealth} disabled={isRefreshing}>{isRefreshing ? "Checking…" : "Check connection"}</button></div>
+        <div className="page-heading"><div><p className="eyebrow">Configuration</p><h1 id="page-title">Your search profile</h1><p className="hero-copy">Review what we extracted from your resume and adjust what makes an opening relevant.</p></div><button type="button" className="secondary-button compact" onClick={() => void refreshHealth()} disabled={isRefreshing} aria-busy={isRefreshing}>{isRefreshing ? "Checking…" : "Check connection"}</button></div>
+        {connectionMessage && <p className={`connection-feedback ${isRefreshing ? "checking" : health === "ok" ? "success" : "failure"}`} role="status" aria-live="polite">{connectionMessage}</p>}
 
         <nav className="tabs" role="tablist" aria-label="Profile sections">
           <button id="tab-vacancies" role="tab" type="button" className={section === "vacancies" ? "tab active" : "tab"} aria-controls="vacancies-panel" aria-selected={section === "vacancies"} tabIndex={section === "vacancies" ? 0 : -1} onKeyDown={handleTabKeyDown} onClick={() => setSection("vacancies")}>Openings</button>

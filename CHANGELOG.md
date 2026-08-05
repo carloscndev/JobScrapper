@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `fix(web): show connection check feedback` — makes health checks visible with pending, success, and failure states while deduplicating StrictMode startup requests.
 - `fix(api): repair ashby fetch and modality filters` — preserves compliant robots enforcement for Ashby while avoiding false denials, and normalizes modality persistence and filters to canonical values.
 - `docs(repo): standardize project language in english` — translates operations, release guidance, the complete user interface, metadata, changelog, and historical development prose while preserving Spanish-input support.
 - `docs(repo): translate ai disclosure to english` — translates the AI-assistance disclosure while retaining the requested developer-implementation wording.
@@ -50,6 +51,18 @@
 - Risks: Ashby remains subject to its published robots policy; optional E2E dependencies remain environment-dependent
 - Commit subject: fix(api): repair ashby fetch and modality filters
 - Commit hash: a25323e
+
+### WEB-020 — Attempt 2
+
+- Skills: coder `vercel-react-best-practices`; tester none; reviewer `vercel-react-best-practices`
+- Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_bootstrap.py`
+- Commands: 55 frontend tests; `cd frontend && pnpm build`; 36 harness tests; `scripts/check-skills.sh`; Python compilation; `git diff --check`
+- Tester: PASS — manual check pending/success/failure feedback, accessibility, startup deduplication, and fresh post-startup requests verified
+- Reviewer: APPROVED — StrictMode in-flight dedupe and visible connection behavior reviewed
+- Rework: attempt 1 added visible feedback; attempt 2 deduplicated startup health requests and added lifecycle coverage
+- Risks: health status still depends on API availability; browser-level runtime tests require optional browser tooling
+- Commit subject: fix(web): show connection check feedback
+- Commit hash: pending
 
 ### DOCS-004 — Attempt 1
 

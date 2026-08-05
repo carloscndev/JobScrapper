@@ -1762,6 +1762,29 @@
         "Backend and frontend regression tests cover Ashby robots handling and remote/hybrid/onsite filtering"
       ],
       "commit_hash": "a25323e"
+    },
+    {
+      "id": "WEB-020",
+      "title": "Make connection check action visible",
+      "status": "approved",
+      "depends_on": [
+        "API-020"
+      ],
+      "commit": "fix(web): show connection check feedback",
+      "allowed_paths": [
+        "frontend/**",
+        "tests/frontend/**",
+        "tests/e2e/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Clicking Check connection calls the health endpoint",
+        "The button shows a checking state while the request is pending",
+        "Success and failure are visibly announced to the user and update the connection status",
+        "Frontend regression tests and build pass"
+      ]
     }
   ]
 }

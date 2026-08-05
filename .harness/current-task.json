@@ -1,10 +1,32 @@
 {
   "schema_version": 1,
-  "active": false,
-  "task_id": null,
-  "state": null,
-  "attempt": 0,
-  "evidence": {},
-  "rejections": [],
-  "commit": "a25323e2d77a4d48311d6f72feb88eb599dabb07"
+  "active": true,
+  "task_id": "WEB-020",
+  "state": "approved",
+  "attempt": 2,
+  "evidence": {
+    "coder": {
+      "result": "pass",
+      "evidence": "Deduplicated in-flight getHealth promise with useRef so StrictMode startup replay makes one network call; manual checks remain fresh; build and 54 frontend tests passed",
+      "attempt": 2
+    },
+    "tester": {
+      "result": "pass",
+      "evidence": "PASS attempt 2: 55 frontend tests include executable deferred StrictMode lifecycle model proving one startup request and fresh manual requests; build and harness gates pass",
+      "attempt": 2
+    },
+    "reviewer": {
+      "result": "pass",
+      "evidence": "APPROVED attempt 2: StrictMode in-flight dedupe and later manual refresh behavior verified; accessible feedback and runtime-oriented regression reviewed",
+      "attempt": 2
+    }
+  },
+  "rejections": [
+    {
+      "by": "reviewer",
+      "reason": "CHANGES_REQUESTED: StrictMode can duplicate startup health request; add in-flight dedupe and runtime request-count regression",
+      "attempt": 1
+    }
+  ],
+  "commit": null
 }

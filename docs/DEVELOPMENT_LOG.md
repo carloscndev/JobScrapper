@@ -1415,3 +1415,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: full backend baseline retains 7 unrelated pre-existing failures; browser E2E has 4 expected dependency/opt-in skips
 - Commit subject: fix(api): repair ashby fetch and modality filters
 - Commit hash: a25323e
+
+### WEB-020 — Attempt 2
+
+- Started / finished: 2026-08-05 / 2026-08-05
+- Acceptance criteria: connection check calls health endpoint; pending state is visible; success/failure are announced and update status; related frontend tests pass; PASS
+- Skills: coder `vercel-react-best-practices`; tester none; reviewer `vercel-react-best-practices`
+- Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_bootstrap.py`, `.harness/backlog.json`, `.harness/current-task.json`
+- Commands: frontend (55/55); `cd frontend && pnpm build`; harness (36/36); `scripts/check-skills.sh`; `python3 -m py_compile scripts/harness.py`; `git diff --check`; deferred StrictMode lifecycle assertions
+- Tester: PASS — pending, success, unhealthy, network-failure, accessibility, startup deduplication, and fresh manual requests covered
+- Reviewer: APPROVED — in-flight promise reuse does not suppress later manual checks; visible feedback and scope verified
+- Rework: attempt 1 lacked StrictMode startup request deduplication and runtime-oriented request-count coverage; attempt 2 resolved both
+- Changelog: entry added
+- Risks: health feedback depends on API availability; browser-level runtime tests require optional tooling
+- Commit subject: fix(web): show connection check feedback
+- Commit hash: pending
