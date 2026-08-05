@@ -1384,4 +1384,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: entry added
 - Risks: none
 - Commit subject: docs(repo): translate ai disclosure to english
-- Commit hash: pending
+- Commit hash: 10caf1c

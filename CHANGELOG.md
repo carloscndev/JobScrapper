@@ -34,7 +34,7 @@
 - Reviewer: APPROVED
 - Risks: documentation-only wording change
 - Commit subject: docs(repo): translate ai disclosure to english
-- Commit hash: pending
+- Commit hash: 10caf1c
 
 ### HARNESS-004 — Attempt 1
 

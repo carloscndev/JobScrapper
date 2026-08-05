@@ -1693,7 +1693,7 @@
     {
       "id": "DOCS-004",
       "title": "Translate AI-assistance disclosure to English",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "DOCS-003"
       ],
@@ -1709,7 +1709,8 @@
         "The AI-assistance disclosure retains the requested developer-implementation wording",
         "No other README content changes",
         "README formatting remains valid"
-      ]
+      ],
+      "commit_hash": "10caf1c"
     }
   ]
 }
