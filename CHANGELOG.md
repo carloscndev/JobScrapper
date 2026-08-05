@@ -62,7 +62,7 @@
 - Rework: attempt 1 added visible feedback; attempt 2 deduplicated startup health requests and added lifecycle coverage
 - Risks: health status still depends on API availability; browser-level runtime tests require optional browser tooling
 - Commit subject: fix(web): show connection check feedback
-- Commit hash: pending
+- Commit hash: 539cca2
 
 ### DOCS-004 — Attempt 1
 

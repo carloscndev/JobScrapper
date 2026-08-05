@@ -1429,4 +1429,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: entry added
 - Risks: health feedback depends on API availability; browser-level runtime tests require optional tooling
 - Commit subject: fix(web): show connection check feedback
-- Commit hash: pending
+- Commit hash: 539cca2

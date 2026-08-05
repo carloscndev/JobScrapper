@@ -1766,7 +1766,7 @@
     {
       "id": "WEB-020",
       "title": "Make connection check action visible",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "API-020"
       ],
@@ -1784,7 +1784,8 @@
         "The button shows a checking state while the request is pending",
         "Success and failure are visibly announced to the user and update the connection status",
         "Frontend regression tests and build pass"
-      ]
+      ],
+      "commit_hash": "539cca2"
     }
   ]
 }
