@@ -1369,4 +1369,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: entry added
 - Risks: documentation-only wording change; none
 - Commit subject: docs(repo): translate readme to english
-- Commit hash: pending
+- Commit hash: beefe4d

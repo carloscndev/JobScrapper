@@ -1671,7 +1671,7 @@
     {
       "id": "DOCS-003",
       "title": "Translate project README to English",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "DOCS-002"
       ],
@@ -1687,7 +1687,8 @@
         "The requested Spanish AI-assistance paragraph is preserved verbatim",
         "Commands, links and technical meaning remain unchanged",
         "README formatting and repository references remain valid"
-      ]
+      ],
+      "commit_hash": "beefe4d"
     }
   ]
 }

@@ -1,26 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "DOCS-003",
-  "state": "approved",
-  "attempt": 1,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "README.md translated to English; requested Spanish paragraph preserved verbatim exactly once; git diff check clean",
-      "attempt": 1
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "PASS: harness validate; skill check; 36 harness tests; py_compile; diff check; exact Spanish paragraph once; English-only remainder; links, fences, commands, headings and table structure verified",
-      "attempt": 1
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "APPROVED: requirements, complete diff, tester evidence, scope, secrets and compatibility reviewed",
-      "attempt": 1
-    }
-  },
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
   "rejections": [],
-  "commit": null
+  "commit": "beefe4d4384bf3bd43702d1252750eb779616405"
 }

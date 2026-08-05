@@ -22,7 +22,7 @@
 - Reviewer: APPROVED
 - Risks: documentation-only wording change
 - Commit subject: docs(repo): translate readme to english
-- Commit hash: pending
+- Commit hash: beefe4d
 
 ### HARNESS-004 — Attempt 1
 
