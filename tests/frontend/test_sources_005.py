@@ -36,7 +36,7 @@ class SourceConfigurationContractTests(unittest.TestCase):
             r'<input type="checkbox"[^>]+checked=\{formTermsAccepted\}[^>]+onChange=\{[^}]*setFormTermsAccepted[^}]*\}[^>]+required',
         )
         self.assertIn("terms_accepted: true", APP)
-        self.assertIn("Debes aceptar los términos de uso de la fuente antes de activarla.", APP)
+        self.assertIn("You must accept the source terms of use before activating it.", APP)
         self.assertIn("if (!formTermsAccepted)", APP)
 
     def test_fixture_and_network_modes_validate_runnable_configuration(self) -> None:
@@ -44,10 +44,10 @@ class SourceConfigurationContractTests(unittest.TestCase):
         self.assertIn('option value="fixture"', APP)
         self.assertIn('option value="network"', APP)
         self.assertIn("if (formMode === \"network\" && !url)", APP)
-        self.assertIn("La URL base es obligatoria en modo red.", APP)
+        self.assertIn("The base URL is required in network mode.", APP)
         self.assertIn("if (formMode === \"fixture\" && !fixture)", APP)
         self.assertIn("JSON.parse(fixture)", APP)
-        self.assertIn("El payload debe ser JSON válido.", APP)
+        self.assertIn("The payload must be valid JSON.", APP)
         self.assertIn("allow_network: formMode === \"network\"", APP)
         self.assertIn("{ payload: fixture }", APP)
         self.assertIn("{ html: fixture }", APP)
@@ -60,13 +60,13 @@ class SourceConfigurationContractTests(unittest.TestCase):
         self.assertIn("if (!items || items.length === 0)", APP)
         self.assertIn("description_url ?? job.url", APP)
         self.assertRegex(APP, r"cardPattern = /<\(article\|li\)")
-        self.assertIn("al menos una tarjeta article/li con un enlace de oferta", APP)
+        self.assertIn("at least one article/li card with a job-opening link", APP)
 
     def test_structured_fields_are_rendered_with_the_actionable_message(self) -> None:
         self.assertIn("formErrorFields.length > 0", APP)
         self.assertIn('className="form-error-list"', APP)
-        self.assertIn("field.field ?? \"Revisa este campo\"", APP)
-        self.assertIn("field.message ?? \"Corrige este valor y vuelve a intentar.\"", APP)
+        self.assertIn("field.field ?? \"Review this field\"", APP)
+        self.assertIn("field.message ?? \"Correct this value and try again.\"", APP)
 
     def test_tabs_support_roving_keyboard_navigation(self) -> None:
         self.assertIn("const handleTabKeyDown", APP)
@@ -107,8 +107,8 @@ class SourceConfigurationContractTests(unittest.TestCase):
         self.assertIn("latestSourceRuns.get(source.id)", APP)
         self.assertIn("run?.status === \"success\"", APP)
         self.assertIn("source-run-status", APP)
-        self.assertIn("Última ejecución: ${run.status}", APP)
-        self.assertIn("${run.status} · ${run.jobs_found} ofertas", APP)
+        self.assertIn("Latest run: ${run.status}", APP)
+        self.assertIn("${run.status} · ${run.jobs_found} openings", APP)
         self.assertIn('className="source-error" title={run.error}', APP)
 
 

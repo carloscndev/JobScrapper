@@ -1711,6 +1711,30 @@
         "README formatting remains valid"
       ],
       "commit_hash": "10caf1c"
+    },
+    {
+      "id": "I18N-001",
+      "title": "Translate repository documentation and user interface to English",
+      "status": "approved",
+      "depends_on": [
+        "DOCS-004"
+      ],
+      "commit": "docs(repo): standardize project language in english",
+      "allowed_paths": [
+        "docs/**",
+        "CHANGELOG.md",
+        "frontend/**",
+        "tests/frontend/**",
+        "tests/e2e/**",
+        ".harness/**"
+      ],
+      "acceptance": [
+        "OPERATIONS.md and all user-facing project documentation are written in English",
+        "All frontend-visible labels, messages, metadata, and default profile copy are written in English",
+        "Historical changelog and development-log prose is written in English",
+        "Spanish parser aliases and fixtures required for Mexico and Spanish-language input support remain functional",
+        "Frontend, harness, and relevant regression tests pass"
+      ]
     }
   ]
 }

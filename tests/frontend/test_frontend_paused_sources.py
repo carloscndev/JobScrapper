@@ -21,11 +21,11 @@ class FrontendPausedSourcesTests(unittest.TestCase):
             r'const runClass = source\.enabled \? \(run\?\.status === "success" \? "healthy" : run \? "failed" : "unknown"\) : "paused";',
         )
         self.assertIn(
-            'const runLabel = source.enabled ? (run ? `Última ejecución: ${run.status}` : "Sin ejecuciones") : "Pausada";',
+            'const runLabel = source.enabled ? (run ? `Latest run: ${run.status}` : "No runs") : "Paused";',
             APP,
         )
         self.assertIn(
-            'source.enabled ? (run ? `${run.status} · ${run.jobs_found} ofertas` : "Sin ejecuciones") : "Pausada"',
+            'source.enabled ? (run ? `${run.status} · ${run.jobs_found} openings` : "No runs") : "Paused"',
             APP,
         )
 

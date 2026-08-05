@@ -58,11 +58,11 @@ class IngestionDashboardE2ETests(unittest.TestCase):
                     page = browser.new_page()
                     page.on("console", lambda message: browser_logs.append(f"{message.type}: {message.text}"))
                     page.goto(base_url, wait_until="networkidle")
-                    page.get_by_role("tab", name="Ofertas").click()
-                    card = page.get_by_role("button", name="Ver detalle de Senior Backend Engineer en Nubank")
+                    page.get_by_role("tab", name="Openings").click()
+                    card = page.get_by_role("button", name="View details for Senior Backend Engineer at Nubank")
                     card.click()
                     self.assertEqual(page.locator("#vacancy-detail-title").inner_text(), "Senior Backend Engineer")
-                    self.assertIn("94%", page.get_by_label("94% de compatibilidad").inner_text())
+                    self.assertIn("94%", page.get_by_label("94% compatibility").inner_text())
                     self.assertEqual(page.locator('a[href*="#apply"]').count(), 1)
                 finally:
                     # Persist browser output even when an assertion fails.

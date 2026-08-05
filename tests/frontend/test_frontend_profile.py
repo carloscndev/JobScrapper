@@ -14,23 +14,23 @@ class FrontendProfileTests(unittest.TestCase):
     def test_cv_review_and_edit_controls_exist(self) -> None:
         self.assertIn('type="file"', APP)
         self.assertIn('accept=".pdf,.docx', APP)
-        self.assertIn("Revisa y corrige tu información", APP)
+        self.assertIn("Review and correct your information", APP)
         for field in ("name", "headline", "skills", "experience", "languages", "education"):
             self.assertIn(f'update("{field}"', APP)
 
     def test_preferences_constraints_weights_and_reevaluation_warning(self) -> None:
         for field in ("locations", "mode", "minSalary", "maxSalary", "authorization"):
             self.assertIn(f'update("{field}"', APP)
-        self.assertIn("Restricciones", APP)
+        self.assertIn("Constraints", APP)
         self.assertIn("weightSkills", APP)
         self.assertIn("weightExperience", APP)
         self.assertIn("weightLocation", APP)
         self.assertIn("weightMode", APP)
         self.assertIn("weightsTotal", APP)
-        self.assertIn("Perfil versión ${profileVersion}", APP)
+        self.assertIn("Profile version ${profileVersion}", APP)
 
     def test_accessibility_and_responsive_contracts(self) -> None:
-        self.assertIn('aria-label={`Peso de ${label}`}', APP)
+        self.assertIn('aria-label={`${label} weight`}', APP)
         self.assertIn('aria-live="polite"', APP)
         self.assertIn('role="status"', APP)
         self.assertIn(":focus-visible", STYLES)

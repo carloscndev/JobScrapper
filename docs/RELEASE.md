@@ -1,44 +1,43 @@
 # Release 0.1.0 checklist
 
-Esta lista es el gate de salida para la primera versión local. El coordinador
-debe conservar la evidencia de cada comando en `docs/DEVELOPMENT_LOG.md` y no
-publicar una versión con tareas sin `committed`.
+This list is the release gate for the first local version. The coordinator must
+retain evidence from every command in `docs/DEVELOPMENT_LOG.md` and must not
+publish a version with tasks that are not `committed`.
 
-## Preparación
+## Preparation
 
-- [ ] `python3 scripts/harness.py validate` pasa sin tareas activas ni estados inválidos.
-- [ ] `python3 scripts/check-skills.sh` confirma skills instaladas y checksums.
-- [ ] `git diff --check` y el escaneo de secretos no reportan hallazgos.
-- [ ] `.env` no está versionado; copiar `.env.example` y configurar secretos solo localmente.
+- [ ] `python3 scripts/harness.py validate` passes with no active tasks or invalid states.
+- [ ] `python3 scripts/check-skills.sh` confirms installed skills and checksums.
+- [ ] `git diff --check` and the secret scan report no findings.
+- [ ] `.env` is not versioned; copy `.env.example` and configure secrets locally only.
 
-## Calidad
+## Quality
 
-- [ ] Suite backend, frontend estática y harness pasan; skips opcionales quedan documentados.
-- [ ] `python3 -m compileall backend scripts tests` pasa.
-- [ ] `npm run build` pasa cuando las dependencias frontend están instaladas; si no,
-      registrar el bloqueo de red/dependencias sin ocultarlo.
-- [ ] El E2E Playwright se ejecuta con `JOBSCRAPPER_E2E_COMMAND` en un entorno que
-      tenga navegador, y conserva logs de navegador/servidor.
+- [ ] The backend, static frontend, and harness suites pass; optional skips are documented.
+- [ ] `python3 -m compileall backend scripts tests` passes.
+- [ ] `npm run build` passes when frontend dependencies are installed; otherwise,
+      record the network/dependency blocker without hiding it.
+- [ ] The Playwright E2E runs with `JOBSCRAPPER_E2E_COMMAND` in an environment
+      with a browser and retains browser/server logs.
 
-## Operación y recuperación
+## Operations and recovery
 
-- [ ] `scripts/ops.sh check` pasa con Compose levantado.
-- [ ] Se prueba un backup y se valida `tar tzf`; el restore requiere `--yes` y un
-      backup previo del estado actual.
-- [ ] El cron apunta a `scripts/scheduler.py`, usa el lock compartido y deja logs.
-- [ ] Se simulan siete ejecuciones diarias: un fallo transitorio se recupera,
-      no hay solapamiento y los límites de CPU, memoria, concurrencia, retries y
-      retención de logs quedan registrados.
-- [ ] Ollama y Notion pueden estar fuera de servicio sin perder score determinista
-      ni resultados ya persistidos; las reparaciones Notion son auditables.
+- [ ] `scripts/ops.sh check` passes with Compose running.
+- [ ] A backup is tested and validated with `tar tzf`; restore requires `--yes`
+      and a prior backup of the current state.
+- [ ] Cron points to `scripts/scheduler.py`, uses the shared lock, and leaves logs.
+- [ ] Seven daily runs are simulated: a transient failure recovers, runs do not
+      overlap, and CPU, memory, concurrency, retry, and log-retention limits are recorded.
+- [ ] Ollama and Notion can be unavailable without losing deterministic scores or
+      previously persisted results; Notion repairs are auditable.
 
-## Publicación
+## Publishing
 
-- [ ] SDD y backlog reflejan el comportamiento implementado y sus riesgos.
-- [ ] `CHANGELOG.md` contiene `[0.1.0]` y el hash Conventional Commit de release.
-- [ ] Crear tag anotado `v0.1.0` únicamente después de registrar el commit final.
-- [ ] Guardar el resultado de este checklist junto con el artefacto de release.
+- [ ] The SDD and backlog reflect the implemented behavior and its risks.
+- [ ] `CHANGELOG.md` contains `[0.1.0]` and the release Conventional Commit hash.
+- [ ] Create the annotated `v0.1.0` tag only after recording the final commit.
+- [ ] Save the completed checklist with the release artifact.
 
-Los checks que requieren Docker, npm, Playwright, SQLAlchemy o credenciales reales
-son explícitamente dependientes del entorno; nunca se sustituyen por una afirmación
-sin evidencia.
+Checks that require Docker, npm, Playwright, SQLAlchemy, or real credentials are
+explicitly environment-dependent; they are never replaced with an unsupported
+claim.

@@ -2,17 +2,18 @@
 
 ## Unreleased
 
+- `docs(repo): standardize project language in english` — translates operations, release guidance, the complete user interface, metadata, changelog, and historical development prose while preserving Spanish-input support.
 - `docs(repo): translate ai disclosure to english` — translates the AI-assistance disclosure while retaining the requested developer-implementation wording.
 - `docs(repo): translate readme to english` — translates the project README to English while preserving the requested AI-assistance disclosure in Spanish.
-- `fix(harness): repair inactive current task state` — canonicaliza y repara estados inactivos obsoletos mediante `init --force`.
-- `feat(api): support validated ats job feeds` — normaliza feeds JSON públicos de Greenhouse y Lever con enlaces oficiales y rechaza URLs malformadas.
-- `fix(api): harden ats feed normalization` — tolera metadatos en lista y aplica el nombre de compañía solo cuando está configurado explícitamente.
-- `fix(web): explain and confirm source activation` — solicita aceptación explícita de términos al activar fuentes y muestra los detalles de validación de la API.
-- `fix(web): add source terms activation dialog` — integra un diálogo accesible con enlace de términos, checkbox obligatorio y cancelación segura.
-- `fix(web): distinguish paused sources from stale runs` — evita mostrar fallos históricos como si fueran errores actuales de fuentes pausadas.
-- `fix(api): ignore remote ok legal metadata` — omite el envelope legal inicial de Remote OK sin ocultar errores de ofertas malformadas.
-- `feat(api): add validated mexico job sources` — normaliza campos de boards Ashby/Greenhouse usados por fuentes mexicanas como Kueski, Bitso y Wizeline.
-- `fix(api): calculate compatibility during refresh` — evalúa las ofertas ingeridas contra el perfil actual y persiste el porcentaje de compatibilidad para listado y detalle.
+- `fix(harness): repair inactive current task state` — canonicalizes and repairs stale inactive states through `init --force`.
+- `feat(api): support validated ats job feeds` — normalizes public Greenhouse and Lever JSON feeds with official links and rejects malformed URLs.
+- `fix(api): harden ats feed normalization` — tolerates list metadata and applies the company name only when explicitly configured.
+- `fix(web): explain and confirm source activation` — requests explicit terms acceptance when activating sources and displays API validation details.
+- `fix(web): add source terms activation dialog` — adds an accessible dialog with a terms link, required checkbox, and safe cancellation.
+- `fix(web): distinguish paused sources from stale runs` — avoids displaying historical failures as current errors for paused sources.
+- `fix(api): ignore remote ok legal metadata` — skips the initial Remote OK legal envelope without hiding malformed-opening errors.
+- `feat(api): add validated mexico job sources` — normalizes Ashby/Greenhouse board fields used by Mexican sources such as Kueski, Bitso, and Wizeline.
+- `fix(api): calculate compatibility during refresh` — evaluates ingested openings against the current profile and persists the compatibility percentage for list and detail views.
 
 ### DOCS-003 — Attempt 1
 
@@ -24,6 +25,18 @@
 - Risks: documentation-only wording change
 - Commit subject: docs(repo): translate readme to english
 - Commit hash: beefe4d
+
+### I18N-001 — Attempt 3
+
+- Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
+- Files: `docs/OPERATIONS.md`, `docs/RELEASE.md`, `docs/DEVELOPMENT_LOG.md`, `CHANGELOG.md`, `frontend/index.html`, `frontend/src/App.tsx`, `tests/frontend/**`, `tests/e2e/**`
+- Commands: 50 frontend tests; 8 E2E tests with 4 expected optional-dependency skips; frontend build; 36 harness tests; skill validation; Python compilation; diff check; comprehensive public-surface and first-party language scans
+- Tester: PASS — all documentation and UI prose is English; remaining Spanish matches are intentional proper names, parser aliases, Mexico fixtures, and audit denylist terms
+- Reviewer: APPROVED
+- Rework: attempts 1 and 2 closed residual UI and historical-log strings; attempt 3 passed a comprehensive word-based audit
+- Risks: browser E2E requires optional Playwright and local services; API enums and Spanish-input support remain unchanged
+- Commit subject: docs(repo): standardize project language in english
+- Commit hash: pending
 
 ### DOCS-004 — Attempt 1
 
@@ -43,7 +56,7 @@
 - Commands: `python3 -m unittest tests.harness.test_harness -v`; `python3 -m py_compile scripts/harness.py tests/harness/test_harness.py`; `python3 scripts/harness.py validate`; `python3 scripts/harness.py status`
 - Tester: PASS
 - Reviewer: APPROVED
-- Risks: `init --force` sigue siendo una operación explícita
+- Risks: `init --force` remains an explicit operation
 - Commit subject: fix(harness): repair inactive current task state
 - Commit hash: pending
 
@@ -76,7 +89,7 @@
 - Commands: frontend tests, pnpm build, tsc, diff check
 - Tester: PASS
 - Reviewer: APPROVED
-- Risks: Playwright bloqueado por sandbox Chromium local
+- Risks: Playwright blocked by the local Chromium sandbox
 - Commit subject: feat(web): add source configuration diagnostics
 - Commit hash: pending
 
@@ -722,9 +735,9 @@ All notable product changes will be documented here following Keep a Changelog a
 - Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
 - Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_profile.py`, `tests/backend/test_api_profile.py`
 - Commands: backend profile 11/11; frontend 39/39; `cd frontend && pnpm build`; `git diff --check`
-- Tester: PASS — persistencia HTTP PUT→GET de restricciones, reubicación y pesos
-- Reviewer: APPROVED — controles accesibles y estado rehidratado desde API
-- Risks: fallos preexistentes fuera de alcance permanecen documentados
+- Tester: PASS — HTTP PUT→GET persistence of constraints, relocation, and weights
+- Reviewer: APPROVED — accessible controls and state rehydrated from the API
+- Risks: pre-existing out-of-scope failures remain documented
 - Commit subject: fix(web): persist profile restrictions and preferences
 - Commit hash: pending
 
@@ -745,7 +758,7 @@ All notable product changes will be documented here following Keep a Changelog a
 - Added `DELETE /api/v1/sources/{source_id}` endpoint returning 204 No Content (404 if not found).
 - Added `SourceRepository.delete(source_id)` with flush.
 - Added `deleteSource` method to typed API client.
-- Added "Eliminar" button per source in OperationsDashboard with `confirm()` dialog and list auto-reload.
+- Added a "Delete" button per source in OperationsDashboard with a `confirm()` dialog and automatic list reload.
 - Skills: coordinator none; coder none; tester none; reviewer none
 - Files: `backend/app/factory.py`, `backend/app/repositories.py`, `frontend/src/api/client.ts`, `frontend/src/App.tsx`
 - Commands: 139 tests (25 frontend + 114 backend/harness)
@@ -791,12 +804,12 @@ All notable product changes will be documented here following Keep a Changelog a
 
 ### DOCS-002 — Attempt 2
 
-- Reescribió el README para GitHub con propósito, aviso de desarrollo asistido por IA, arquitectura, tecnologías, instalación local/Docker, Notion, Ollama, fuentes, cron, pruebas, seguridad, contribución y publicación.
+- Rewrote the README for GitHub with purpose, AI-assisted development disclosure, architecture, technologies, local/Docker installation, Notion, Ollama, sources, cron, testing, security, contribution, and publishing.
 - Skills: coordinator none; coder none; tester none; reviewer none
 - Files: `README.md`
-- Commands: harness validate, Compose config, frontend tests/build, referencias estáticas y diff check
+- Commands: harness validate, Compose config, frontend tests/build, static references, and diff check
 - Tester: PASS
 - Reviewer: APPROVED
-- Risks: requiere configurar secretos y dependencias opcionales según el entorno
+- Risks: requires configuring secrets and optional dependencies for the environment
 - Commit subject: docs(repo): prepare github project documentation
 - Commit hash: 9ffd0fb

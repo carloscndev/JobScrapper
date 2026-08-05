@@ -778,105 +778,105 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 ### SOURCES-006 — Attempt 3
 
 - Started / finished: 2026-07-31 / 2026-07-31
-- Acceptance criteria: fuentes legacy resuelven adaptadores por proveedor/URL; dominios lookalike permanecen unsupported; PASS
+- Acceptance criteria: legacy sources resolve adapters by provider/URL; lookalike domains remain unsupported; PASS
 - Skills: coder none; tester none; reviewer none
 - Files: `backend/app/sources.py`, `tests/backend/test_adapter_lookup.py`
 - Commands: `backend/.venv/bin/python -m unittest tests.backend.test_adapter_lookup -v` (16/16); `python3 -m py_compile backend/app/sources.py tests/backend/test_adapter_lookup.py`; `git diff --check`
-- Tester: PASS — regresiones para Greenhouse/Lever por nombre, provider y URL, precedencia de override y hosts lookalike
-- Reviewer: APPROVED — límites de hostname seguros; `backend/app/schemas.py` preexistente excluido del stage
-- Rework: intentos 1 y 2 corregidos; intento 3 aprobado
+- Tester: PASS — Greenhouse/Lever regressions by name, provider, and URL; override precedence and lookalike hosts
+- Reviewer: APPROVED — safe hostname boundaries; pre-existing `backend/app/schemas.py` excluded from staging
+- Rework: attempts 1 and 2 corrected; attempt 3 approved
 - Changelog: added
-- Risks: fuentes aún requieren aceptación explícita de términos y configuración de red/fixture antes de ejecutar
+- Risks: sources still require explicit terms acceptance and network/fixture configuration before running
 - Commit subject: fix(api): resolve legacy source adapters
 - Commit hash: pending
 
 ### SOURCES-007 — Attempt 1
 
 - Started / finished: 2026-07-31 / 2026-07-31
-- Acceptance criteria: feeds JSON de Greenhouse y Lever normalizados; enlaces válidos y separados cuando el proveedor los ofrece; enlaces malformados rechazados; PASS
+- Acceptance criteria: Greenhouse and Lever JSON feeds normalized; valid separate links when provided; malformed links rejected; PASS
 - Skills: coder none; tester none; reviewer none
 - Files: `backend/app/connectors.py`, `tests/backend/test_sources_007.py`
 - Commands: `backend/.venv/bin/python -m unittest tests.backend.test_sources_007 -v` (3/3); `backend/.venv/bin/python -m unittest tests.backend.test_connectors -v` (16/16); `backend/.venv/bin/python -m py_compile backend/app/connectors.py`; `git diff --check`
-- Tester: PASS — fixtures Greenhouse/Lever, ubicación/fecha/enlaces y rechazo de URLs inválidas
-- Reviewer: APPROVED — validación estricta, sin fallback `example.com`, alcance revisado
-- Reprocesos: none
+- Tester: PASS — Greenhouse/Lever fixtures, location/date/links, and invalid URL rejection
+- Reviewer: APPROVED — strict validation, no `example.com` fallback, scope reviewed
+- Rework: none
 - Changelog: added
-- Risks: la URL de aplicación de Greenhouse puede ser la misma página accionable y queda nula si el feed no publica `applyUrl`; ambos proveedores siguen sujetos a sus términos y límites
+- Risks: the Greenhouse application URL may be the same actionable page and remains null if the feed does not publish `applyUrl`; both providers remain subject to their terms and limits
 - Commit subject: feat(api): support validated ats job feeds
 - Commit hash: pending
 
 ### SOURCES-008 — Attempt 1
 
 - Started / finished: 2026-07-31 / 2026-07-31
-- Acceptance criteria: metadata ATS tolerante a listas; fallback explícito de compañía; rechazo sin compañía; PASS
+- Acceptance criteria: ATS metadata tolerates lists; explicit company fallback; rejection without a company; PASS
 - Skills: coder none; tester none; reviewer none
 - Files: `backend/app/connectors.py`, `tests/backend/test_sources_008.py`
 - Commands: `backend/.venv/bin/python -m unittest tests.backend.test_sources_008 tests.backend.test_sources_007 tests.backend.test_connectors -v` (22/22); `backend/.venv/bin/python -m py_compile backend/app/connectors.py tests/backend/test_sources_008.py`; `git diff --check`
-- Tester: PASS — metadata Greenhouse, company fallback y rechazo de registros incompletos
-- Reviewer: APPROVED — alcance y regresiones revisados
-- Reprocesos: none
+- Tester: PASS — Greenhouse metadata, company fallback, and rejection of incomplete records
+- Reviewer: APPROVED — scope and regressions reviewed
+- Rework: none
 - Changelog: added
-- Risks: los proveedores pueden omitir la compañía; solo se usa un fallback configurado explícitamente
+- Risks: providers may omit the company; only an explicitly configured fallback is used
 - Commit subject: fix(api): harden ats feed normalization
 - Commit hash: pending
 
 ### FRONTEND-010 — Attempt 1
 
 - Started / finished: 2026-07-31 / 2026-07-31
-- Acceptance criteria: activación con aceptación explícita de términos; cancelación sin PATCH; errores API accionables; PASS
+- Acceptance criteria: activation with explicit terms acceptance; cancellation without PATCH; actionable API errors; PASS
 - Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
 - Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_source_activation.py`
 - Commands: `python3 -m unittest tests.frontend.test_frontend_source_activation tests.frontend.test_frontend_operations -v` (9/9); `cd frontend && pnpm build`; `cd frontend && pnpm exec tsc -b`; `git diff --check`
-- Tester: PASS — confirmación, cancelación, payload de activación y detalles de error
-- Reviewer: APPROVED — accesibilidad y flujo revisados
-- Reprocesos: none
+- Tester: PASS — confirmation, cancellation, activation payload, and error details
+- Reviewer: APPROVED — accessibility and flow reviewed
+- Rework: none
 - Changelog: added
-- Risks: la confirmación usa el diálogo nativo del navegador y requiere que el usuario revise el enlace de términos mostrado
+- Risks: confirmation uses the native browser dialog and requires the user to review the displayed terms link
 - Commit subject: fix(web): explain and confirm source activation
 - Commit hash: pending
 
 ### FRONTEND-011 — Attempt 2
 
 - Started / finished: 2026-07-31 / 2026-07-31
-- Acceptance criteria: diálogo integrado para términos, checkbox obligatorio, cancelación sin PATCH, errores inline y aislamiento de scroll; PASS
+- Acceptance criteria: integrated terms dialog, required checkbox, cancellation without PATCH, inline errors, and scroll isolation; PASS
 - Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
 - Files: `frontend/src/App.tsx`, `frontend/src/styles.css`, `tests/frontend/test_frontend_activation_dialog.py`, `tests/frontend/test_frontend_source_activation.py`
 - Commands: `python3 -m unittest tests.frontend.test_frontend_activation_dialog tests.frontend.test_frontend_source_activation tests.frontend.test_frontend_operations -v` (12/12); `cd frontend && pnpm build`; `cd frontend && pnpm exec tsc -b`; `git diff --check`
-- Tester: PASS — diálogo, payload, cancelación, errores y responsive
-- Reviewer: APPROVED — `overscroll-behavior: contain` añadido tras rework
-- Reprocesos: intento 1 rechazado por aislamiento de scroll del modal; intento 2 resuelto
+- Tester: PASS — dialog, payload, cancellation, errors, and responsive behavior
+- Reviewer: APPROVED — `overscroll-behavior: contain` added after rework
+- Rework: attempt 1 rejected for modal scroll isolation; attempt 2 resolved
 - Changelog: added
-- Risks: el foco inicial depende del comportamiento nativo del navegador; el diálogo mantiene navegación accesible por teclado
+- Risks: initial focus depends on native browser behavior; the dialog maintains accessible keyboard navigation
 - Commit subject: fix(web): add source terms activation dialog
 - Commit hash: pending
 
 ### FRONTEND-012 — Attempt 1
 
 - Started / finished: 2026-08-01 / 2026-08-01
-- Acceptance criteria: fuentes pausadas sin errores históricos; fuentes activas conservan su último estado; PASS
+- Acceptance criteria: paused sources have no historical errors; active sources retain their latest status; PASS
 - Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
 - Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_paused_sources.py`
 - Commands: `python3 -m unittest tests.frontend.test_frontend_paused_sources tests.frontend.test_frontend_operations tests.frontend.test_sources_005 -v` (17/17; reviewer 18/18); `cd frontend && pnpm build`; `cd frontend && pnpm exec tsc -b`; `git diff --check`
-- Tester: PASS — estados pausada/activa y supresión de errores históricos
-- Reviewer: APPROVED — comportamiento y accesibilidad revisados
-- Reprocesos: none
+- Tester: PASS — paused/active states and suppression of historical errors
+- Reviewer: APPROVED — behavior and accessibility reviewed
+- Rework: none
 - Changelog: added
-- Risks: el historial de ejecuciones se conserva para auditoría, pero no se presenta como estado actual de una fuente pausada
+- Risks: run history is retained for auditing but is not presented as the current status of a paused source
 - Commit subject: fix(web): distinguish paused sources from stale runs
 - Commit hash: pending
 
 ### TEST-013 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: regresión de ingestion, enlaces relativos/detalle y persistencia de restricciones; PASS
+- Acceptance criteria: ingestion regression, relative/detail links, and constraint persistence; PASS
 - Skills: coder `webapp-testing`; tester `webapp-testing`; reviewer `webapp-testing`
 - Files: `tests/e2e/test_regression_013.py`
 - Commands: `./.venv/bin/python -m unittest -v tests.e2e.test_regression_013` (6/6, 3 skips opt-in); frontend 39/39; `py_compile`; `git diff --check`
-- Tester: PASS — assertions browser opcionales cubren guardar/recargar restricciones y hrefs de aplicación/descripción; API y contratos fixture pasan cuando dependencias están disponibles
-- Reviewer: APPROVED — alcance solo tests, skips de infraestructura explícitos y assertions no vacuas
-- Rework: intento 1 rechazado por cobertura browser insuficiente y ruta de evidencia; intento 2 resuelto
+- Tester: PASS — optional browser assertions cover saving/reloading constraints and application/description hrefs; API and fixture contracts pass when dependencies are available
+- Reviewer: APPROVED — test-only scope, explicit infrastructure skips, and non-vacuous assertions
+- Rework: attempt 1 rejected for insufficient browser coverage and evidence path; attempt 2 resolved
 - Changelog: added
-- Risks: Playwright/API requieren URL, servidor y dependencias opcionales; legacy E2E puede fallar por sandbox/connection refused
+- Risks: Playwright/API require a URL, server, and optional dependencies; legacy E2E may fail due to sandbox/connection refused
 - Commit subject: test(regression): cover source ingestion and preference persistence
 - Commit hash: pending
 
@@ -1183,176 +1183,176 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 ### HARNESS-004 — Attempt 1
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: inactive current-task canonicalizado; reparación explícita con `init --force`; regresión automatizada; PASS
+- Acceptance criteria: inactive current-task canonicalized; explicit repair with `init --force`; automated regression; PASS
 - Skills: coder none; tester none; reviewer none
 - Files: `scripts/harness.py`, `tests/harness/test_harness.py`, `.harness/current-task.json`, `.harness/backlog.json`
 - Commands: `python3 -m unittest tests.harness.test_harness -v`; `python3 -m py_compile scripts/harness.py tests/harness/test_harness.py`; `python3 scripts/harness.py validate`; `python3 scripts/harness.py status`
-- Tester: PASS — 36 tests OK, incluyendo reparación de estado inactivo obsoleto
-- Reviewer: APPROVED — alcance, seguridad y transiciones correctas
+- Tester: PASS — 36 tests OK, including stale inactive-state repair
+- Reviewer: APPROVED — correct scope, security, and transitions
 - Rework: none
 - Changelog: added
-- Risks: `init --force` sigue siendo una operación explícita que reinicia estados pendientes/bloqueados
+- Risks: `init --force` remains an explicit operation that resets pending/blocked states
 - Commit subject: fix(harness): repair inactive current task state
 - Commit hash: pending
 
 ### SOURCES-004 — Attempt 1
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: configuración ejecutable, resolver común, errores accionables y zero-jobs no saludable; rework requerido por revisión
+- Acceptance criteria: executable configuration, shared resolver, actionable errors, and unhealthy zero-jobs; rework required by review
 - Skills: coder none; tester none; reviewer none
 - Files: `backend/app/factory.py`, `backend/app/sources.py`, `backend/app/pipeline.py`, `tests/backend/test_sources_004.py`
 - Commands: `backend/.venv/bin/python -m unittest tests.backend.test_sources_004 -v`; related backend suites; compileall
-- Tester: PASS — primer intento 7/7; revisión posterior 10/10 con guard y casos de rework
-- Reviewer: CHANGES_REQUESTED — cron zero-jobs, URLs inválidas y allow_network requerían corrección
-- Rework: intento 2 corrigió pipeline, validación 422, tipos booleanos y guard de import
+- Tester: PASS — first attempt 7/7; subsequent review 10/10 with guard and rework cases
+- Reviewer: CHANGES_REQUESTED — zero-jobs cron, invalid URLs, and allow_network required correction
+- Rework: attempt 2 corrected the pipeline, 422 validation, boolean types, and import guard
 - Changelog: added
-- Risks: fuentes reales siguen sujetas a robots, rate limits y compatibilidad de cada proveedor
+- Risks: real sources remain subject to robots rules, rate limits, and each provider's compatibility
 - Commit subject: fix(api): make source refresh configuration executable
 - Commit hash: pending
 
 ### PROFILE-003 — Attempt 2 (traceability)
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: restricciones controladas y persistentes; pesos y restricciones conservados tras PUT→GET; PASS
+- Acceptance criteria: controlled and persistent constraints; weights and constraints retained after PUT→GET; PASS
 - Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
 - Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_profile.py`, `tests/backend/test_api_profile.py`
 - Commands: backend profile 11/11; frontend 39/39; `cd frontend && pnpm build`; `git diff --check`
-- Tester: PASS — persistencia HTTP PUT→GET y suites relacionadas OK
-- Reviewer: APPROVED — controles accesibles, estado rehidratado y alcance revisados
-- Risks: fallos preexistentes de la suite backend completa permanecen fuera de alcance
+- Tester: PASS — HTTP PUT→GET persistence and related suites OK
+- Reviewer: APPROVED — accessible controls, rehydrated state, and scope reviewed
+- Risks: pre-existing failures in the full backend suite remain out of scope
 - Commit subject: fix(web): persist profile restrictions and preferences
 - Commit hash: pending
 
 ### PROFILE-003 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: restricciones controladas y persistentes; pesos y restricciones conservados tras PUT→GET; PASS
+- Acceptance criteria: controlled and persistent constraints; weights and constraints retained after PUT→GET; PASS
 - Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
 - Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_profile.py`, `tests/backend/test_api_profile.py`
 - Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_profile -v` (11/11); `python3 -m unittest discover -s tests/frontend -p 'test_*.py' -v` (39/39); `cd frontend && pnpm build`; `git diff --check`
-- Tester: PASS — prueba HTTP PUT→GET valida `excluded_constraints`, `willing_to_relocate` y `weights`; suite frontend y build OK
-- Reviewer: APPROVED — checkboxes controlados con `autocomplete`, persistencia y alcance revisados; `backend/app/schemas.py` preexistente excluido del stage
-- Rework: intento 1 rechazado por falta de prueba HTTP, autocomplete y alcance; intento 2 resuelto
+- Tester: PASS — HTTP PUT→GET test validates `excluded_constraints`, `willing_to_relocate`, and `weights`; frontend suite and build OK
+- Reviewer: APPROVED — controlled checkboxes with `autocomplete`, persistence, and scope reviewed; pre-existing `backend/app/schemas.py` excluded from staging
+- Rework: attempt 1 rejected for missing HTTP test, autocomplete, and scope; attempt 2 resolved
 - Changelog: added
-- Risks: suite backend completa mantiene fallos preexistentes fuera de alcance; persistencia requiere API y base de datos disponibles
+- Risks: the full backend suite retains pre-existing out-of-scope failures; persistence requires an available API and database
 - Commit subject: fix(web): persist profile restrictions and preferences
 - Commit hash: pending
 
 ### SOURCES-005 — Attempt 3
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: configuración ejecutable, diagnóstico por fuente y accesibilidad; PASS
+- Acceptance criteria: executable configuration, per-source diagnostics, and accessibility; PASS
 - Skills: coder `vercel-react-best-practices`; reviewer `web-design-guidelines` + `vercel-react-best-practices`; tester `webapp-testing`
 - Files: `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `frontend/src/styles.css`, `tests/frontend/test_sources_005.py`
 - Commands: `python3 -m unittest tests.frontend.test_sources_005 -v`; frontend suite; `pnpm build`; `tsc -b`; `git diff --check`
-- Tester: PASS — 9/9 target, 34/34 frontend suite, build/tsc OK; Playwright bloqueado por sandbox Chromium
-- Reviewer: APPROVED — fixtures, errores 422, tabs y controles accesibles revisados
-- Rework: intentos 1 y 2 corregidos; intento 3 aprobado
+- Tester: PASS — 9/9 target, 34/34 frontend suite, build/tsc OK; Playwright blocked by the Chromium sandbox
+- Reviewer: APPROVED — fixtures, 422 errors, tabs, and accessible controls reviewed
+- Rework: attempts 1 and 2 corrected; attempt 3 approved
 - Changelog: added
-- Risks: E2E browser requiere entorno con Chromium y permisos de sandbox
+- Risks: browser E2E requires an environment with Chromium and sandbox permissions
 - Commit subject: feat(web): add source configuration diagnostics
 - Commit hash: pending
 
 ### JOBS-003 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: normalización de enlaces y validación estricta de URLs; PASS
+- Acceptance criteria: link normalization and strict URL validation; PASS
 - Skills: coder none; tester none; reviewer none
 - Files: `backend/app/connectors.py`, `tests/backend/test_connectors.py`
 - Commands: `backend/.venv/bin/python -m unittest tests.backend.test_connectors -v`; `py_compile`; `git diff --check`
-- Tester: PASS — 16/16 connector tests; fallos externos preexistentes aislados
-- Reviewer: APPROVED — raw malformed URLs rechazadas y URLs relativas resueltas correctamente
+- Tester: PASS — 16/16 connector tests; pre-existing external failures isolated
+- Reviewer: APPROVED — raw malformed URLs rejected and relative URLs resolved correctly
 - Rework: resolved
 - Changelog: added
-- Risks: enlaces externos siguen sujetos a disponibilidad y políticas del proveedor
+- Risks: external links remain subject to provider availability and policies
 - Commit subject: fix(api): normalize job source links
 - Commit hash: pending
 
 ### SOURCES-004 — Attempt 2
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: todos los hallazgos corregidos; PASS
+- Acceptance criteria: all findings corrected; PASS
 - Skills: coder none; tester none; reviewer none
 - Files: `backend/app/factory.py`, `backend/app/sources.py`, `backend/app/pipeline.py`, `tests/backend/test_sources_004.py`
 - Commands: `backend/.venv/bin/python -m unittest tests.backend.test_sources_004 -v`; related suites; `compileall`; `git diff --check`
-- Tester: PASS — 10/10 target; fallos restantes preexistentes aislados
-- Reviewer: APPROVED — alcance y requisitos completos
+- Tester: PASS — 10/10 target; remaining pre-existing failures isolated
+- Reviewer: APPROVED — scope and requirements complete
 - Rework: resolved
 - Changelog: added
-- Risks: fallos preexistentes fuera de alcance permanecen documentados
+- Risks: pre-existing out-of-scope failures remain documented
 - Commit subject: fix(api): make source refresh configuration executable
 - Commit hash: pending
 
 ### PROFILE-003 — Attempt 2 (final traceability)
 
 - Started / finished: 2026-07-30 / 2026-07-30
-- Acceptance criteria: restricciones controladas y persistentes; pesos y restricciones conservados tras PUT→GET; PASS
+- Acceptance criteria: controlled and persistent constraints; weights and constraints retained after PUT→GET; PASS
 - Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
 - Files: `frontend/src/App.tsx`, `tests/frontend/test_frontend_profile.py`, `tests/backend/test_api_profile.py`
 - Commands: backend profile 11/11; frontend 39/39; `cd frontend && pnpm build`; `git diff --check`
-- Tester: PASS — persistencia HTTP PUT→GET y suites relacionadas OK
-- Reviewer: APPROVED — controles accesibles, estado rehidratado y alcance revisados
-- Risks: fallos preexistentes de la suite backend completa permanecen fuera de alcance
+- Tester: PASS — HTTP PUT→GET persistence and related suites OK
+- Reviewer: APPROVED — accessible controls, rehydrated state, and scope reviewed
+- Risks: pre-existing failures in the full backend suite remain out of scope
 - Commit subject: fix(web): persist profile restrictions and preferences
 - Commit hash: pending
 
 ### API-017 — Attempt 1
 
 - Started / finished: 2026-07-31 / 2026-07-31
-- Acceptance criteria: refresh manual evalúa ofertas, expone score en listado/detalle y conserva ingesta ante errores; PASS
+- Acceptance criteria: manual refresh evaluates openings, exposes scores in list/detail, and preserves ingestion when errors occur; PASS
 - Skills: coder none; tester none; reviewer none
 - Files: `backend/app/factory.py`, `tests/backend/test_api_scoring_017.py`, `.harness/backlog.json`, `.harness/current-task.json`
-- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_scoring_017 tests.backend.test_api_jobs -v` (9/9); fixture de 101 ofertas (101 evaluaciones); `py_compile`; `git diff --check`
-- Tester: PASS — scores persistidos y visibles en listado/detalle; missing profile conserva ingesta; sin límite implícito de 100 ofertas
-- Reviewer: APPROVED — errores de evaluación aislados y métricas `evaluations_created`/`evaluation_errors` verificadas
-- Rework: intento 1 ajustó el límite implícito; todos los jobs se evalúan si no hay configuración explícita
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_scoring_017 tests.backend.test_api_jobs -v` (9/9); fixture with 101 openings (101 evaluations); `py_compile`; `git diff --check`
+- Tester: PASS — scores persisted and visible in list/detail; missing profile preserves ingestion; no implicit 100-opening limit
+- Reviewer: APPROVED — isolated evaluation errors and verified `evaluations_created`/`evaluation_errors` metrics
+- Rework: attempt 1 adjusted the implicit limit; all jobs are evaluated when there is no explicit configuration
 - Changelog: added
-- Risks: el score determinista depende de la calidad del perfil y los metadatos normalizados; análisis narrativo de Ollama sigue siendo opcional
+- Risks: the deterministic score depends on profile quality and normalized metadata; Ollama narrative analysis remains optional
 - Commit subject: fix(api): calculate compatibility during refresh
 - Commit hash: 46afcde
 
 ### API-018 — Attempt 1
 
 - Started / finished: 2026-07-31 / 2026-07-31
-- Acceptance criteria: envelope legal de Remote OK ignorado; ofertas válidas conservadas; registros genéricos malformados siguen en partial; PASS
+- Acceptance criteria: Remote OK legal envelope ignored; valid openings retained; malformed generic records remain partial; PASS
 - Skills: coder none; tester none; reviewer none
 - Files: `backend/app/connectors.py`, `tests/backend/test_api_sources_018.py`, `.harness/backlog.json`, `.harness/current-task.json`
-- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_sources_018 tests.backend.test_connectors -v` (18/18); suite ampliada connector/source (24/24); `py_compile`; `git diff --check`
-- Tester: PASS — el registro `legal` inicial de Remote OK no genera error; los registros sin URL siguen aislados y reportados como partial
-- Reviewer: APPROVED — filtro estrecho por envelope legal, URLs válidas retenidas y alcance revisado
-- Reprocesos: none
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_sources_018 tests.backend.test_connectors -v` (18/18); expanded connector/source suite (24/24); `py_compile`; `git diff --check`
+- Tester: PASS — the initial Remote OK `legal` record does not produce an error; records without URLs remain isolated and reported as partial
+- Reviewer: APPROVED — narrow legal-envelope filter, valid URLs retained, and scope reviewed
+- Rework: none
 - Changelog: added
-- Risks: Remote OK puede cambiar su contrato; se conserva la validación estricta para registros que parezcan ofertas
+- Risks: Remote OK may change its contract; strict validation is retained for records that appear to be openings
 - Commit subject: fix(api): ignore remote ok legal metadata
 - Commit hash: 75fb58b
 
 ### API-019 — Attempt 1
 
 - Started / finished: 2026-07-31 / 2026-07-31
-- Acceptance criteria: normalización de boards mexicanos con URLs válidas, campos Ashby, regiones México/Guadalajara y validación estricta; PASS
+- Acceptance criteria: normalization of Mexican boards with valid URLs, Ashby fields, Mexico/Guadalajara regions, and strict validation; PASS
 - Skills: coder none; tester none; reviewer none
 - Files: `backend/app/connectors.py`, `tests/backend/test_api_sources_019.py`, `.harness/backlog.json`, `.harness/current-task.json`
-- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_sources_019 tests.backend.test_connectors -v` (19/19); suite ampliada (25/25); `py_compile`; `git diff --check`
-- Tester: PASS — Kueski/Ashby conserva descripción, aplicación, fecha, remoto y regionalización sin fallbacks
-- Reviewer: APPROVED — URLs, HTML saneado, errores de esquema y alcance revisados
-- Reprocesos: none
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_sources_019 tests.backend.test_connectors -v` (19/19); expanded suite (25/25); `py_compile`; `git diff --check`
+- Tester: PASS — Kueski/Ashby retains description, application, date, remote status, and regionalization without fallbacks
+- Reviewer: APPROVED — URLs, sanitized HTML, schema errors, and scope reviewed
+- Rework: none
 - Changelog: added
-- Risks: cada board puede cambiar su contrato o ubicación; las fuentes se validarán en cada refresh
+- Risks: each board may change its contract or location; sources will be validated on every refresh
 - Commit subject: feat(api): add validated mexico job sources
 - Commit hash: 2a4dd67
 
 ### DOCS-002 — Attempt 2
 
 - Started / finished: 2026-07-31 / 2026-07-31
-- Acceptance criteria: README para GitHub con IA asistida, arquitectura, stack, setup, operación, seguridad y contribución; PASS
+- Acceptance criteria: GitHub README with AI assistance, architecture, stack, setup, operations, security, and contribution; PASS
 - Skills: coder none; tester none; reviewer none
 - Files: `README.md`, `.harness/backlog.json`, `.harness/current-task.json`
-- Commands: `git diff --check`; `python3 scripts/harness.py validate`; `docker compose config --quiet`; 48 pruebas frontend; `pnpm build`; referencias estáticas verificadas
-- Tester: PASS — comandos y rutas consistentes; el flujo Ollama carga `.env` antes de expandir `OLLAMA_MODEL`
-- Reviewer: APPROVED — README completo para GitHub y sin desajuste de modelo en Compose
-- Reprocesos: intento 1 corrigió la carga explícita de `.env` para Ollama
+- Commands: `git diff --check`; `python3 scripts/harness.py validate`; `docker compose config --quiet`; 48 frontend tests; `pnpm build`; static references verified
+- Tester: PASS — consistent commands and paths; the Ollama flow loads `.env` before expanding `OLLAMA_MODEL`
+- Reviewer: APPROVED — complete GitHub README with no Compose model mismatch
+- Rework: attempt 1 corrected explicit `.env` loading for Ollama
 - Changelog: added
-- Risks: los enlaces externos y requisitos opcionales dependen del entorno del usuario
+- Risks: external links and optional requirements depend on the user's environment
 - Commit subject: docs(repo): prepare github project documentation
 - Commit hash: 9ffd0fb
 
@@ -1385,3 +1385,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: none
 - Commit subject: docs(repo): translate ai disclosure to english
 - Commit hash: 10caf1c
+
+### I18N-001 — Attempt 3
+
+- Started / finished: 2026-08-05 / 2026-08-05
+- Acceptance criteria: operations and all user-facing documentation in English; frontend labels, messages, metadata, and default copy in English; historical changelog and development prose in English; Spanish-input parser aliases and Mexico fixtures preserved; related checks pass; PASS
+- Skills: coder `vercel-react-best-practices`; tester `webapp-testing`; reviewer `vercel-react-best-practices` + `web-design-guidelines`
+- Files: `docs/OPERATIONS.md`, `docs/RELEASE.md`, `docs/DEVELOPMENT_LOG.md`, `CHANGELOG.md`, `frontend/index.html`, `frontend/src/App.tsx`, `tests/frontend/**`, `tests/e2e/**`, `.harness/backlog.json`, `.harness/current-task.json`
+- Commands: 50 frontend tests; 8 E2E tests with 4 expected optional-dependency skips; `cd frontend && pnpm build`; 36 harness tests; `scripts/check-skills.sh`; `python3 -m py_compile scripts/harness.py`; `git diff --check`; comprehensive word-based scans of public surfaces and first-party files
+- Tester: PASS — no Spanish UI or documentation prose remains; intentional parser aliases, geographic fixtures, proper names, and audit terms classified
+- Reviewer: APPROVED — React semantics, accessibility, scope, secrets, complete diff, and prior findings verified
+- Rework: attempt 1 found two residual strings; attempt 2 reviewer found unaccented historical prose; attempt 3 expanded the audit and resolved all findings
+- Changelog: entry added
+- Risks: browser E2E has four expected skips without optional dependencies or an opt-in URL; Spanish-language input support remains intentionally available
+- Commit subject: docs(repo): standardize project language in english
+- Commit hash: pending

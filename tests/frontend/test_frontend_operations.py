@@ -24,45 +24,45 @@ class FrontendOperationsTests(unittest.TestCase):
         self.assertIn('role="tabpanel"', APP)
         self.assertIn('id="operations-panel"', APP)
         self.assertIn("toggleSource", APP)
-        self.assertIn("source.enabled ? \"Activa\" : \"Pausada\"", APP)
+        self.assertIn("source.enabled ? \"Active\" : \"Paused\"", APP)
         self.assertIn('aria-pressed={source.enabled}', APP)
         self.assertIn("sources.filter((s) => s.enabled).length", APP)
 
     def test_metrics_health_runs_errors_and_refresh_are_visible(self) -> None:
         for label in (
-            "Ofertas activas",
-            "Ejecuciones",
-            "Última actualización",
-            "Fuentes conectadas",
-            "Salud de servicios",
-            "Últimas ejecuciones",
+            "Active openings",
+            "Runs",
+            "Last refresh",
+            "Connected sources",
+            "Service health",
+            "Latest runs",
         ):
             self.assertIn(label, APP)
         self.assertIn("operationsHealth", APP)
         self.assertIn("lastUpdated", APP)
         self.assertIn("manualRefresh", APP)
         self.assertIn('aria-busy={refreshing}', APP)
-        self.assertIn("Reintentar", APP)
+        self.assertIn("Retry", APP)
         self.assertIn('role="alert"', APP)
 
     def test_loading_and_empty_states_have_live_semantics(self) -> None:
         self.assertIn('<div className="loading-state" role="status" aria-live="polite">', APP)
-        self.assertIn("Cargando estado operativo…", APP)
-        self.assertIn("No hay fuentes configuradas.", APP)
-        self.assertIn("Aún no hay ejecuciones.", APP)
-        self.assertIn("Agrega una fuente para iniciar la búsqueda.", APP)
-        self.assertIn("Usa “Actualizar ofertas” para iniciar la primera.", APP)
+        self.assertIn("Loading operations status…", APP)
+        self.assertIn("No sources are configured.", APP)
+        self.assertIn("There are no runs yet.", APP)
+        self.assertIn("Add a source to start searching.", APP)
+        self.assertIn("Use “Refresh openings” to start the first one.", APP)
         self.assertGreaterEqual(APP.count('className="empty-state"'), 2)
 
     def test_execution_table_has_caption_headers_and_scoped_columns(self) -> None:
         self.assertIn("<table>", APP)
         self.assertIn('caption className="sr-only"', APP)
-        self.assertIn("Historial de ejecuciones de búsqueda", APP)
+        self.assertIn("Search run history", APP)
         headers = re.findall(r'<th scope="col">([^<]+)</th>', APP)
-        for header in ("Estado", "Inicio", "Ofertas", "Errores"):
+        for header in ("Status", "Start", "Openings", "Errors"):
             self.assertIn(header, headers)
         self.assertIn('role="tablist"', APP)
-        self.assertIn('aria-label="Secciones del perfil"', APP)
+        self.assertIn('aria-label="Profile sections"', APP)
 
     def test_api_client_exposes_operations_contract(self) -> None:
         for method in ("getOperationsHealth", "getSources", "getExecutions", "getMetrics", "refresh"):

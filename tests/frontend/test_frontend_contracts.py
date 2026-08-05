@@ -13,7 +13,7 @@ class FrontendComponentContractTests(unittest.TestCase):
     def test_profile_list_detail_and_operations_views_are_composed(self) -> None:
         for component in ("ProfileSection", "PreferencesSection", "VacancyDashboard", "VacancyDetail", "OperationsDashboard"):
             self.assertIn(f"function {component}", APP)
-        for view in ("CV y perfil", "Ofertas", "Operación"):
+        for view in ("Resume and profile", "Openings", "Operations"):
             self.assertIn(view, APP)
 
     def test_api_boundary_has_success_and_error_paths(self) -> None:
