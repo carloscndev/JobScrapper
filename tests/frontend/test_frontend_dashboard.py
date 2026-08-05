@@ -16,6 +16,12 @@ class FrontendDashboardTests(unittest.TestCase):
         for field in ("region", "modality", "status", "minScore", "company", "sort"):
             self.assertIn(field, APP)
 
+    def test_work_arrangement_uses_canonical_api_filter_values(self) -> None:
+        for value, label in (("remote", "Remote"), ("hybrid", "Hybrid"), ("onsite", "On-site")):
+            self.assertIn(f'<option value="{value}">{label}</option>', APP)
+        self.assertIn('modality: modality === "all" ? undefined : modality', APP)
+        self.assertIn("apiClient.listJobs({", APP)
+
     def test_sorting_and_pagination_are_present(self) -> None:
         self.assertIn('Compatibility', APP)
         self.assertIn('Most recent', APP)

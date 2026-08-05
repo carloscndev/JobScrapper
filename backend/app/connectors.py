@@ -16,6 +16,7 @@ from datetime import date
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urljoin, urlparse, urlunsplit
+from urllib.error import HTTPError, URLError
 from urllib.robotparser import RobotFileParser
 from typing import Any, Mapping
 
@@ -298,8 +299,23 @@ def _content(config: SourceConfig, key: str) -> str:
 
 def _robots_check(url: str, user_agent: str) -> None:
     parsed = urlparse(url)
-    robots = RobotFileParser(urljoin(f"{parsed.scheme}://{parsed.netloc}", "/robots.txt"))
-    robots.read()
+    if parsed.scheme.lower() not in {"http", "https"} or not parsed.netloc:
+        raise ValueError(f"robots.txt target must be an absolute HTTP(S) URL: {url!r}")
+    robots_url = urljoin(f"{parsed.scheme}://{parsed.netloc}", "/robots.txt")
+    robots = RobotFileParser(robots_url)
+    request = urllib.request.Request(robots_url, headers={"User-Agent": user_agent})
+    try:
+        with urllib.request.urlopen(request, timeout=10) as response:  # noqa: S310 - compliance check for explicit source
+            robots.parse(response.read().decode("utf-8", errors="replace").splitlines())
+    except HTTPError as exc:
+        if exc.code in {401, 403}:
+            raise PermissionError(f"robots.txt denied access to {url}") from exc
+        if 400 <= exc.code < 500:
+            robots.allow_all = True
+        else:
+            raise RuntimeError(f"could not verify robots.txt for {url}: HTTP {exc.code}") from exc
+    except (URLError, OSError) as exc:
+        raise RuntimeError(f"could not verify robots.txt for {url}: {exc}") from exc
     if not robots.can_fetch(user_agent, url):
         raise PermissionError(f"robots.txt disallows fetching {url}")
 

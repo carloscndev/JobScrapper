@@ -120,7 +120,7 @@ class JobPipeline:
                                   application_url=normalized.application_url,
                                   canonical_url=canonicalize_url(normalized.effective_canonical_url),
                                   fingerprint=fingerprint_job(normalized), location=normalized.location,
-                                  region=normalized.region, modality=str(normalized.modality),
+                                  region=normalized.region, modality=normalized.modality.value,
                                   salary_min=normalized.salary_min, salary_max=normalized.salary_max,
                                   salary_currency=normalized.salary_currency, published_at=normalized.published_at,
                                   metadata_json={**dict(normalized.metadata), "source": source.name,

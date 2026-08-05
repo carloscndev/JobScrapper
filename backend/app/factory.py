@@ -27,7 +27,7 @@ from .schemas import (JobDetailResponse, JobEvaluationResponse, JobListItem, Pag
 from .services import ProfileService
 from .connectors import DEFAULT_ADAPTERS
 from .jobs import canonicalize_url, fingerprint_job
-from .sources import SourceConfig, SourceKind, SourceService, resolve_source_adapter
+from .sources import SourceConfig, SourceKind, SourceService, WorkModality, resolve_source_adapter
 from .notion import NotionConfig
 from .process_lock import ProcessLock
 
@@ -440,7 +440,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                         persisted_job = JobRepository(db).upsert(Job(source_id=source.id, title=normalized.title, company=normalized.company, description=normalized.description,
                                     description_url=normalized.description_url, application_url=normalized.application_url,
                                     canonical_url=canonicalize_url(normalized.effective_canonical_url), fingerprint=fingerprint_job(normalized),
-                                    location=normalized.location, region=normalized.region, modality=str(normalized.modality),
+                                    location=normalized.location, region=normalized.region, modality=normalized.modality.value,
                                     salary_min=normalized.salary_min, salary_max=normalized.salary_max, salary_currency=normalized.salary_currency,
                                     published_at=normalized.published_at, metadata_json={**dict(normalized.metadata), "source": source.name}))
                         ingested_jobs.append(persisted_job)
@@ -562,7 +562,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/api/v1/jobs", response_model=PaginatedJobsResponse, tags=["jobs"])
     def list_jobs(
         page: int = Query(1, ge=1), page_size: int = Query(20, ge=1, le=100),
-        region: str | None = None, modality: str | None = None, status_filter: str | None = Query(None, alias="status"),
+        region: str | None = None,
+        modality: WorkModality | None = Query(None),
+        status_filter: str | None = Query(None, alias="status"),
         company: str | None = None, source_id: int | None = Query(None, ge=1), q: str | None = None,
         min_score: float | None = Query(None, ge=0, le=100), profile_id: int | None = Query(None, ge=1),
         order: str = Query("detected_at", pattern="^(detected_at|published_at|score|title|company)$"),
@@ -572,7 +574,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         with session_factory() as db:
             filters = []
             if region: filters.append(Job.region == region.lower())
-            if modality: filters.append(Job.modality == modality.lower())
+            if modality: filters.append(Job.modality == modality.value)
             if status_filter: filters.append(Job.status == status_filter.lower())
             if source_id is not None: filters.append(Job.source_id == source_id)
             if company: filters.append(Job.company.ilike(f"%{company}%"))

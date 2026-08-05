@@ -1400,3 +1400,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: browser E2E has four expected skips without optional dependencies or an opt-in URL; Spanish-language input support remains intentionally available
 - Commit subject: docs(repo): standardize project language in english
 - Commit hash: 681e9e3
+
+### API-020 — Attempt 2
+
+- Started / finished: 2026-08-05 / 2026-08-05
+- Acceptance criteria: Ashby robots handling avoids false denial while preserving true denial; modality filter uses canonical API values and returns matching openings; related tests pass; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `backend/app/factory.py`, `backend/app/pipeline.py`, `tests/backend/test_api_robots_020.py`, `tests/backend/test_api_modality_020.py`, `tests/frontend/test_frontend_dashboard.py`, `.harness/backlog.json`, `.harness/current-task.json`
+- Commands: `backend/.venv/bin/python -m unittest tests.backend.test_api_robots_020 tests.backend.test_api_modality_020 -v` (8/8); related backend (28/28); frontend (51/51); E2E (8 with 4 expected skips); `cd frontend && pnpm build`; harness (36/36); `scripts/check-skills.sh`; `python3 -m py_compile scripts/harness.py`; `git diff --check`
+- Tester: PASS — robots origin/User-Agent/allow/deny/error behavior and remote/hybrid/onsite persistence and query filters verified
+- Reviewer: APPROVED — explicit frontend canonical-value regression added after initial finding; production behavior and scope reviewed
+- Rework: attempt 1 lacked explicit frontend modality propagation coverage; attempt 2 resolved it
+- Changelog: entry added
+- Risks: full backend baseline retains 7 unrelated pre-existing failures; browser E2E has 4 expected dependency/opt-in skips
+- Commit subject: fix(api): repair ashby fetch and modality filters
+- Commit hash: pending

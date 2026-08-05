@@ -1736,6 +1736,31 @@
         "Frontend, harness, and relevant regression tests pass"
       ],
       "commit_hash": "681e9e3"
+    },
+    {
+      "id": "API-020",
+      "title": "Fix Ashby robots handling and modality filtering",
+      "status": "approved",
+      "depends_on": [
+        "I18N-001"
+      ],
+      "commit": "fix(api): repair ashby fetch and modality filters",
+      "allowed_paths": [
+        "backend/**",
+        "frontend/**",
+        "tests/backend/**",
+        "tests/frontend/**",
+        "tests/e2e/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Ashby Kueski network fetching honors robots policy without a false denial caused by robots parsing or URL handling",
+        "A genuinely disallowed source remains isolated with a clear error and is not fetched",
+        "The frontend modality filter sends the canonical API value and returns only matching openings",
+        "Backend and frontend regression tests cover Ashby robots handling and remote/hybrid/onsite filtering"
+      ]
     }
   ]
 }

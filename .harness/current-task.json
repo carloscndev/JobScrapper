@@ -1,10 +1,32 @@
 {
   "schema_version": 1,
-  "active": false,
-  "task_id": null,
-  "state": null,
-  "attempt": 0,
-  "evidence": {},
-  "rejections": [],
-  "commit": "681e9e34d1986a924ba80b107855762e0d105d60"
+  "active": true,
+  "task_id": "API-020",
+  "state": "approved",
+  "attempt": 2,
+  "evidence": {
+    "coder": {
+      "result": "pass",
+      "evidence": "No production rework required; reviewer finding addressed in tester-owned frontend regression test",
+      "attempt": 2
+    },
+    "tester": {
+      "result": "pass",
+      "evidence": "PASS attempt 2: explicit remote/hybrid/onsite option values and canonical apiClient modality propagation; 51 frontend tests, 8 backend target tests, build and harness gates pass",
+      "attempt": 2
+    },
+    "reviewer": {
+      "result": "pass",
+      "evidence": "APPROVED attempt 2: explicit frontend modality regression coverage added; prior finding resolved",
+      "attempt": 2
+    }
+  },
+  "rejections": [
+    {
+      "by": "reviewer",
+      "reason": "CHANGES_REQUESTED: frontend dashboard test lacks explicit canonical modality option and apiClient.listJobs propagation coverage",
+      "attempt": 1
+    }
+  ],
+  "commit": null
 }

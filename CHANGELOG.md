@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `fix(api): repair ashby fetch and modality filters` — preserves compliant robots enforcement for Ashby while avoiding false denials, and normalizes modality persistence and filters to canonical values.
 - `docs(repo): standardize project language in english` — translates operations, release guidance, the complete user interface, metadata, changelog, and historical development prose while preserving Spanish-input support.
 - `docs(repo): translate ai disclosure to english` — translates the AI-assistance disclosure while retaining the requested developer-implementation wording.
 - `docs(repo): translate readme to english` — translates the project README to English while preserving the requested AI-assistance disclosure in Spanish.
@@ -37,6 +38,18 @@
 - Risks: browser E2E requires optional Playwright and local services; API enums and Spanish-input support remain unchanged
 - Commit subject: docs(repo): standardize project language in english
 - Commit hash: 681e9e3
+
+### API-020 — Attempt 2
+
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `backend/app/factory.py`, `backend/app/pipeline.py`, `tests/backend/test_api_robots_020.py`, `tests/backend/test_api_modality_020.py`, `tests/frontend/test_frontend_dashboard.py`
+- Commands: 8 API-020 tests; 28 related backend tests; 51 frontend tests; 8 E2E tests with 4 expected skips; frontend build; 36 harness tests; skill validation; Python compilation; diff check
+- Tester: PASS — Ashby robots allow/deny/error cases and canonical modality persistence/query behavior covered; full backend has 7 unrelated baseline failures documented
+- Reviewer: APPROVED — frontend canonical-value regression added after initial review finding; compliance, scope, and compatibility verified
+- Rework: attempt 1 added backend coverage; attempt 2 added explicit frontend modality option and API propagation coverage
+- Risks: Ashby remains subject to its published robots policy; optional E2E dependencies remain environment-dependent
+- Commit subject: fix(api): repair ashby fetch and modality filters
+- Commit hash: pending
 
 ### DOCS-004 — Attempt 1
 
