@@ -1740,7 +1740,7 @@
     {
       "id": "API-020",
       "title": "Fix Ashby robots handling and modality filtering",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "I18N-001"
       ],
@@ -1760,7 +1760,8 @@
         "A genuinely disallowed source remains isolated with a clear error and is not fetched",
         "The frontend modality filter sends the canonical API value and returns only matching openings",
         "Backend and frontend regression tests cover Ashby robots handling and remote/hybrid/onsite filtering"
-      ]
+      ],
+      "commit_hash": "a25323e"
     }
   ]
 }

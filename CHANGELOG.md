@@ -49,7 +49,7 @@
 - Rework: attempt 1 added backend coverage; attempt 2 added explicit frontend modality option and API propagation coverage
 - Risks: Ashby remains subject to its published robots policy; optional E2E dependencies remain environment-dependent
 - Commit subject: fix(api): repair ashby fetch and modality filters
-- Commit hash: pending
+- Commit hash: a25323e
 
 ### DOCS-004 — Attempt 1
 

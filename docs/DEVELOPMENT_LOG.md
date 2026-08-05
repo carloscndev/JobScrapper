@@ -1414,4 +1414,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: entry added
 - Risks: full backend baseline retains 7 unrelated pre-existing failures; browser E2E has 4 expected dependency/opt-in skips
 - Commit subject: fix(api): repair ashby fetch and modality filters
-- Commit hash: pending
+- Commit hash: a25323e
