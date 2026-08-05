@@ -1715,7 +1715,7 @@
     {
       "id": "I18N-001",
       "title": "Translate repository documentation and user interface to English",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "DOCS-004"
       ],
@@ -1734,7 +1734,8 @@
         "Historical changelog and development-log prose is written in English",
         "Spanish parser aliases and fixtures required for Mexico and Spanish-language input support remain functional",
         "Frontend, harness, and relevant regression tests pass"
-      ]
+      ],
+      "commit_hash": "681e9e3"
     }
   ]
 }

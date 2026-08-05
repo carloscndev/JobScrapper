@@ -36,7 +36,7 @@
 - Rework: attempts 1 and 2 closed residual UI and historical-log strings; attempt 3 passed a comprehensive word-based audit
 - Risks: browser E2E requires optional Playwright and local services; API enums and Spanish-input support remain unchanged
 - Commit subject: docs(repo): standardize project language in english
-- Commit hash: pending
+- Commit hash: 681e9e3
 
 ### DOCS-004 — Attempt 1
 

@@ -1399,4 +1399,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: entry added
 - Risks: browser E2E has four expected skips without optional dependencies or an opt-in URL; Spanish-language input support remains intentionally available
 - Commit subject: docs(repo): standardize project language in english
-- Commit hash: pending
+- Commit hash: 681e9e3

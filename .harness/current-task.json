@@ -1,37 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "I18N-001",
-  "state": "approved",
-  "attempt": 3,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "Attempt 3 translated all residual historical Spanish prose and headings; comprehensive functional-word scan only intentional proper name; build and diff checks passed",
-      "attempt": 3
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "PASS attempt 3: 50 frontend, 8 E2E with 4 expected skips, build, 36 harness; comprehensive docs/UI scan only proper name; broader residuals are parser/geographic fixtures and audit denylist",
-      "attempt": 3
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "APPROVED: all prior residual-language findings resolved; complete diff, React semantics, accessibility, scope, secrets and tester evidence reviewed",
-      "attempt": 3
-    }
-  },
-  "rejections": [
-    {
-      "by": "tester",
-      "reason": "Two residual Spanish strings: frontend/src/App.tsx CV-save error and docs/DEVELOPMENT_LOG.md Ollama evidence line; 49/50 frontend tests passed; E2E 8 tests with 4 expected skips; build and harness gates passed",
-      "attempt": 1
-    },
-    {
-      "by": "reviewer",
-      "reason": "CHANGES_REQUESTED: residual Reprocesos headings and Spanish historical prose in DEVELOPMENT_LOG lines around 1263-1278",
-      "attempt": 2
-    }
-  ],
-  "commit": null
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
+  "rejections": [],
+  "commit": "681e9e34d1986a924ba80b107855762e0d105d60"
 }
