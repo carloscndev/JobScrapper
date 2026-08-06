@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `fix(api): resolve ashby public robots policy` — uses Ashby's public jobs-host policy when the API host's robots endpoint requires authentication, without weakening disallow rules.
 - `fix(web): show connection check feedback` — makes health checks visible with pending, success, and failure states while deduplicating StrictMode startup requests.
 - `fix(api): repair ashby fetch and modality filters` — preserves compliant robots enforcement for Ashby while avoiding false denials, and normalizes modality persistence and filters to canonical values.
 - `docs(repo): standardize project language in english` — translates operations, release guidance, the complete user interface, metadata, changelog, and historical development prose while preserving Spanish-input support.
@@ -63,6 +64,18 @@
 - Risks: health status still depends on API availability; browser-level runtime tests require optional browser tooling
 - Commit subject: fix(web): show connection check feedback
 - Commit hash: 539cca2
+
+### API-021 — Attempt 1
+
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_api_robots_021.py`
+- Commands: 4 API-021 tests; 28 related robots/connector/source tests; 36 harness tests; skill validation; Python compilation; diff check
+- Tester: PASS — Ashby API 401 fallback, shared User-Agent, Kueski allowance, true disallows, fail-closed fallback errors, and non-Ashby denial verified
+- Reviewer: APPROVED
+- Rework: none
+- Risks: Ashby remains governed by its public jobs-host robots policy; fallback is limited to the exact API host and HTTP 401
+- Commit subject: fix(api): resolve ashby public robots policy
+- Commit hash: pending
 
 ### DOCS-004 — Attempt 1
 

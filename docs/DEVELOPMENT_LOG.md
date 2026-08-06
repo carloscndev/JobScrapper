@@ -1430,3 +1430,18 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Risks: health feedback depends on API availability; browser-level runtime tests require optional tooling
 - Commit subject: fix(web): show connection check feedback
 - Commit hash: 539cca2
+
+### API-021 — Attempt 1
+
+- Started / finished: 2026-08-05 / 2026-08-05
+- Acceptance criteria: Ashby API robots authentication uses the same-provider public policy; fallback remains fail-closed; true disallows remain blocked; Kueski posting path allowed; PASS
+- Skills: coder none; tester none; reviewer none
+- Files: `backend/app/connectors.py`, `tests/backend/test_api_robots_021.py`, `.harness/backlog.json`, `.harness/current-task.json`
+- Commands: API-021 (4/4); related robots/connectors/sources (28/28); harness (36/36); `scripts/check-skills.sh`; `python3 -m py_compile scripts/harness.py`; `git diff --check`
+- Tester: PASS — exact fallback URL, User-Agent, timeout, allow/disallow paths, fail-closed errors, and non-Ashby behavior verified
+- Reviewer: APPROVED — narrow same-provider fallback and compliance boundary reviewed
+- Rework: none
+- Changelog: entry added
+- Risks: fallback applies only to `api.ashbyhq.com` HTTP 401; all other robots verification failures remain denied or fail closed
+- Commit subject: fix(api): resolve ashby public robots policy
+- Commit hash: pending

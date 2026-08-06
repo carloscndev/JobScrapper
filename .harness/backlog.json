@@ -1786,6 +1786,28 @@
         "Frontend regression tests and build pass"
       ],
       "commit_hash": "539cca2"
+    },
+    {
+      "id": "API-021",
+      "title": "Use Ashby public robots policy for API host",
+      "status": "approved",
+      "depends_on": [
+        "API-020"
+      ],
+      "commit": "fix(api): resolve ashby public robots policy",
+      "allowed_paths": [
+        "backend/**",
+        "tests/backend/**",
+        ".harness/**",
+        "docs/DEVELOPMENT_LOG.md",
+        "CHANGELOG.md"
+      ],
+      "acceptance": [
+        "Ashby API fetches use the same provider's public jobs-host robots policy when the API host robots endpoint requires authentication",
+        "The fallback remains fail-closed when the public policy cannot be verified",
+        "Ashby paths disallowed by the public policy remain blocked",
+        "Kueski's documented posting API path is allowed and regression-tested"
+      ]
     }
   ]
 }

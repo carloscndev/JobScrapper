@@ -308,9 +308,22 @@ def _robots_check(url: str, user_agent: str) -> None:
         with urllib.request.urlopen(request, timeout=10) as response:  # noqa: S310 - compliance check for explicit source
             robots.parse(response.read().decode("utf-8", errors="replace").splitlines())
     except HTTPError as exc:
-        if exc.code in {401, 403}:
+        # Ashby publishes its job-board crawling policy on the public jobs host,
+        # while the API host protects /robots.txt with authentication.  This is
+        # deliberately host- and status-specific; every other protected robots
+        # endpoint remains denied.
+        if exc.code == 401 and (parsed.hostname or "").casefold() == "api.ashbyhq.com":
+            public_robots_url = "https://jobs.ashbyhq.com/robots.txt"
+            public_request = urllib.request.Request(public_robots_url, headers={"User-Agent": user_agent})
+            robots = RobotFileParser(public_robots_url)
+            try:
+                with urllib.request.urlopen(public_request, timeout=10) as response:  # noqa: S310 - same-provider policy fallback
+                    robots.parse(response.read().decode("utf-8", errors="replace").splitlines())
+            except (HTTPError, URLError, OSError) as public_exc:
+                raise RuntimeError(f"could not verify Ashby public robots.txt for {url}: {public_exc}") from public_exc
+        elif exc.code in {401, 403}:
             raise PermissionError(f"robots.txt denied access to {url}") from exc
-        if 400 <= exc.code < 500:
+        elif 400 <= exc.code < 500:
             robots.allow_all = True
         else:
             raise RuntimeError(f"could not verify robots.txt for {url}: HTTP {exc.code}") from exc
