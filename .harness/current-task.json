@@ -1,26 +1,10 @@
 {
   "schema_version": 1,
-  "active": true,
-  "task_id": "API-021",
-  "state": "approved",
-  "attempt": 1,
-  "evidence": {
-    "coder": {
-      "result": "pass",
-      "evidence": "Narrow api.ashbyhq.com HTTP 401 fallback to jobs.ashbyhq.com robots policy; true denials and all fallback failures remain fail-closed; target connector tests pass",
-      "attempt": 1
-    },
-    "tester": {
-      "result": "pass",
-      "evidence": "PASS: 4 new API-021 tests; related robots/connectors/sources 28/28; harness 36/36; validation/skills/compile/diff pass; fallback and true denials verified",
-      "attempt": 1
-    },
-    "reviewer": {
-      "result": "pass",
-      "evidence": "APPROVED: narrow same-provider Ashby fallback, true denials, fail-closed errors, tests and scope reviewed",
-      "attempt": 1
-    }
-  },
+  "active": false,
+  "task_id": null,
+  "state": null,
+  "attempt": 0,
+  "evidence": {},
   "rejections": [],
-  "commit": null
+  "commit": "8c42ff8299f87570ebf70396665e6451311f79c4"
 }

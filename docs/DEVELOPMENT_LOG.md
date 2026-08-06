@@ -1444,4 +1444,4 @@ Append one entry per task cycle. The coordinator is the only role allowed to upd
 - Changelog: entry added
 - Risks: fallback applies only to `api.ashbyhq.com` HTTP 401; all other robots verification failures remain denied or fail closed
 - Commit subject: fix(api): resolve ashby public robots policy
-- Commit hash: pending
+- Commit hash: 8c42ff8

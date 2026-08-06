@@ -75,7 +75,7 @@
 - Rework: none
 - Risks: Ashby remains governed by its public jobs-host robots policy; fallback is limited to the exact API host and HTTP 401
 - Commit subject: fix(api): resolve ashby public robots policy
-- Commit hash: pending
+- Commit hash: 8c42ff8
 
 ### DOCS-004 — Attempt 1
 

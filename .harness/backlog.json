@@ -1790,7 +1790,7 @@
     {
       "id": "API-021",
       "title": "Use Ashby public robots policy for API host",
-      "status": "approved",
+      "status": "committed",
       "depends_on": [
         "API-020"
       ],
@@ -1807,7 +1807,8 @@
         "The fallback remains fail-closed when the public policy cannot be verified",
         "Ashby paths disallowed by the public policy remain blocked",
         "Kueski's documented posting API path is allowed and regression-tested"
-      ]
+      ],
+      "commit_hash": "8c42ff8"
     }
   ]
 }
